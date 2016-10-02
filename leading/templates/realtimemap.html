@@ -1,0 +1,1956 @@
+{% extends "base.html" %}
+
+{% block jacascript %}
+
+    <script src="{{ url_for('static', filename='lib/dagre-d3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet.geometryutil.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet.almostover.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/Leaflet.Editable.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet.textpath.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/PruneCluster.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/realtimemap.js') }}"></script>
+
+
+
+{% endblock %}
+
+{% block lefttopMenu %}
+    <div ng-controller="lefttopMenuCtrl">
+        <div flex="6">
+            <md-button ng-click="toggleSidenav('mainmenu')" class="md-icon-button" layout-align="center end">
+                <md-icon aria-label="Menu"
+                         md-svg-icon="{{ url_for('static', filename='icon/ic_menu_white_48px.svg') }}"></md-icon>
+            </md-button>
+        </div>
+
+
+    </div>
+
+{% endblock %}
+
+
+{% block content %}
+    <div ng-controller="mapCtrl" layout="column" ng-style="setTableHeight()" style="margin-top: 64px;">
+        <div ng-controller="SideNavCtrl" layout="column" ng-cloak>
+            <section layout="row" flex>
+                <md-sidenav class="md-sidenav-left" md-component-id="mainmenu">
+                    <md-toolbar class="md-theme-light" layout="row">
+                        <h1 class="md-toolbar-tools" style="color: white;">Menu</h1>
+                        <md-button ng-click="toggleSidenav('mainmenu')" class="md-icon-button" style="margin-top: 8px">
+                            <md-icon aria-label="Menu"
+                                     md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_left_white_48px.svg') }}"></md-icon>
+                        </md-button>
+                    </md-toolbar>
+                    <md-toolbar class="md-accent">
+                        <md-list class="md-dense" flex>
+                            <md-list-item class="md-2-line"
+                                          aria-label="settings">
+                                <img class="md-avatar" style="background-color: gainsboro"
+                                     ng-src="{{ url_for('static', filename='icon/ic_person_white_48px.svg') }}"
+                                     alt="Photo"/>
+                                <div class="md-list-item-text">
+                                    <h3>{% raw %} {{ current_user.username }} {% endraw %}</h3>
+                                    <p>{% raw %} {{ current_user.permissionText }} {% endraw %}</p>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                        <div layout-align="end center" style="text-align: right">
+                            <md-button class="md-icon-button" ng-click="logout()">
+                                <md-icon aria-label="Logout"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_exit_to_app_white_48px.svg') }}"
+                                         md-menu-align-target></md-icon>
+
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+                    <md-content layout-padding>
+                        <md-list class="md-dense" flex>
+                            <md-list-item class="md-2-line" ng-click="openSidenav('processdevice','new')"
+                                          aria-label="settings"
+                                          ng-if="current_user.permission=='0' || current_user.permission=='1'">
+                                <img ng-src="{{ url_for('static', filename='icon/ic_add_black_48px.svg') }}"
+                                     class="md-avatar" alt="Photo"/>
+                                <div class="md-list-item-text">
+                                    <h3>Add Device</h3>
+                                    <p>Add a new device</p>
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+
+
+                            <md-list-item class="md-2-line" ng-click="filemanager()"
+                                          aria-label="settings">
+                                <img ng-src="{{ url_for('static', filename='icon/ic_folder_open_black_48px.svg') }}"
+                                     class="md-avatar" alt="Photo"/>
+                                <div class="md-list-item-text">
+                                    <h3>File Management</h3>
+                                    <p>File upload, download ...</p>
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+
+                            <md-list-item class="md-2-line" ng-click="settings()"
+                                          aria-label="settings"
+                                          ng-if="current_user.permission=='0' || current_user.permission=='1'">
+                                <img ng-src="{{ url_for('static', filename='icon/ic_settings_black_48px.svg') }}"
+                                     class="md-avatar" alt="Photo"/>
+                                <div class="md-list-item-text">
+                                    <h3>Settings</h3>
+                                    <p>System setting, database ...</p>
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                </md-sidenav>
+
+                <md-sidenav class="md-sidenav-right" md-component-id="deviceClick">
+
+                    <md-toolbar class="md-theme-light" layout="row">
+                        <md-button ng-click="toggleSidenav('deviceClick')" class="md-icon-button"
+                                   style="margin-top: 8px">
+                            <md-icon aria-label="Menu"
+                                     md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_right_white_48px.svg') }}"></md-icon>
+                        </md-button>
+                        <h1 class="md-toolbar-tools" style="color:white;"
+                            ng-if="nodeInfo.properties.deviceType == 'FP'">Flight Pack Information</h1>
+                        <h1 class="md-toolbar-tools" style="color:white;"
+                            ng-if="nodeInfo.properties.deviceType != 'FP'">Device Information</h1>
+                    </md-toolbar>
+                    <md-toolbar style="background-color: dodgerblue">
+
+                        <div style="margin-left: 15px; color: white; margin-top: 15px; margin-bottom: 15px;font-size: 14px;">
+                            <div style="font-size: 18px; font-weight: bold;">{% raw %}{{
+                                nodeInfo.deviceName
+                                }}{% endraw %}</div>
+                            <div style="font-size: 12px;">{% raw %}{{ nodeInfo.location.address.streetNo
+                                }}
+                                {{nodeInfo.location.address.street }}, {{ nodeInfo.location.address.city
+                                }},
+                                {{nodeInfo.location.address.province }}, {{
+                                nodeInfo.location.address.country}}{% endraw %}</div>
+                            <div style="margin-top: 10px;" ng-if="nodeInfo.IPAddress == 'TBD'">{% raw %}{{nodeInfo.IPAddress}}{% endraw %}</div>
+                            <div style="margin-top: 10px;" ng-if="nodeInfo.IPAddress != 'TBD'"><a
+                                    style="color: white" href="http://{% raw %}{{
+                                                nodeInfo.IPAddress}}{% endraw %}" target="_blank">{% raw %}{{
+                                nodeInfo.IPAddress}}{% endraw %}</a></div>
+                            <div style="margin-top: 10px;">{% raw %}{{ nodeInfo.status
+                                }}{% endraw %}</div>
+                            <div style="margin-top: 10px;">{% raw %}{{ nodeInfo.properties.rpatsNo
+                                }}{% endraw %}</div>
+                            <div style="margin-top: 10px;">{% raw %}{{
+                                nodeInfo.installedDate}}{% endraw %}</div>
+                            <div style="float: right; margin-top: -50px;margin-right: 10px"
+                                 ng-if="nodeInfo.properties.deviceType=='FP'">
+                                <img
+                                        ng-src="{% raw %}{{nodeInfo.properties.additionalInfo.logo}}{% endraw %}"/>
+                            </div>
+                        </div>
+
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" layout-align="center">
+                        <div layout layout-sm="row" style="margin-top: 5px;height:60px">
+                            <md-progress-circular class="md-accent" md-diameter="48" ng-style="ngStyleForProgress"
+                                    {#                                                  ng-if="nodeInfo.properties.deviceType=='FP'"#}
+                                                  style="margin-left:-20px; margin-top:-24px;float:left;"
+                                                  value="{% raw %}{{ determinateValue }}{% endraw %}"
+                                                  md-mode='determinate'
+                            ></md-progress-circular>
+                            <md-button style="float:left; margin-left: -70px;" ng-style="ngStyleForButton"
+                                    {#                                       ng-if="nodeInfo.properties.deviceType=='FP'"#}
+                                       class="md-fab md-mini md-primary" aria-label="Eat cake"
+                                       ng-click="pingFP()">
+                                <md-icon aria-label="Menu" style="margin-top: -3px"
+                                         md-svg-icon="{% raw %}{{ pingIcon }}{% endraw %}"></md-icon>
+                            </md-button>
+                            <md-button ng-click="schematic(nodeInfo)" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_share_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Schematic</md-tooltip>
+
+                            </md-button>
+                            <md-button ng-click="ipxPanel(nodeInfo)" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_developer_board_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">IPX Panel</md-tooltip>
+
+                            </md-button>
+
+                            <md-button ng-click="editDevice(nodeInfo)" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary"
+                                       ng-if="current_user.permission=='0' || current_user.permission=='1'">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_edit_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Edit</md-tooltip>
+                            </md-button>
+                            <md-button ng-click="fileManager(nodeInfo)" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary"
+                                       ng-if="current_user.permission=='0' || current_user.permission=='1'">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_folder_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">File Manager</md-tooltip>
+                            </md-button>
+                            <md-button ng-click="deleteNode(nodeInfo)" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary"
+                                       ng-if="current_user.permission=='0' || current_user.permission=='1'">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Delete</md-tooltip>
+                            </md-button>
+
+                        </div>
+                    </md-toolbar>
+
+                    <md-list>
+                        <md-subheader
+                                style="background-color: #e6e6e6;width:100%;height: 50px;margin-top: -10px; border-bottom: solid 1px; border-color: #c7c8bd">
+                            <div style="float: left;">Port Summary</div>
+                            <div style="margin-top: -15px; float: right;">
+                                <md-button aria-label="Menu" class="md-icon-button" ng-click="toggleGroup('port')">
+                                    <md-icon aria-label="Menu" ng-if="!isGroupShown('port')"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                    <md-icon aria-label="Menu" ng-if="isGroupShown('port')"
+                                             aria-label="arrow"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+
+                                </md-button>
+                            </div>
+
+                        </md-subheader>
+                        <md-list-item class="md-2-line" ng-repeat="port in nodeInfo.ports"
+                                      ng-show="isGroupShown('port')"
+                                      ng-if="port.status != 'Init'">
+
+                            <md-button style="background-color: dodgerblue;margin-top: 16px; margin-left: 20px"
+                                       class="md-fab md-mini md-primary" ng-click="ipxPanel(nodeInfo,port)">
+                                <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %}{{ port.portID
+                                    }}{% endraw %}</strong></p>
+                            </md-button>
+
+                            <div class="md-list-item-text" layout="column">
+                                <h3>{% raw %}{{ port.route.device.deviceName}}{% endraw %}</h3>
+                                <p>{% raw %}Port {{ port.route.portID }}, {{ port.route.portSpeed
+                                    }}, {{ port.route.device.IPAddress }}, {{ port.properties.projectID
+                                    }}{% endraw %}</p>
+
+                            </div>
+                            <md-divider></md-divider>
+                        </md-list-item>
+
+                        <md-subheader ng-show="isGroupShown('port')"
+                                      ng-if="showNoItem">
+                            <md-list-item class="md-2-line" style="margin-top: -20px; margin-bottom: -20px">
+                                <div class="md-list-item-text" layout="column">
+                                    <p>No Port Summary</p>
+                                </div>
+                            </md-list-item>
+                        </md-subheader>
+
+                        <md-subheader
+                                style="background-color: #e6e6e6;width:100%;height: 50px; border-bottom: solid 1px; border-top: solid 1px; border-color: #c7c8bd">
+                            <div style="float: left;">Device Type</div>
+                            <div style="margin-top: -15px; float: right;">
+                                <md-button aria-label="Menu" class="md-icon-button" ng-click="toggleGroup('type')">
+                                    <md-icon aria-label="Menu" ng-if="!isGroupShown('type')"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                    <md-icon aria-label="Menu" ng-if="isGroupShown('type')"
+                                             aria-label="arrow"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+
+                                </md-button>
+                            </div>
+                        </md-subheader>
+
+                        <md-content layout-padding ng-show="isGroupShown('type')">
+                            <div layout layout-sm="row">
+                                <div style="margin-left: 20px;margin-right: 25px; margin-top: 15%"
+                                     ng-if="nodeInfo.properties.deviceType=='IPX'">
+                                    <img ng-src="{{ url_for('static', filename='images/networkIcon.png') }}"
+                                         alt="">
+                                </div>
+
+                                <div class="md-list-item-text" style="float:left">
+                                    <p style="font-size: 18px; font-weight: bold">{% raw %} {{
+                                        nodeInfo.properties.deviceGeneralName }} {% endraw %}</p>
+                                    <p style="">Manufacturer: {% raw %} {{
+                                        nodeInfo.properties.properties.manufacturer
+                                        }} {% endraw %}</p>
+                                    <p style="">Type: {% raw %} {{ nodeInfo.properties.deviceType
+                                        }} {% endraw %}</p>
+                                    <p>Ports Count: {% raw %} {{
+                                        nodeInfo.properties.properties.portsCount
+                                        }} {% endraw %}</p>
+                                    <p style="margin-left:15px"
+                                       ng-if="nodeInfo.properties.properties.subType=='Mux' || nodeInfo.properties.properties.subType=='Demux'">
+                                        ---> Input Ports: {% raw %} {{ nodeInfo.properties.properties.inputPort
+                                        }} {% endraw %}
+                                    </p>
+                                    <p style="margin-left:15px"
+                                       ng-if="nodeInfo.properties.properties.subType=='Mux' || nodeInfo.properties.properties.subType=='Demux'">
+                                        ---> Output Ports: {% raw %} {{ nodeInfo.properties.properties.outputPort
+                                        }} {% endraw %}
+                                    </p>
+                                    <p>SNMP Port: {% raw %} {{ nodeInfo.properties.configuration.snmpPort
+                                        }} {% endraw %}</p>
+                                    <p ng-if="nodeInfo.properties.deviceType!='FP'&&!(nodeInfo.properties.properties.subType=='Mux' || nodeInfo.properties.properties.subType=='Demux')">
+                                        Server Port: {% raw %} {{
+                                        nodeInfo.properties.configuration.quartzPort
+                                        }} {% endraw %}</p>
+                                </div>
+                            </div>
+                        </md-content>
+
+                        <md-subheader
+                                style="background-color: #e6e6e6;width:100%;height: 50px; border-bottom: solid 1px; border-top: solid 1px; border-color: #c7c8bd">
+                            <div style="float: left;">License Summary</div>
+                            <div style="margin-top: -15px; float: right;">
+                                <md-button aria-label="Menu" class="md-icon-button" ng-click="toggleGroup('license')">
+                                    <md-icon aria-label="Menu" ng-if="!isGroupShown('license')"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                    <md-icon aria-label="Menu" ng-if="isGroupShown('license')"
+                                             aria-label="arrow"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+                                </md-button>
+                            </div>
+                        </md-subheader>
+
+                        <md-list-item flex ng-show="isGroupShown('license')" class="item-accordion"
+                                      ng-if="!nodeInfo.config.features">
+                            <div>
+                                <p style="font-size: 12px">No License</p>
+                            </div>
+                        </md-list-item>
+
+                        <md-list-item flex ng-show="isGroupShown('license')" class="item-accordion"
+                                      ng-repeat="name in nodeInfo.config.features" ng-if="nodeInfo.config.features">
+                            <img style="height: 24px; margin-right: 10px; margin-left: 20px"
+                                 ng-src="static/icon/ic_check_circle_white_48px.svg" class="" alt="">
+                            <div>
+                                <p style="font-size: 12px">{% raw %}{{name}}{% endraw %}</p>
+                            </div>
+                            <md-divider></md-divider>
+                        </md-list-item>
+
+                    </md-list>
+
+                </md-sidenav>
+
+                <md-sidenav class="md-sidenav-right" md-component-id="ptnClick">
+                    <md-toolbar class="md-theme-light" layout="row">
+                        <md-button ng-click="closeSide('ptnClick')" class="md-icon-button" style="margin-top: 8px">
+                            <md-icon aria-label="Menu"
+                                     md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_right_white_48px.svg') }}"></md-icon>
+                        </md-button>
+                        <h1 class="md-toolbar-tools" style="color:white;">PTN Information</h1>
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" style="background-color: dodgerblue">
+                        <div style="margin-left: 15px; margin-top: 15px; margin-bottom:15px; color: white;">
+                            <div style="font-size: 18px; font-weight: bold;">{% raw %}{{
+                                nodeInfo.deviceName
+                                }}{% endraw %}</div>
+                            <div style="margin-top: 10px;font-size: 14px;">{% raw %}{{
+                                nodeInfo.IPAddress}}{% endraw %}</div>
+                            <div style="margin-top: 10px;">{% raw %}{{ nodeInfo.status
+                                }}{% endraw %}</div>
+                            <div style="margin-top: 10px;font-size: 14px;">{% raw %}{{
+                                nodeInfo.installedDate}}{% endraw %}</div>
+                        </div>
+
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" layout-align="center">
+                        <div layout layout-sm="row" style=""
+                             ng-if="current_user.permission=='0' || current_user.permission=='1'">
+                            <md-button ng-click="editDevice(nodeInfo)" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary" layout-align="center center">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_edit_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Edit</md-tooltip>
+                            </md-button>
+
+                            <md-button ng-click="deleteNode(nodeInfo)" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary" layout-align="center center">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Delete</md-tooltip>
+                            </md-button>
+
+                        </div>
+                    </md-toolbar>
+                    <md-list>
+
+                        <md-subheader
+                                style="background-color: #e6e6e6;width:100%;height: 50px;margin-top: -10px; border-bottom: solid 1px; border-color: #c7c8bd">
+                            <div style="margin-top: -15px">Port Summary
+                                <md-button class="md-icon-button" ng-click="toggleGroup('port')">
+                                    <md-icon aria-label="Menu"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+
+                                </md-button>
+                            </div>
+
+                        </md-subheader>
+
+                        <md-list-item class="md-2-line" ng-repeat="port in nodeInfo.ports"
+                                      ng-show="isGroupShown('port')"
+                                      ng-if="port.status != 'Init'">
+
+                            <md-button style="background-color: dodgerblue;margin-top: 15px;"
+                                       class="md-fab md-mini md-primary" layout-align="center center">
+                                <p style="color: white;font-size: 18px;"><strong>{% raw %}{{ port.portID
+                                    }}{% endraw %}</strong></p>
+                            </md-button>
+
+                            <div class="md-list-item-text" layout="column">
+                                <h3>{% raw %}{{ port.route.device.deviceName}}{% endraw %}</h3>
+                                <p>{% raw %}Port {{ port.route.portID }}, {{ port.route.portSpeed
+                                    }}, {{ port.route.device.IPAddress }}, {{ port.properties.projectID
+                                    }}{% endraw %}</p>
+
+                            </div>
+                        </md-list-item>
+
+                        <md-subheader ng-show="isGroupShown('port')"
+                                      ng-if="showNoItem">
+                            <md-list-item class="md-2-line" style="margin-top: -20px; margin-bottom: -20px">
+                                <div class="md-list-item-text" layout="column">
+                                    <p>No Port Summary</p>
+                                </div>
+                            </md-list-item>
+                        </md-subheader>
+
+
+                        <md-subheader
+                                style="background-color: #e6e6e6;width:100%;height: 50px; border-bottom: solid 1px; border-top: solid 1px; border-color: #c7c8bd">
+                            <div style="float: left;">Device Type</div>
+                            <div style="margin-top: -15px; float: right;">
+                                <md-button class="md-icon-button" ng-click="toggleGroup('type')">
+                                    <md-icon aria-label="Menu"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+
+                                </md-button>
+                            </div>
+                        </md-subheader>
+
+                        <md-content layout-padding ng-show="isGroupShown('type')">
+                            <div layout layout-sm="row">
+                                <div style="margin-left: 20px;margin-right: 25px; margin-top: 15%"
+                                     ng-if="nodeInfo.properties.deviceType=='IPX'">
+                                    <img ng-src="{{ url_for('static', filename='images/networkIcon.png') }}"
+                                         alt="">
+                                </div>
+
+                                <div class="md-list-item-text" style="float:left">
+                                    <p style="font-size: 18px; font-weight: bold">{% raw %} {{
+                                        nodeInfo.properties.deviceGeneralName }} {% endraw %}</p>
+                                    <p style="">Manufacturer: {% raw %} {{
+                                        nodeInfo.properties.properties.manufacturer
+                                        }} {% endraw %}</p>
+                                    <p style="">Type: {% raw %} {{ nodeInfo.properties.deviceType
+                                        }} {% endraw %}</p>
+                                    <p>Ports Count: {% raw %} {{ nodeInfo.properties.properties.portsCount
+                                        }} {% endraw %}</p>
+                                    <p>SNMP Port: {% raw %} {{ nodeInfo.properties.configuration.snmpPort
+                                        }} {% endraw %}</p>
+                                    <p>Server Port: {% raw %} {{
+                                        nodeInfo.properties.configuration.quartzPort
+                                        }} {% endraw %}</p>
+                                </div>
+                            </div>
+                        </md-content>
+
+
+                        <md-subheader
+                                style="background-color: #e6e6e6;width:100%;height: 50px; border-bottom: solid 1px; border-top: solid 1px; border-color: #c7c8bd">
+                            <div style="margin-top: -15px">License Summary
+                                <md-button class="md-icon-button" ng-click="toggleGroup('license')">
+                                    <md-icon aria-label="Menu"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                </md-button>
+                            </div>
+                        </md-subheader>
+
+                        <md-list-item flex ng-show="isGroupShown('license')" class="item-accordion"
+                                      ng-if="!nodeInfo.config.features">
+                            <div>
+                                <p style="font-size: 12px">No License</p>
+                            </div>
+                        </md-list-item>
+
+                        <md-list-item flex ng-show="isGroupShown('license')" class="item-accordion"
+                                      ng-repeat="name in nodeInfo.config.features" ng-if="nodeInfo.config.features">
+                            <img style="height: 24px; margin-right: 10px"
+                                 ng-src="static/icon/ic_check_circle_white_48px.svg" class="" alt="">
+                            <div>
+                                <p style="font-size: 12px">{% raw %}{{name}}{% endraw %}</p>
+                            </div>
+                        </md-list-item>
+
+                    </md-list>
+                </md-sidenav>
+
+                <md-sidenav class="md-sidenav-right" md-component-id="lineClick" style="background-color: #e6e6e6;">
+                    <md-toolbar layout="row">
+                        <md-button ng-click="closeSide('lineClick')" class="md-icon-button" style="margin-top: 8px">
+                            <md-icon aria-label="Menu"
+                                     md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_right_white_48px.svg') }}"></md-icon>
+                        </md-button>
+                        <h1 class="md-toolbar-tools" style="color:white;">Route Information</h1>
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" style="background-color: dodgerblue;color:white">
+                        <div layout="row" style="margin-top: 10px;margin-left: 15px;">
+                            <div layout layout-sm="row" flex>
+                                <div flex align="left">
+                                    <div style="font-size: 14px"><p>{% raw %}{{routeInfo[0].location.address.streetNo
+                                        }}
+                                        {{routeInfo[0].location.address.street }}{% endraw %}</p>
+                                        <p>{% raw %} {{routeInfo[0].location.address.city}}, {{
+                                            routeInfo[0].location.address.province }}{% endraw %}</p>
+                                    </div>
+                                </div>
+                                <div style="margin-left: 10px; margin-right: 10px;width:48px;height:48px"
+                                     ng-if="!$last">
+                                    <img ng-src="static/icon/ic_swap_horiz_white_48px.svg" class="" alt="">
+                                </div>
+                                <div flex align="right" style="margin-right: 15px">
+                                    <div style="font-size: 14px"><p>{% raw %}{{routeInfo[1].location.address.streetNo
+                                        }}
+                                        {{routeInfo[1].location.address.street }}{% endraw %}</p>
+                                        <p>{% raw %} {{routeInfo[1].location.address.city}}, {{
+                                            routeInfo[1].location.address.province }}{% endraw %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-left:10px;font-size: 13px; margin-bottom: 10px">
+                            <div style="margin-top: 10px">
+                                Distance: {% raw %} {{ lineinfo.options.data.distance
+                                }} {% endraw %}</div>
+                            <div style="margin-top: 10px">Number of Routes: {% raw %} {{ routeNum
+                                }} {% endraw %}</div>
+                            <div style="margin-top: 10px;margin-bottom: 10px"></div>
+                        </div>
+
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" layout-align="center">
+                        <div layout layout-sm="row">
+                            <md-button ng-click="schematicRoute()" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_share_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Schematic</md-tooltip>
+                            </md-button>
+                            <md-button ng-click="showTransportRoute()" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_transform_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Transport Layer</md-tooltip>
+                            </md-button>
+                            <md-button ng-click="editRoute()" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary"
+                                       ng-if="current_user.permission=='0' || current_user.permission=='1'">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_edit_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Edit</md-tooltip>
+                            </md-button>
+                            <md-button ng-click="deleteRoute()" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary"
+                                       ng-if="current_user.permission=='0' || current_user.permission=='1'">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Delete</md-tooltip>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+                    <md-list ng-repeat="config in lineinfo.options.data.configList" style="margin-top: -8px" ng-if="routeStatusActive!='0'">
+
+                        <md-subheader
+                                style="background-color: #a6a6a6;width: 100%; height: 30px; color:white;margin-bottom: -8px"
+                                ng-if="$first">
+                            <div style="margin-top: -8px">Active Routes</div>
+                        </md-subheader>
+                        <div ng-if="$first">
+                            <md-list ng-repeat="route in config" style=""
+                                     ng-if="route[0].device.ports[route[0].portID-1].status=='Active'">
+                                <md-subheader ng-repeat="dev in route"
+                                              ng-if="$first"
+                                              style="background-color: #e6e6e6;width:100%;height: 110px;">
+
+                                    <md-list-item flex style="margin-top: -20px;">
+                                        <div layout="column" style="margin-top: 8px; width:100%;">
+                                            <div>
+
+                                                <div style="float: left; margin-top: -5px;margin-right:5px">
+                                                    <p style="font-size: 12px;"
+                                                       ng-if="dev.device.ports[dev.portID-1].properties.projectID "
+                                                    >{% raw %}
+                                                        RPATS#:
+                                                        {{
+                                                        dev.device.ports[dev.portID-1].properties.projectID
+                                                        }}{% endraw %}</p>
+                                                    <p style="font-size: 12px;"
+                                                       ng-if="!dev.device.ports[dev.portID-1].properties.projectID "
+                                                    >
+                                                        RPATS#: Undefined</p>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row">
+                                                <md-button style="background-color: #009933;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Active'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <md-button style="background-color: #ff8000;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Pending'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <md-button style="background-color: #808080;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Concept'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <div class="md-list-item-text" flex
+                                                     style="margin-top:-25px;">
+                                                    <h4>{% raw %} {{ dev.device.deviceName }} {% endraw %}</h4>
+                                                    <p style="font-size: 12px; margin-top: -15px">{% raw %}Port {{
+                                                        dev.portID}},
+                                                        {{ dev.portSpeed }}, {{
+                                                        dev.device.IPAddress
+                                                        }}{% endraw %}</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress == 'TBD'">Rx: None, Tx: None</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress != 'TBD' && (dev.download || dev.upload)">{% raw %}Rx:
+                                                        {{
+                                                        dev.download}}, Tx: {{
+                                                        dev.upload}}{% endraw %}</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress != 'TBD' && !(dev.download || dev.upload)">
+                                                        Rx:
+                                                        <img
+                                                                ng-src="static/icon/loading.svg"
+                                                                style="height: 20px;width:20px"
+                                                                class="" alt="">, Tx: <img
+                                                            ng-src="static/icon/loading.svg"
+                                                            style="height: 20px;width:20px"
+                                                            class=""
+                                                            alt=""></p>
+                                                </div>
+                                                <div style="float: right;">
+                                                    <md-button aria-label="Menu" class="md-icon-button"
+                                                               aria-label="arrow"
+                                                               ng-click="toggleGroupRoute(route.$$hashKey)">
+                                                        <md-icon aria-label="Menu"
+                                                                 ng-if="!isGroupShownRoute(route.$$hashKey)"
+                                                                 aria-label="arrow"
+                                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                                        <md-icon aria-label="Menu"
+                                                                 ng-if="isGroupShownRoute(route.$$hashKey)"
+                                                                 aria-label="arrow"
+                                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+
+                                                    </md-button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </md-list-item>
+
+                                </md-subheader>
+
+
+                                <md-list-item ng-show="isGroupShownRoute(route.$$hashKey)"
+                                              style="margin-top: 5px;"
+                                              ng-if="$middle"
+                                              ng-repeat="dev in route">
+                                    <md-button style="background-color: transparent; margin-left: 12%"
+                                               ng-click="openSelectedPTNOnRoute(dev.device)"
+                                               class="md-fab md-mini md-primary">
+                                        <md-icon aria-label="Menu"
+                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_forward_black_48px.svg') }}"></md-icon>
+                                    </md-button>
+
+                                    <div>
+                                        <p style="font-size: 14px;margin-top: 15px">{% raw %}{{ dev.device.deviceName
+                                            }}{% endraw %}</p>
+                                        <p style="font-size: 12px;margin-top: -10px">Distance:{% raw %}{{ dev.distance
+                                            }}{% endraw %}</p>
+                                    </div>
+                                    <md-divider></md-divider>
+                                </md-list-item>
+                                <div style="background-color: white; margin-top: 8px"
+                                     ng-if="route.length == 2"
+                                     ng-show="isGroupShownRoute(route.$$hashKey)">
+                                    <md-icon aria-label="Menu"
+                                             style="margin-left: 45%;height:48px;width:48px;"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_swap_vert_black_48px.svg') }}"></md-icon>
+                                </div>
+
+                                <md-subheader ng-repeat="dev in route"
+                                              ng-if="$last"
+                                              style="background-color: #e6e6e6;width:100%;height: 80px; margin-bottom: -17px;border-bottom: solid 2px; border-color: #c7c8bd">
+
+                                    <md-list-item flex style="margin-top: -25px">
+                                        <md-button style="background-color: #009933;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Active'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <md-button style="background-color: #ff8000;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Pending'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <md-button style="background-color: #808080;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Concept'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <div class="md-list-item-text" flex>
+                                            <h4>{% raw %} {{ dev.device.deviceName }} {% endraw %}</h4>
+                                            <p style="font-size: 12px; margin-top: -15px">{% raw %}Port {{ dev.portID}},
+                                                {{ dev.portSpeed }}, {{
+                                                dev.device.IPAddress
+                                                }}{% endraw %}</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress == 'TBD'">Rx: None, Tx: None</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress != 'TBD' && (dev.download || dev.upload)">{% raw %}Rx:
+                                                {{
+                                                dev.download}}, Tx: {{
+                                                dev.upload}}{% endraw %}</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress != 'TBD' && !(dev.download || dev.upload)">
+                                                Rx:
+                                                <img
+                                                        ng-src="static/icon/loading.svg" style="height: 20px;width:20px"
+                                                        class="" alt="">, Tx: <img ng-src="static/icon/loading.svg"
+                                                                                   style="height: 20px;width:20px"
+                                                                                   class=""
+                                                                                   alt=""></p>
+                                        </div>
+                                    </md-list-item>
+
+                                </md-subheader>
+
+
+                            </md-list>
+                        </div>
+                        <div ng-if="!$first" style="margin-top: -7px">
+                            <md-list ng-repeat="route in config" style=""
+                                     ng-if="route[0].device.ports[route[0].portID-1].status=='Active'">
+                                <md-subheader ng-repeat="dev in route"
+                                              ng-if="$first"
+                                              style="background-color: #e6e6e6;width:100%;height: 110px;">
+
+                                    <md-list-item flex style="margin-top: -20px;">
+                                        <div layout="column" style="margin-top: 8px; width:100%;">
+                                            <div>
+
+                                                <div style="float: left; margin-top: -5px;margin-right:5px">
+                                                    <p style="font-size: 12px;"
+                                                       ng-if="dev.device.ports[dev.portID-1].properties.projectID "
+                                                    >{% raw %}
+                                                        RPATS#:
+                                                        {{
+                                                        dev.device.ports[dev.portID-1].properties.projectID
+                                                        }}{% endraw %}</p>
+                                                    <p style="font-size: 12px;"
+                                                       ng-if="!dev.device.ports[dev.portID-1].properties.projectID "
+                                                    >
+                                                        RPATS#: Undefined</p>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row">
+                                                <md-button style="background-color: #009933;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Active'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <md-button style="background-color: #ff8000;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Pending'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <md-button style="background-color: #808080;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Concept'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <div class="md-list-item-text" flex
+                                                     style="margin-top:-25px;">
+                                                    <h4>{% raw %} {{ dev.device.deviceName }} {% endraw %}</h4>
+                                                    <p style="font-size: 12px; margin-top: -15px">{% raw %}Port {{
+                                                        dev.portID}},
+                                                        {{ dev.portSpeed }}, {{
+                                                        dev.device.IPAddress
+                                                        }}{% endraw %}</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress == 'TBD'">Rx: None, Tx: None</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress != 'TBD' && (dev.download || dev.upload)">{% raw %}Rx:
+                                                        {{
+                                                        dev.download}}, Tx: {{
+                                                        dev.upload}}{% endraw %}</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress != 'TBD' && !(dev.download || dev.upload)">
+                                                        Rx:
+                                                        <img
+                                                                ng-src="static/icon/loading.svg"
+                                                                style="height: 20px;width:20px"
+                                                                class="" alt="">, Tx: <img
+                                                            ng-src="static/icon/loading.svg"
+                                                            style="height: 20px;width:20px"
+                                                            class=""
+                                                            alt=""></p>
+                                                </div>
+                                                <div style="float: right;">
+                                                    <md-button aria-label="Menu" class="md-icon-button"
+                                                               aria-label="arrow"
+                                                               ng-click="toggleGroupRoute(route.$$hashKey)">
+                                                        <md-icon aria-label="Menu"
+                                                                 ng-if="!isGroupShownRoute(route.$$hashKey)"
+                                                                 aria-label="arrow"
+                                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                                        <md-icon aria-label="Menu"
+                                                                 ng-if="isGroupShownRoute(route.$$hashKey)"
+                                                                 aria-label="arrow"
+                                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+
+                                                    </md-button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </md-list-item>
+
+                                </md-subheader>
+
+
+                                <md-list-item ng-show="isGroupShownRoute(route.$$hashKey)"
+                                              style="margin-top: 5px;"
+                                              ng-if="$middle"
+                                              ng-repeat="dev in route">
+                                    <md-button style="background-color: transparent; margin-left: 12%"
+                                               ng-click="openSelectedPTNOnRoute(dev.device)"
+                                               class="md-fab md-mini md-primary">
+                                        <md-icon aria-label="Menu"
+                                                 md-svg-icon="{{ url_for('static', filename='icon /ic_forward_black_48px.svg') }}"></md-icon>
+                                    </md-button>
+
+                                    <div>
+                                        <p style="font-size: 14px;margin-top: 15px">{% raw %}{{ dev.device.deviceName
+                                            }}{% endraw %}</p>
+                                        <p style="font-size: 12px;margin-top: -10px">Distance:{% raw %}{{ dev.distance
+                                            }}{% endraw %}</p>
+                                    </div>
+                                    <md-divider></md-divider>
+                                </md-list-item>
+                                <div style="background-color: white; margin-top: 8px"
+                                     ng-if="route.length == 2"
+                                     ng-show="isGroupShownRoute(route.$$hashKey)">
+                                    <md-icon aria-label="Menu"
+                                             style="margin-left: 45%;height:48px;width:48px;"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_swap_vert_black_48px.svg') }}"></md-icon>
+                                </div>
+
+                                <md-subheader ng-repeat="dev in route"
+                                              ng-if="$last"
+                                              style="background-color: #e6e6e6;width:100%;height: 80px;margin-bottom:-17px;border-bottom: solid 2px; border-color: #c7c8bd">
+
+                                    <md-list-item flex style="margin-top: -25px">
+                                        <md-button style="background-color: #009933;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Active'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <md-button style="background-color: #ff8000;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Pending'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <md-button style="background-color: #808080;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Concept'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <div class="md-list-item-text" flex>
+                                            <h4>{% raw %} {{ dev.device.deviceName }} {% endraw %}</h4>
+                                            <p style="font-size: 12px; margin-top: -15px">{% raw %}Port {{ dev.portID}},
+                                                {{ dev.portSpeed }}, {{
+                                                dev.device.IPAddress
+                                                }}{% endraw %}</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress == 'TBD'">Rx: None, Tx: None</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress != 'TBD' && (dev.download || dev.upload)">{% raw %}Rx:
+                                                {{
+                                                dev.download}}, Tx: {{
+                                                dev.upload}}{% endraw %}</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress != 'TBD' && !(dev.download || dev.upload)">
+                                                Rx:
+                                                <img
+                                                        ng-src="static/icon/loading.svg" style="height: 20px;width:20px"
+                                                        class="" alt="">, Tx: <img ng-src="static/icon/loading.svg"
+                                                                                   style="height: 20px;width:20px"
+                                                                                   class=""
+                                                                                   alt=""></p>
+                                        </div>
+                                    </md-list-item>
+
+                                </md-subheader>
+
+
+                            </md-list>
+                        </div>
+                    </md-list>
+
+
+                    <md-list ng-repeat="config in lineinfo.options.data.configList" style="margin-top: -8px" ng-if="routeStatusPending!='0'">
+
+                        <md-subheader
+                                style="background-color: #a6a6a6;width: 100%; height: 30px; color:white;margin-bottom: -8px"
+                                ng-if="$first">
+                            <div style="margin-top: -8px">Pending Routes</div>
+                        </md-subheader>
+                        <div ng-if="$first">
+                            <md-list ng-repeat="route in config" style=""
+                                     ng-if="route[0].device.ports[route[0].portID-1].status=='Pending'">
+                                <md-subheader ng-repeat="dev in route"
+                                              ng-if="$first"
+                                              style="background-color: #e6e6e6;width:100%;height: 110px;">
+
+                                    <md-list-item flex style="margin-top: -20px;">
+                                        <div layout="column" style="margin-top: 8px; width:100%;">
+                                            <div>
+
+                                                <div style="float: left; margin-top: -5px;margin-right:5px">
+                                                    <p style="font-size: 12px;"
+                                                       ng-if="dev.device.ports[dev.portID-1].properties.projectID "
+                                                    >{% raw %}
+                                                        RPATS#:
+                                                        {{
+                                                        dev.device.ports[dev.portID-1].properties.projectID
+                                                        }}{% endraw %}</p>
+                                                    <p style="font-size: 12px;"
+                                                       ng-if="!dev.device.ports[dev.portID-1].properties.projectID "
+                                                    >
+                                                        RPATS#: Undefined</p>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row">
+                                                <md-button style="background-color: #009933;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Active'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <md-button style="background-color: #ff8000;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Pending'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <md-button style="background-color: #808080;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Concept'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <div class="md-list-item-text" flex
+                                                     style="margin-top:-25px;">
+                                                    <h4>{% raw %} {{ dev.device.deviceName }} {% endraw %}</h4>
+                                                    <p style="font-size: 12px; margin-top: -15px">{% raw %}Port {{
+                                                        dev.portID}},
+                                                        {{ dev.portSpeed }}, {{
+                                                        dev.device.IPAddress
+                                                        }}{% endraw %}</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress == 'TBD'">Rx: None, Tx: None</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress != 'TBD' && (dev.download || dev.upload)">{% raw %}Rx:
+                                                        {{
+                                                        dev.download}}, Tx: {{
+                                                        dev.upload}}{% endraw %}</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress != 'TBD' && !(dev.download || dev.upload)">
+                                                        Rx:
+                                                        <img
+                                                                ng-src="static/icon/loading.svg"
+                                                                style="height: 20px;width:20px"
+                                                                class="" alt="">, Tx: <img
+                                                            ng-src="static/icon/loading.svg"
+                                                            style="height: 20px;width:20px"
+                                                            class=""
+                                                            alt=""></p>
+                                                </div>
+                                                <div style="float: right;">
+                                                    <md-button aria-label="Menu" class="md-icon-button"
+                                                               aria-label="arrow"
+                                                               ng-click="toggleGroupRoute(route.$$hashKey)">
+                                                        <md-icon aria-label="Menu"
+                                                                 ng-if="!isGroupShownRoute(route.$$hashKey)"
+                                                                 aria-label="arrow"
+                                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                                        <md-icon aria-label="Menu"
+                                                                 ng-if="isGroupShownRoute(route.$$hashKey)"
+                                                                 aria-label="arrow"
+                                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+
+                                                    </md-button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </md-list-item>
+
+                                </md-subheader>
+
+
+                                <md-list-item ng-show="isGroupShownRoute(route.$$hashKey)"
+                                              style="margin-top: 5px;"
+                                              ng-if="$middle"
+                                              ng-repeat="dev in route">
+                                    <md-button style="background-color: transparent; margin-left: 12%"
+                                               ng-click="openSelectedPTNOnRoute(dev.device)"
+                                               class="md-fab md-mini md-primary">
+                                        <md-icon aria-label="Menu"
+                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_forward_black_48px.svg') }}"></md-icon>
+                                    </md-button>
+
+                                    <div>
+                                        <p style="font-size: 14px;margin-top: 15px">{% raw %}{{ dev.device.deviceName
+                                            }}{% endraw %}</p>
+                                        <p style="font-size: 12px;margin-top: -10px">Distance:{% raw %}{{ dev.distance
+                                            }}{% endraw %}</p>
+                                    </div>
+                                    <md-divider></md-divider>
+                                </md-list-item>
+                                <div style="background-color: white; margin-top: 8px"
+                                     ng-if="route.length == 2"
+                                     ng-show="isGroupShownRoute(route.$$hashKey)">
+                                    <md-icon aria-label="Menu"
+                                             style="margin-left: 45%;height:48px;width:48px;"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_swap_vert_black_48px.svg') }}"></md-icon>
+                                </div>
+
+                                <md-subheader ng-repeat="dev in route"
+                                              ng-if="$last"
+                                              style="background-color: #e6e6e6;width:100%;height: 80px; margin-bottom: -17px;border-bottom: solid 2px; border-color: #c7c8bd">
+
+                                    <md-list-item flex style="margin-top: -25px">
+                                        <md-button style="background-color: #009933;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Active'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <md-button style="background-color: #ff8000;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Pending'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <md-button style="background-color: #808080;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Concept'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <div class="md-list-item-text" flex>
+                                            <h4>{% raw %} {{ dev.device.deviceName }} {% endraw %}</h4>
+                                            <p style="font-size: 12px; margin-top: -15px">{% raw %}Port {{ dev.portID}},
+                                                {{ dev.portSpeed }}, {{
+                                                dev.device.IPAddress
+                                                }}{% endraw %}</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress == 'TBD'">Rx: None, Tx: None</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress != 'TBD' && (dev.download || dev.upload)">{% raw %}Rx:
+                                                {{
+                                                dev.download}}, Tx: {{
+                                                dev.upload}}{% endraw %}</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress != 'TBD' && !(dev.download || dev.upload)">
+                                                Rx:
+                                                <img
+                                                        ng-src="static/icon/loading.svg" style="height: 20px;width:20px"
+                                                        class="" alt="">, Tx: <img ng-src="static/icon/loading.svg"
+                                                                                   style="height: 20px;width:20px"
+                                                                                   class=""
+                                                                                   alt=""></p>
+                                        </div>
+                                    </md-list-item>
+
+                                </md-subheader>
+
+
+                            </md-list>
+                        </div>
+                        <div ng-if="!$first" style="margin-top: -7px">
+                            <md-list ng-repeat="route in config" style=""
+                                     ng-if="route[0].device.ports[route[0].portID-1].status=='Pending'">
+                                <md-subheader ng-repeat="dev in route"
+                                              ng-if="$first"
+                                              style="background-color: #e6e6e6;width:100%;height: 110px;">
+
+                                    <md-list-item flex style="margin-top: -20px;">
+                                        <div layout="column" style="margin-top: 8px; width:100%;">
+                                            <div>
+                                                <div style="float: left; margin-top: -5px;margin-right:5px">
+                                                    <p style="font-size: 12px;"
+                                                       ng-if="dev.device.ports[dev.portID-1].properties.projectID "
+                                                    >{% raw %}
+                                                        RPATS#:
+                                                        {{
+                                                        dev.device.ports[dev.portID-1].properties.projectID
+                                                        }}{% endraw %}</p>
+                                                    <p style="font-size: 12px;"
+                                                       ng-if="!dev.device.ports[dev.portID-1].properties.projectID "
+                                                    >
+                                                        RPATS#: Undefined</p>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row">
+                                                <md-button style="background-color: #009933;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Active'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <md-button style="background-color: #ff8000;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Pending'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <md-button style="background-color: #808080;"
+                                                           ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                           ng-if="dev.device.status == 'Concept'"
+                                                           class="md-fab md-mini md-primary"
+                                                           layout-align="center center">
+                                                    <p style="color: white;font-size: 18px; margin-top: 0px">
+                                                        <strong>{% raw %}
+                                                            {{
+                                                            dev.device.status[0] }} {% endraw %}</strong></p>
+                                                </md-button>
+                                                <div class="md-list-item-text" flex
+                                                     style="margin-top:-25px;">
+                                                    <h4>{% raw %} {{ dev.device.deviceName }} {% endraw %}</h4>
+                                                    <p style="font-size: 12px; margin-top: -15px">{% raw %}Port {{
+                                                        dev.portID}},
+                                                        {{ dev.portSpeed }}, {{
+                                                        dev.device.IPAddress
+                                                        }}{% endraw %}</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress == 'TBD'">Rx: None, Tx: None</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress != 'TBD' && (dev.download || dev.upload)">{% raw %}Rx:
+                                                        {{
+                                                        dev.download}}, Tx: {{
+                                                        dev.upload}}{% endraw %}</p>
+                                                    <p style="font-size: 10px; margin-top:-10px;"
+                                                       ng-if="dev.device.IPAddress != 'TBD' && !(dev.download || dev.upload)">
+                                                        Rx:
+                                                        <img
+                                                                ng-src="static/icon/loading.svg"
+                                                                style="height: 20px;width:20px"
+                                                                class="" alt="">, Tx: <img
+                                                            ng-src="static/icon/loading.svg"
+                                                            style="height: 20px;width:20px"
+                                                            class=""
+                                                            alt=""></p>
+                                                </div>
+                                                <div style="float: right;">
+                                                    <md-button aria-label="Menu" class="md-icon-button"
+                                                               aria-label="arrow"
+                                                               ng-click="toggleGroupRoute(route.$$hashKey)">
+                                                        <md-icon aria-label="Menu"
+                                                                 ng-if="!isGroupShownRoute(route.$$hashKey)"
+                                                                 aria-label="arrow"
+                                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                                        <md-icon aria-label="Menu"
+                                                                 ng-if="isGroupShownRoute(route.$$hashKey)"
+                                                                 aria-label="arrow"
+                                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+
+                                                    </md-button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </md-list-item>
+
+                                </md-subheader>
+
+
+                                <md-list-item ng-show="isGroupShownRoute(route.$$hashKey)"
+                                              style="margin-top: 5px;"
+                                              ng-if="$middle"
+                                              ng-repeat="dev in route">
+                                    <md-button style="background-color: transparent; margin-left: 12%"
+                                               ng-click="openSelectedPTNOnRoute(dev.device)"
+                                               class="md-fab md-mini md-primary">
+                                        <md-icon aria-label="Menu"
+                                                 md-svg-icon="{{ url_for('static', filename='icon/ic_forward_black_48px.svg') }}"></md-icon>
+                                    </md-button>
+
+                                    <div>
+                                        <p style="font-size: 14px;margin-top: 15px">{% raw %}{{ dev.device.deviceName
+                                            }}{% endraw %}</p>
+                                        <p style="font-size: 12px;margin-top: -10px">Distance:{% raw %}{{ dev.distance
+                                            }}{% endraw %}</p>
+                                    </div>
+                                    <md-divider></md-divider>
+                                </md-list-item>
+                                <div style="background-color: white; margin-top: 8px"
+                                     ng-if="route.length == 2"
+                                     ng-show="isGroupShownRoute(route.$$hashKey)">
+                                    <md-icon aria-label="Menu"
+                                             style="margin-left: 45%;height:48px;width:48px;"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_swap_vert_black_48px.svg') }}"></md-icon>
+                                </div>
+
+                                <md-subheader ng-repeat="dev in route"
+                                              ng-if="$last"
+                                              style="background-color: #e6e6e6;width:100%;height: 80px;margin-bottom:-17px;border-bottom: solid 2px; border-color: #c7c8bd">
+
+                                    <md-list-item flex style="margin-top: -25px">
+                                        <md-button style="background-color: #009933;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Active'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <md-button style="background-color: #ff8000;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Pending'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <md-button style="background-color: #808080;"
+                                                   ng-click="openSelectedDeviceOnRoute(dev.device)"
+                                                   ng-if="dev.device.status == 'Concept'"
+                                                   class="md-fab md-mini md-primary"
+                                                   layout-align="center center">
+                                            <p style="color: white;font-size: 18px; margin-top: 0px"><strong>{% raw %}
+                                                {{
+                                                dev.device.status[0] }} {% endraw %}</strong></p>
+                                        </md-button>
+                                        <div class="md-list-item-text" flex>
+                                            <h4>{% raw %} {{ dev.device.deviceName }} {% endraw %}</h4>
+                                            <p style="font-size: 12px; margin-top: -15px">{% raw %}Port {{ dev.portID}},
+                                                {{ dev.portSpeed }}, {{
+                                                dev.device.IPAddress
+                                                }}{% endraw %}</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress == 'TBD'">Rx: None, Tx: None</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress != 'TBD' && (dev.download || dev.upload)">{% raw %}Rx:
+                                                {{
+                                                dev.download}}, Tx: {{
+                                                dev.upload}}{% endraw %}</p>
+                                            <p style="font-size: 10px; margin-top:-10px;"
+                                               ng-if="dev.device.IPAddress != 'TBD' && !(dev.download || dev.upload)">
+                                                Rx:
+                                                <img
+                                                        ng-src="static/icon/loading.svg" style="height: 20px;width:20px"
+                                                        class="" alt="">, Tx: <img ng-src="static/icon/loading.svg"
+                                                                                   style="height: 20px;width:20px"
+                                                                                   class=""
+                                                                                   alt=""></p>
+                                        </div>
+                                    </md-list-item>
+
+                                </md-subheader>
+
+
+                            </md-list>
+                        </div>
+                    </md-list>
+
+
+                </md-sidenav>
+
+                <md-sidenav class="md-sidenav-right" md-component-id="nodeClick">
+                    <md-toolbar class="md-theme-light" layout="row">
+                        <md-button ng-click="closeSide('groupClick')" class="md-icon-button"
+                                   style="margin-top: 8px">
+                            <md-icon aria-label="Menu"
+                                     md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_right_white_48px.svg') }}"></md-icon>
+                        </md-button>
+                        <h1 class="md-toolbar-tools" style="color:white;">Node Information</h1>
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" style="background-color: dodgerblue; ">
+                        <div style="margin-left: 15px; margin-top: 15px; margin-bottom: 15px;color: white">
+                            <div style="font-size: 15px">{% raw %}{{
+                                nodeDetail.location.address.streetNo
+                                }}
+                                {{nodeDetail.location.address.street }}{% endraw %}</div>
+                            <div style="font-size: 14px">
+                                {% raw %}{{ nodeDetail.location.address.city
+                                }},
+                                {{nodeDetail.location.address.province }}{% endraw %}
+                            </div>
+
+                            {#                            <div style="margin-top: 12px; font-size: 12px">{% raw %}Number of Devices:#}
+                            {#                                {{nodeDetail.deviceList.length}}{% endraw %}</div>#}
+
+                            <div style="margin-top: 12px; font-size: 12px">{% raw %}Number of Devices:
+                                {{deviceDetailList.length}}{% endraw %}</div>
+
+                        </div>
+
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" layout-align="center">
+                        <div layout layout-sm="row" style="">
+                            <md-button ng-click="schematicGroup()" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_share_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Schematic</md-tooltip>
+
+                            </md-button>
+                            <md-button ng-click="addDeviceFromNode()" style="background-color: #9E9E9E"
+                                       ng-if="current_user.permission=='0' || current_user.permission=='1'"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Add Device</md-tooltip>
+                            </md-button>
+                            <md-button ng-click="lock()" style="background-color: #9E9E9E"
+                                       ng-if="nodeDetail.lockStatus=='unlocked' && current_user.permission=='0' || current_user.permission=='1'"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_lock_open_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Lock Node</md-tooltip>
+                            </md-button>
+                            <md-button ng-click="lock()" style="background-color: #9E9E9E"
+                                       ng-if="nodeDetail.lockStatus=='locked' && current_user.permission=='0' || current_user.permission=='1'"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_lock_outline_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Unlock Node</md-tooltip>
+                            </md-button>
+                            <md-button ng-click="deleteNode()" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary"
+                                       ng-if="(current_user.permission=='0' || current_user.permission=='1')"
+                                       >
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Delete</md-tooltip>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+
+                    {#                    <md-list ng-if="searchDevice!=undefined">#}
+                    {#                        <md-subheader class="md-primary" ng-if="searchDevice!=undefined">Search Result:#}
+                    {#                        </md-subheader>#}
+                    {#                        <md-list-item class="md-2-line"#}
+                    {#                                      style="margin-top: -10px; margin-bottom: -10px;">#}
+                    {#                            <md-button style="background-color: #009933; margin-left: 20px;"#}
+                    {#                                       ng-click="openSelectedDevice(searchedDevice)"#}
+                    {#                                       ng-if="searchedDevice.data.status == 'Active'"#}
+                    {#                                       class="md-fab md-mini md-primary"#}
+                    {#                                       layout-align="center center">#}
+                    {##}
+                    {#                                <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{#}
+                    {#                                    searchedDevice.data.status[0] }} {% endraw %}</strong></p>#}
+                    {#                            </md-button>#}
+                    {#                            <md-button style="background-color: #ff8000; margin-left: 20px;"#}
+                    {#                                       ng-click="openSelectedDevice(searchedDevice)"#}
+                    {#                                       ng-if="searchedDevice.data.status == 'Pending'"#}
+                    {#                                       class="md-fab md-mini md-primary"#}
+                    {#                                       layout-align="center center">#}
+                    {#                                <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{#}
+                    {#                                    searchedDevice.data.status[0] }} {% endraw %}</strong></p>#}
+                    {#                            </md-button>#}
+                    {#                            <md-button style="background-color: #808080; margin-left: 20px;"#}
+                    {#                                       ng-if="searchedDevice.data.status == 'Concept'"#}
+                    {#                                       class="md-fab md-mini md-primary"#}
+                    {#                                       layout-align="center center">#}
+                    {#                                <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{#}
+                    {#                                    searchedDevice.data.status[0] }} {% endraw %}</strong></p>#}
+                    {#                            </md-button>#}
+                    {##}
+                    {#                            <div class="md-list-item-text" layout="column">#}
+                    {#                                <h3>{% raw %}{{ searchedDevice.data.deviceName}}{% endraw %}</h3>#}
+                    {#                                <p>{% raw %}{{ searchedDevice.data.IPAddress }}{% endraw %}</p>#}
+                    {#                                <p>{% raw %}{{ searchedDevice.data.properties.deviceGeneralName#}
+                    {#                                    }}{% endraw %}</p>#}
+                    {#                            </div>#}
+                    {#                            <md-divider></md-divider>#}
+                    {#                        </md-list-item>#}
+                    {#                    </md-list>#}
+
+                    {#                    <md-list ng-repeat="dev in deviceDetailList" style="margin-top: 20px;">#}
+                    {#                        <md-subheader class="md-primary" ng-if="searchDevice!=undefined">All Devices:</md-subheader>#}
+                    {##}
+                    {#                        <md-list-item class="md-2-line"#}
+                    {#                                      style="margin-top: -10px; margin-bottom: -10px;">#}
+                    {#                            <md-button style="background-color: #009933; margin-left: 20px;"#}
+                    {#                                       ng-click="openSelectedDevice(dev)"#}
+                    {#                                       ng-if="dev.status == 'Active'"#}
+                    {#                                       class="md-fab md-mini md-primary"#}
+                    {#                                       layout-align="center center">#}
+                    {#                                <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{#}
+                    {#                                    dev.status[0] }} {% endraw %}</strong></p>#}
+                    {#                            </md-button>#}
+                    {#                            <md-button style="background-color: #ff8000; margin-left: 20px;"#}
+                    {#                                       ng-click="openSelectedDevice(dev)"#}
+                    {#                                       ng-if="dev.status == 'Pending'"#}
+                    {#                                       class="md-fab md-mini md-primary"#}
+                    {#                                       layout-align="center center">#}
+                    {#                                <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{#}
+                    {#                                    dev.status[0] }} {% endraw %}</strong></p>#}
+                    {#                            </md-button>#}
+                    {#                            <md-button style="background-color: #808080; margin-left: 20px;"#}
+                    {#                                       ng-click="openSelectedDevice(dev)"#}
+                    {#                                       ng-if="dev.status == 'Concept'"#}
+                    {#                                       class="md-fab md-mini md-primary"#}
+                    {#                                       layout-align="center center">#}
+                    {#                                <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{#}
+                    {#                                    dev.status[0] }} {% endraw %}</strong></p>#}
+                    {#                            </md-button>#}
+                    {##}
+                    {#                            <div class="md-list-item-text" layout="column">#}
+                    {#                                <h3>{% raw %}{{ dev.deviceName}}{% endraw %}</h3>#}
+                    {#                                <p>{% raw %}{{ dev.IPAddress }}{% endraw %}</p>#}
+                    {#                                <p>{% raw %}{{ dev.properties.deviceGeneralName }}{% endraw %}</p>#}
+                    {#                            </div>#}
+                    {#                            <md-divider></md-divider>#}
+                    {#                        </md-list-item>#}
+                    {#                    </md-list>#}
+
+                    <md-list style="margin-top: -10px">
+                        <md-subheader ng-if="ipxDevices.length>0"
+                                      style="background-color: #e6e6e6;width:100%;height: 50px; border-bottom: solid 1px; border-color: #c7c8bd">
+                            <div style="float: left;"><b>Aggregators</b></div>
+                            <div style="float:left; margin-left: 20px; margin-top:2px;font-size:10px">{% raw %}Number of
+                                devices: {{ ipxDevices.length }}{% endraw %}</div>
+                            <div style="margin-top: -15px; float: left;">
+                                <md-button aria-label="Menu" class="md-icon-button" ng-click="toggleGroup('ipx')">
+                                    <md-icon aria-label="Menu" ng-if="!isGroupShown('ipx')"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                    <md-icon aria-label="Menu" ng-if="isGroupShown('ipx')"
+                                             aria-label="arrow"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+                                </md-button>
+                            </div>
+                        </md-subheader>
+                        <md-list ng-repeat="dev in ipxDevices" style="margin-top: 10px" ng-if="ipxDevices.length>0"
+                                 ng-show="isGroupShown('ipx')">
+
+                            <md-list-item class="md-2-line"
+                                          style="margin-top: -10px; margin-bottom: -10px;">
+                                <md-button style="background-color: #009933; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Active'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+                                <md-button style="background-color: #ff8000; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Pending'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+                                <md-button style="background-color: #808080; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Concept'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{% raw %}{{ dev.deviceName}}{% endraw %}</h3>
+                                    <p>{% raw %}{{ dev.IPAddress }}{% endraw %}</p>
+                                    <p>{% raw %}{{ dev.properties.deviceGeneralName }}{% endraw %}</p>
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+
+
+                        </md-list>
+                        {#                        <md-subheader ng-show="isGroupShown('ipx')"#}
+                        {#                                      ng-if="ipxDevices.length==0">#}
+                        {#                            <md-list-item class="md-2-line" style="margin-top: -20px; margin-bottom: -20px">#}
+                        {#                                <div class="md-list-item-text" layout="column">#}
+                        {#                                    <p>No devices</p>#}
+                        {#                                </div>#}
+                        {#                            </md-list-item>#}
+                        {#                        </md-subheader>#}
+
+                        <md-subheader ng-if="muxDevices.length>0"
+                                      style="background-color: #e6e6e6;width:100%;height: 50px; border-bottom: solid 1px; border-top: solid 1px; border-color: #c7c8bd">
+                            <div style="float: left;"><b>Dark Fiber</b></div>
+                            <div style="float:left; margin-left: 20px; margin-top:2px;font-size:10px">{% raw %}Number of
+                                devices: {{ muxDevices.length }}{% endraw %}</div>
+                            <div style="margin-top: -15px; float: right;">
+                                <md-button aria-label="Menu" class="md-icon-button" ng-click="toggleGroup('mux')">
+                                    <md-icon aria-label="Menu" ng-if="!isGroupShown('mux')"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                    <md-icon aria-label="Menu" ng-if="isGroupShown('mux')"
+                                             aria-label="arrow"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+                                </md-button>
+                            </div>
+                        </md-subheader>
+                        <md-list ng-repeat="dev in muxDevices" ng-if="muxDevices.length>0" style="margin-top: 10px"
+                                 ng-show="isGroupShown('mux')">
+
+                            <md-list-item class="md-2-line"
+                                          style="margin-top: -10px; margin-bottom: -10px;">
+                                <md-button style="background-color: #009933; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Active'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+                                <md-button style="background-color: #ff8000; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Pending'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+                                <md-button style="background-color: #808080; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Concept'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{% raw %}{{ dev.deviceName}}{% endraw %}</h3>
+                                    <p>{% raw %}{{ dev.IPAddress }}{% endraw %}</p>
+                                    <p>{% raw %}{{ dev.properties.deviceGeneralName }}{% endraw %}</p>
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+
+
+                        </md-list>
+                        {#                        <md-subheader ng-show="isGroupShown('mux')"#}
+                        {#                                      ng-if="muxDevices.length==0">#}
+                        {#                            <md-list-item class="md-2-line" style="margin-top: -20px; margin-bottom: -20px">#}
+                        {#                                <div class="md-list-item-text" layout="column">#}
+                        {#                                    <p>No devices</p>#}
+                        {#                                </div>#}
+                        {#                            </md-list-item>#}
+                        {#                        </md-subheader>#}
+
+                        <md-subheader ng-if="otherDevices.length>0"
+                                      style="background-color: #e6e6e6;width:100%;height: 50px;border-bottom: solid 1px; border-top: solid 1px; border-color: #c7c8bd">
+                            <div style="float: left;"><b>Flight Packs</b></div>
+                            <div style="float:left; margin-left: 20px; margin-top:2px;font-size:10px">{% raw %}Number of
+                                devices: {{ otherDevices.length }}{% endraw %}</div>
+                            <div style="margin-top: -15px; float: right;">
+                                <md-button aria-label="Menu" class="md-icon-button" ng-click="toggleGroup('other')">
+                                    <md-icon aria-label="Menu" ng-if="!isGroupShown('other')"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_down_black_48px.svg') }}"></md-icon>
+                                    <md-icon aria-label="Menu" ng-if="isGroupShown('other')"
+                                             aria-label="arrow"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_up_black_48px.svg') }}"></md-icon>
+                                </md-button>
+                            </div>
+                        </md-subheader>
+                        <md-list ng-repeat="dev in otherDevices" style="margin-top: 10px" ng-if="otherDevices.length>0"
+                                 ng-show="isGroupShown('other')">
+
+                            <md-list-item class="md-2-line"
+                                          style="margin-top: -10px; margin-bottom: -10px;">
+                                <md-button style="background-color: #009933; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Active'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+                                <md-button style="background-color: #ff8000; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Pending'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+                                <md-button style="background-color: #808080; margin-left: 20px;"
+                                           ng-click="openSelectedDevice(dev)"
+                                           ng-if="dev.status == 'Concept'"
+                                           class="md-fab md-mini md-primary"
+                                           layout-align="center center">
+                                    <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                        dev.status[0] }} {% endraw %}</strong></p>
+                                </md-button>
+
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{% raw %}{{ dev.deviceName}}{% endraw %}</h3>
+                                    <p>{% raw %}{{ dev.IPAddress }}{% endraw %}</p>
+                                    <p>{% raw %}{{ dev.properties.deviceGeneralName }}{% endraw %}</p>
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+
+
+                        </md-list>
+                        {#                        <md-subheader ng-show="isGroupShown('other')"#}
+                        {#                                      ng-if="otherDevices.length==0">#}
+                        {#                            <md-list-item class="md-2-line" style="margin-top: -20px; margin-bottom: -20px">#}
+                        {#                                <div class="md-list-item-text" layout="column">#}
+                        {#                                    <p>No devices</p>#}
+                        {#                                </div>#}
+                        {#                            </md-list-item>#}
+                        {#                        </md-subheader>#}
+
+                        <md-subheader ng-if="ipxDevices.length==0&& muxDevices.length==0 && otherDevices.length==0">
+                            <md-list-item class="md-2-line"
+                                          style="margin-top: -20px; margin-bottom: -20px">
+                                <div class="md-list-item-text" layout="column">
+                                    <p>No devices</p>
+                                </div>
+                            </md-list-item>
+                        </md-subheader>
+
+                    </md-list>
+
+                </md-sidenav>
+
+                <md-sidenav class="md-sidenav-right" md-component-id="nodeGroupClick">
+                    <md-toolbar class="md-theme-light" layout="row">
+                        <md-button ng-click="closeSide('nodeGroupClick')" class="md-icon-button"
+                                   style="margin-top: 8px">
+                            <md-icon aria-label="Menu"
+                                     md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_right_white_48px.svg') }}"></md-icon>
+                        </md-button>
+                        <h1 class="md-toolbar-tools" style="color:white;">Node Group</h1>
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" style="background-color: dodgerblue; ">
+                        <div style="margin-left: 15px; margin-top: 15px; margin-bottom: 15px;color: white">
+                            <div style="font-size: 15px">{% raw %}{{
+                                nodesGroup[0].data.location.address.streetNo
+                                }}
+                                {{nodesGroup[0].data.location.address.street }}{% endraw %}</div>
+                            <div style="font-size: 14px">
+                                {% raw %}{{ nodesGroup[0].data.location.address.city
+                                }},
+                                {{nodesGroup[0].data.location.address.province }}, {{
+                                nodesGroup[0].data.location.address.country}}{% endraw %}
+                            </div>
+
+                            <div style="margin-top: 12px; font-size: 12px">{% raw %}Number of Nodes:
+                                {{nodesGroup.length}}{% endraw %}</div>
+
+                        </div>
+
+                    </md-toolbar>
+                    <md-toolbar class="md-theme-light" layout-align="center">
+                        <div layout layout-sm="row" style="">
+                            <md-button ng-click="copyNode(nodesGroup[0].data)" style="background-color: #9E9E9E"
+                                       class="md-fab md-mini md-primary">
+                                <md-icon aria-label="Menu"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
+                                <md-tooltip md-direction="bottom">Add Node</md-tooltip>
+
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+
+                    <md-list ng-repeat="node in nodesGroup" style="margin-top: 20px;">
+
+                        <md-list-item class="md-2-line"
+                                      style="margin-top: -10px; margin-bottom: -10px;">
+                            <md-button style="background-color: #009933; margin-left: 20px;"
+                                       ng-click="openSelectedNode(node.data)"
+                                       class="md-fab md-mini md-primary"
+                                       layout-align="center center">
+                                <p style="font-size: 18px; margin-top: 0px"><strong>{% raw %} {{
+                                    node.data.status[0] }} {% endraw %}</strong></p>
+                            </md-button>
+
+                            <div class="md-list-item-text" layout="column">
+                                <h3>{% raw %}{{ node.data.nodeName}}{% endraw %}</h3>
+                                <p>{% raw %}{{ node.data.location.address.streetNo }} {{
+                                    node.data.location.address.street }}
+                                    , {{ node.data.location.address.city }}, {{ node.data.location.address.province
+                                    }}{% endraw %}</p>
+                                <p>Number of Devices: {% raw %}{{ node.data.deviceList.length}}{% endraw %}</p>
+
+                            </div>
+                            <md-divider></md-divider>
+                        </md-list-item>
+                    </md-list>
+                </md-sidenav>
+            </section>
+        </div>
+
+        <div ng-controller="processPtnCtrl" layout="column">
+            <md-sidenav class="md-sidenav-left" md-component-id="processptn">
+                <md-toolbar class="md-theme-light" md-scroll-shrink layout="row">
+                    <h1 class="md-toolbar-tools" style="color:white;">PTNs</h1>
+                    <md-button ng-click="closeSide('processptn')" class="md-icon-button" style="margin-top: 8px">
+                        <md-icon aria-label="Menu"
+                                 md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_left_white_48px.svg') }}"></md-icon>
+                    </md-button>
+                </md-toolbar>
+                <md-content layout-padding>
+                    <md-list class="md-dense" flex>
+                        <md-subheader class="md-no-sticky">Add a new PTN</md-subheader>
+                        <md-divider></md-divider>
+                        <md-list-item class="md-2-line" ng-click="processPtn(task)"
+                                      ng-repeat="task in tasks" aria-label="task.taskName">
+                            <img ng-src="{{ url_for('static', filename='icon/ic_event_note_black_48px.svg') }}"
+                                 class="md-avatar" alt="Photo" ng-if="task.status == 'normal'"/>
+                            <img ng-src="{{ url_for('static', filename='icon/ic_event_available_black_48px.svg') }}"
+                                 class="md-avatar" alt="Photo" ng-if="task.status == 'saved'"/>
+                            <div class="md-list-item-text">
+                                <h3 ng-bind="task.taskName"></h3>
+                                <p>{% raw %}{{task.taskID}}-{{task.description}} {% endraw %}</p>
+                            </div>
+
+                            <md-divider></md-divider>
+
+                        </md-list-item>
+                        <md-button ng-click="clearPtnData(true)">
+                            Reset
+                        </md-button>
+                    </md-list>
+                </md-content>
+            </md-sidenav>
+        </div>
+
+        <div ng-controller="processDeviceCtrl" layout="column">
+            <section layout="row" flex>
+                <md-sidenav class="md-sidenav-left" md-component-id="processdevice">
+                    <md-toolbar class="md-theme-light" md-scroll-shrink layout="row">
+                        <h1 class="md-toolbar-tools" style="color:white;">Devices</h1>
+                        <md-button ng-click="changeSide('processdevice','mainmenu')" class="md-icon-button"
+                                   style="margin-top: 8px">
+                            <md-icon aria-label="Menu"
+                                     md-svg-icon="{{ url_for('static', filename='icon/ic_keyboard_arrow_left_white_48px.svg') }}"></md-icon>
+                        </md-button>
+                    </md-toolbar>
+                    <md-content layout-padding>
+                        <md-list class="md-dense" flex>
+                            <md-subheader class="md-no-sticky" ng-if="tasks[0].method!='edit'" flex="50">Add a new
+                                Device
+                            </md-subheader>
+                            <md-subheader class="md-no-sticky" ng-if="tasks[0].method=='edit'" flex="50">Edit a Device
+                            </md-subheader>
+                            <img ng-if="workflowProgress" style="width:32px;height:32px;float:right; margin-top:-40px"
+                                 flex="10"
+                                 ng-src="{{ url_for('static', filename='icon/loading.svg') }}"
+                                 class="md-avatar" alt="Photo"/>
+                            <md-divider></md-divider>
+                            <md-list-item class="md-2-line" ng-click="processDevice(task)"
+                                          ng-repeat="task in tasks" aria-label="task.taskName">
+                                <img ng-src="{{ url_for('static', filename='icon/ic_event_note_black_48px.svg') }}"
+                                     class="md-avatar" alt="Photo" ng-if="task.status == 'normal'"/>
+                                <img ng-src="{{ url_for('static', filename='icon/ic_event_available_black_48px.svg') }}"
+                                     class="md-avatar" alt="Photo" ng-if="task.status == 'saved'"/>
+                                <div class="md-list-item-text">
+                                    <h3 ng-bind="task.taskName"></h3>
+                                    <p>{% raw %}{{task.taskID}}-{{task.description}} {% endraw %}</p>
+                                </div>
+
+                                <md-divider></md-divider>
+
+                            </md-list-item>
+                            <md-button ng-click="clearData(true)" ng-if="tasks[0].method!='edit'">
+                                Reset
+                            </md-button>
+                        </md-list>
+                    </md-content>
+                </md-sidenav>
+            </section>
+        </div>
+
+        <div ng-controller="searchCtrl" layout="column"
+             style="z-index: 51; position: absolute;margin-left: 70px;margin-top: -56px" ng-cloak>
+            <md-content layout="column" style="border-radius: 5px;" id="seachbar">
+                <md-chips ng-model="selectedGroups" md-autocomplete-snap md-max-chips="5"
+                          md-require-match="true" id="seachbarchips">
+                    <md-autocomplete id="seachbarautocomplete"
+                                     md-no-cache="noCache"
+                                     md-selected-item="selectedItem"
+                                     md-search-text="searchText"
+                                     md-items="item in querySearch(searchText)"
+                                     md-item-text="item.dispName"
+                                     md-menu-class="search-template"
+                                     placeholder="Search"
+                                     md-no-cache="true"
+                                     ng-keyup="presskey($event,searchText)"
+                                     ng-disabled="autocomplete_disable"
+                                     md-autoselect
+                    >
+                        <md-item-template>
+                              <span class="item-title">
+                                <md-icon ng-if="item.category =='Tags'"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_local_offer_black_48px.svg') }}"></md-icon>
+                                <md-icon ng-if="item.category =='IPX' || item.category =='FP'"
+                                         md-svg-icon="{{ url_for('static', filename='icon/ic_storage_black_48px.svg') }}"></md-icon>
+                               <md-icon ng-if="item.category =='PTN'"
+                                        md-svg-icon="{{ url_for('static', filename='icon/ic_developer_board_black_24px.svg') }}"></md-icon>
+                               <md-icon ng-if="item.category =='Addresses'"
+                                        md-svg-icon="{{ url_for('static', filename='icon/ic_pin_drop_black_48px.svg') }}"></md-icon>
+                                  <md-icon ng-if="item.category =='OpenAddresses'"
+                                           md-svg-icon="{{ url_for('static', filename='icon/ic_gps_fixed_black_48px.svg') }}"></md-icon>
+                                <span> <strong>{% raw %}{{item.dispName}} {% endraw %}</strong></span>
+
+                              </span>
+                            <span class="item-metadata"
+                                  ng-if="item.category =='IPX' || item.category =='FP' || item.category =='Addresses' || item.category =='OpenAddresses'">
+                                <span class="item-metastat">
+                                 <strong>{% raw %}{{item.dispKey}} {% endraw %}</strong>
+                                </span>
+                                <span class="item-metastat" ng-if="item.category =='IPX'">
+                                  @ {% raw %}{{item.dispAttr}} {% endraw %}
+                                </span>
+                              </span>
+
+                        </md-item-template>
+                        <md-not-found>
+                            <span>
+                                No results found...
+                            </span>
+                        </md-not-found>
+                    </md-autocomplete>
+                    <md-chip-template flex>
+        <span>
+          {% raw %}{{$chip.dispName}}{% endraw %}
+        </span>
+
+                    </md-chip-template>
+                </md-chips>
+            </md-content>
+        </div>
+
+        <div layout="row" id="map" layout-fill flex></div>
+
+        <div layout="column" layout-align="center center"
+             style="position: absolute;bottom: 10px;right:10px" ng-cloak ng-if="false">
+            <fieldset>
+                <div ng-repeat="layer in dataLayers">
+                    <md-checkbox ng-checked="existsLayers(layer, selectedLayers)"
+                                 ng-click="toggleLayers(layer, selectedLayers)">
+                        {% raw %} {{ layer }}{% endraw %}
+                    </md-checkbox>
+                </div>
+
+            </fieldset>
+        </div>
+
+    </div>
+{% endblock %}

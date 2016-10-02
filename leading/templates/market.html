@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block javascript %}
+ <link rel="stylesheet" href="{{ url_for('static', filename='css/nv.d3.css') }}">
+       <script src="{{ url_for('static', filename='script/market.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/nv.d3.min.js') }}"></script>
+{% endblock %}
+{% block menuItems %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div ng-controller="contentCtrl" layout="column" ng-cloak>
+     <div class ="totalprogressline" layout-align="end end">
+         <md-progress-linear md-mode="determinate" class="md-accent md-hue-2" value="{% raw %}{{ userAtCompany.currentPeriod/0.125 }}{% endraw %}"></md-progress-linear>
+    </div>
+         <md-content class="md-padding" style="margin-bottom: 50px" >
+      <div layout="row" flex>
+
+
+        <div flex="100" layout="column" layout-fill layout-wrap ng-scrollbar>
+<md-subheader style="background-color: dodgerblue;color: white;">Market Performance</md-subheader>
+<md-tabs md-selected=0  md-border-bottom md-dynamic-height >
+        <md-tab id="{% raw %}{{ market.niche }}{% endraw %}" ng-repeat="market in marketPerformance">
+        <md-tab-label>{% raw %}{{ market.niche }}{% endraw %}</md-tab-label>
+        <md-tab-body>
+    <div id="{% raw %}{{ market.niche }}{% endraw %}" flex >
+       <svg></svg>
+     </div>
+    </md-tab-body>
+            </md-tab>
+    </md-tabs>
+
+<md-subheader style="background-color: dodgerblue;color: white;">Management Performance</md-subheader>
+<md-tabs md-selected=0  md-border-bottom md-dynamic-height >
+        <md-tab id="{% raw %}{{ index.accItem }}{% endraw %}" ng-repeat="index in managementPerformance_ci">
+        <md-tab-label>{% raw %}{{ index.category  }}{% endraw %}</md-tab-label>
+        <md-tab-body>
+    <div id="{% raw %}{{ index.accItem  }}{% endraw %}" flex >
+       <svg></svg>
+     </div>
+    </md-tab-body>
+            </md-tab>
+    </md-tabs>
+
+            <md-tabs md-selected=0  md-border-bottom md-dynamic-height >
+        <md-tab id="{% raw %}{{ index.accItem }}{% endraw %}" ng-repeat="index in managementPerformance_si">
+        <md-tab-label>{% raw %}{{ index.category  }}{% endraw %}</md-tab-label>
+        <md-tab-body>
+    <div id="{% raw %}{{ index.accItem  }}{% endraw %}" flex >
+       <svg></svg>
+     </div>
+    </md-tab-body>
+            </md-tab>
+    </md-tabs>
+
+            <md-tabs md-selected=0  md-border-bottom md-dynamic-height >
+        <md-tab id="{% raw %}{{ index.accItem }}{% endraw %}" ng-repeat="index in managementPerformance_ai">
+        <md-tab-label>{% raw %}{{ index.category  }}{% endraw %}</md-tab-label>
+        <md-tab-body>
+    <div id="{% raw %}{{ index.accItem  }}{% endraw %}" flex >
+       <svg></svg>
+     </div>
+    </md-tab-body>
+            </md-tab>
+    </md-tabs>
+
+
+            <md-subheader style="background-color: dodgerblue;color: white;">Financial Performance</md-subheader>
+<md-tabs md-selected=0  md-border-bottom md-dynamic-height >
+        <md-tab id="{% raw %}{{ finance.item }}{% endraw %}" ng-repeat="finance in financialPerformance">
+        <md-tab-label>{% raw %}{{ finance.item }}{% endraw %}</md-tab-label>
+        <md-tab-body>
+    <div id="{% raw %}{{ finance.item }}{% endraw %}" flex >
+       <svg></svg>
+     </div>
+    </md-tab-body>
+            </md-tab>
+    </md-tabs>
+        </div>
+        <div flex='10' layout="column" layout-fill>
+
+
+
+        </div>
+   </div>
+</md-content>
+          <md-toolbar class="md-accent md-hue-2" style="position:absolute;bottom: 0;" flex>
+      <div class="md-toolbar-tools " layout="row" layout-align="space-between end">
+           <div flex="50">
+            <p>{% raw %}{{current_user.username }} - {{userAtCompany.companyName }}  {{userAtCompany.userrole }}{% endraw %}
+             - {% raw %}{{userAtCompany.teamName }}{% endraw %}({% raw %}{{ teammembers.length }}{% endraw %})
+             - Period : {% raw %}{{userAtCompany.currentPeriod}}{% endraw %}</p>
+            </div>
+            <div layout="row" flex="60">
+
+            </div>
+        </div>
+</md-toolbar>
+    </div>
+
+
+
+
+{% endblock %}

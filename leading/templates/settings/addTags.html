@@ -1,0 +1,66 @@
+<md-dialog aria-label="Device" flex="60">
+
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h3 ng-bind="title_dialog" style="color:white;"></h3>
+            <span flex></span>
+            <md-button type="button" class="md-icon-button" ng-click="cancelTag()">
+                <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_clear_white_24px.svg') }}"
+                         aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+
+        <div class="md-dialog-content adddevice-dialog" layout="column">
+            <div layout="column">
+                <div layout="column" flex>
+                    <md-input-container flex>
+                        <label>Tag Name</label>
+                        <input ng-model="newTag.tagName">
+                    </md-input-container>
+                </div>
+                <div layout="column" flex>
+                    <md-input-container class="md-block">
+                        <label>Tag Description</label>
+                        <textarea ng-model="newTag.tagDescription" md-maxlength="500" rows="4"
+                                  md-select-on-focus=""></textarea>
+                    </md-input-container>
+                </div>
+                <fieldset class="standard" >
+          <legend>Auto tags</legend>
+                <div layout="row" layout-wrap flex>
+                    <div flex="50" ng-repeat="type in deviceType">
+                        <md-checkbox ng-checked="exists(type, selectedType)" ng-click="toggle(type, selectedType)">
+                            {% raw %}{{ type.deviceGeneralName }}{% endraw %} <span ng-if="exists(type, selectedType)"></span>
+                        </md-checkbox>
+                    </div>
+                </div>
+                    </fieldset>
+            </div>
+
+        </div>
+
+
+    </md-dialog-content>
+
+
+    <div class="md-actions" layout="row" layout-align="end end">
+        <div layout-align="center center"><span ng-bind="message"></span></div>
+        <span flex></span>
+
+
+        <div>
+            <md-button type="button" class="md-primary md-raised" ng-click="submitTag(newTag)"
+                       style="margin-right:20px;">
+                Submit
+            </md-button>
+
+            <!--    <md-button type="button" ng-click="cancel()" class="md-primary md-raised" style="margin-right:20px;">
+                    Cancel
+                </md-button> -->
+        </div>
+    </div>
+
+
+</md-dialog>

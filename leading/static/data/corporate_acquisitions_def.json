@@ -1,0 +1,27 @@
+[
+  {"type":"Technology Opportunity","startAtPeriod":4,"company":"NewCo","companyID":"T001","name":"Techno Ltd.","niche":"",
+    "competenceIndex":1.5,"legitimacy":1.3,"numberOfCustomers":0,"numberDevelopmentEmployees":0, "developmentCost":1500000,"minimumBid":8000000},
+  {"type":"Technology Opportunity","startAtPeriod":4,"company":"NewCo","companyID":"T002","name":"Research Co.","niche":"",
+    "competenceIndex":1.4,"legitimacy":1.4,"numberOfCustomers":0,"numberDevelopmentEmployees":0, "developmentCost":2500000,"minimumBid":12000000},
+
+  {"type":"Market Consolidation","startAtPeriod":5,"company":"LegacyCo","companyID":"M001","name":"VR Services Inc.","niche":"Family",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":250000,"numberDevelopmentEmployees":60, "developmentCost":3000000,"minimumBid":56250000},
+  {"type":"Market Consolidation","startAtPeriod":6,"company":"LegacyCo","companyID":"M002","name":"Service Co.","niche":"Rugged",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":425000,"numberDevelopmentEmployees":40, "developmentCost":4500000,"minimumBid":95625000},
+  {"type":"Market Consolidation","startAtPeriod":7,"company":"LegacyCo","companyID":"M003","name":"EDUCO","niche":"Mobile",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":300000,"numberDevelopmentEmployees":50, "developmentCost":2000000,"minimumBid":67500000},
+
+  {"type":"Market Consolidation","startAtPeriod":5,"company":"LegacyCo","companyID":"M004","name":"Wayward Inc.","niche":"Mobile",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":325000,"numberDevelopmentEmployees":25, "developmentCost":1750000,"minimumBid":73125000},
+  {"type":"Market Consolidation","startAtPeriod":6,"company":"LegacyCo","companyID":"M005","name":"Grandly Co.","niche":"Rugged",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":275000,"numberDevelopmentEmployees":80, "developmentCost":2000000,"minimumBid":61875000},
+  {"type":"Market Consolidation","startAtPeriod":7,"company":"LegacyCo","companyID":"M006","name":"SuperCo","niche":"Family",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":175000,"numberDevelopmentEmployees":30, "developmentCost":1500000,"minimumBid":39375000},
+
+  {"type":"Market Consolidation","startAtPeriod":5,"company":"LegacyCo","companyID":"M007","name":"Quickan Ltd.","niche":"Rugged",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":295000,"numberDevelopmentEmployees":40, "developmentCost":2500000,"minimumBid":66375000},
+  {"type":"Market Consolidation","startAtPeriod":6,"company":"LegacyCo","companyID":"M008","name":"Head Inc.","niche":"Family",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":200000,"numberDevelopmentEmployees":30, "developmentCost":3000000,"minimumBid":45000000},
+  {"type":"Market Consolidation","startAtPeriod":7,"company":"LegacyCo","companyID":"M009","name":"East Asia Inc","niche":"Mobile",
+    "competenceIndex":0,"legitimacy":0,"numberOfCustomers":375000,"numberDevelopmentEmployees":40, "developmentCost":1500000,"minimumBid":84375000}
+]

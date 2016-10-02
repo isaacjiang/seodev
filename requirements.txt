@@ -1,0 +1,7 @@
+Flask
+pymongo
+gunicorn==18.0
+Flask-socketIO==0.6.0
+flask-login
+markupsafe
+openpyxl

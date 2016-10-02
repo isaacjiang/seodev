@@ -1,0 +1,58 @@
+<md-dialog aria-label="Register" ng-cloak flex="40">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3 style="color:white;">Register</h3>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_clear_white_48px.svg') }}"
+                             aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content" layout="column">
+                <md-content layout="column" layout-fill flex>
+                    <md-input-container>
+                        <label>username</label>
+                        <input ng-model="newUser.username">
+                    </md-input-container>
+                    <md-input-container>
+                        <label>email</label>
+                        <input ng-model="newUser.email" type="email">
+                    </md-input-container>
+                    <md-input-container>
+                        <label>password</label>
+                        <input ng-model="newUser.password" type="password">
+                    </md-input-container>
+                    <md-input-container>
+                        <label>confirm password</label>
+                        <input ng-model="newUser.confirmpassword" type="password">
+                    </md-input-container>
+                    <md-input-container ng-if="current_user.permission !='0'">
+                        <label>permission</label>
+                        <md-select placeholder="Choose permission" ng-model="newUser.permission">
+                            <md-option value="0">Administrator</md-option>
+                            <md-option value="1">Regular User</md-option>
+                            <md-option value="2">Limited User</md-option>
+                        </md-select>
+                    </md-input-container>
+                </md-content>
+            </div>
+        </md-dialog-content>
+
+        <div class="md-actions" layout="row" layout-align="end end">
+            <div style="margin-left: 12px;"><span ng-bind="message"></span></div>
+            <span flex></span>
+            <div>
+                <md-button ng-click="saveUser(newUser)">
+                    Submit
+                </md-button>
+{##}
+{#                <md-button ng-click="cancel()" style="margin-right:20px;">#}
+{#                    Cancel#}
+{#                </md-button>#}
+            </div>
+        </div>
+
+
+</md-dialog>

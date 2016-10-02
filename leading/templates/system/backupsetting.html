@@ -1,0 +1,74 @@
+<md-dialog aria-label="Backup Setting" ng-cloak flex="50">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h3 style="color:white;">Backup Setting</h3>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_clear_white_24px.svg') }}"
+                         aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-dialog-content" layout="column">
+            <md-content layout="column" layout-fill flex style="height: 300px;">
+                <md-radio-group ng-model="selectedMethod">
+                    <md-radio-button value="single" class="md-primary">Backup immediately</md-radio-button>
+                    <md-radio-button value="periodic" class="md-primary">Periodic Setting</md-radio-button>
+                </md-radio-group>
+
+
+                <md-input-container ng-if="selectedMethod == 'periodic'" style="margin-left: 16px;margin-right: 16px;">
+                    <label>Repeat</label>
+                    <md-select placeholder="Repeat" ng-model="newSetting.repeat">
+                        <md-option value="day">Every Day</md-option>
+                        <md-option value="week">Every Week</md-option>
+                        <md-option value="biweek">Every 2 Weeks</md-option>
+                        <md-option value="month">Every Month</md-option>
+                        <md-option value="year">Every Year</md-option>
+                    </md-select>
+                </md-input-container>
+
+                <div layout="row" ng-if="selectedMethod == 'periodic'" style="margin-left: 16px;margin-right: 16px;"
+                     layout-padding>
+                    <label flex style="margin-top: 16px;">Start Date:</label>
+                    <md-datepicker ng-model="newSetting.startDate"
+                                   md-second-placeholder="Start Date" flex style="margin-top:-6px"></md-datepicker>
+                    <md-input-container style="margin-left: 16px;margin-right: 16px;">
+                    <label>Hour</label>
+                    <md-select placeholder="Hour" ng-model="newSetting.starthour" flex style="margin-top:-2px">
+
+                        <md-option value="{% raw %}{{ hour }}{% endraw %}" ng-repeat="hour in hours">{% raw %}{{ hour
+                            }}{% endraw %}</md-option>
+                    </md-select>
+                        </md-input-container>
+                     <md-input-container style="margin-left: 16px;margin-right: 16px;">
+                    <label>Minute</label>
+                    <md-select placeholder="Minutes" ng-model="newSetting.startminute" flex style="margin-top:-2px">
+                        <md-option value="{% raw %}{{ minute }}{% endraw %}" ng-repeat="minute in minutes">{% raw %}{{
+                            minute }}{% endraw %}</md-option>
+                    </md-select>
+                         </md-input-container>
+                </div>
+
+            </md-content>
+        </div>
+    </md-dialog-content>
+
+    <div class="md-actions" layout="row" layout-align="end end">
+        <div style="margin-left: 12px;"><span ng-bind="message"></span></div>
+        <span flex></span>
+        <div>
+            <md-button ng-click="backup()" ng-if="selectedMethod == 'single'">
+                Submit
+            </md-button>
+            <md-button ng-click="saveBackupSetting(newSetting)" ng-if="selectedMethod == 'periodic'">
+                Submit
+            </md-button>
+            <md-button ng-click="cancel()" style="margin-right:20px;">
+                Cancel
+            </md-button>
+        </div>
+    </div>
+
+</md-dialog>

@@ -1,0 +1,1076 @@
+[
+  {
+    "accountDescID": "AA011",
+    "accountDescName": "Revenue Business",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "Business",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Sales revenue in dollars from each of 'n'"
+  },
+  {
+    "accountDescID": "AA012",
+    "accountDescName": "Revenue Consumer",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "Consumer",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Sales revenue in dollars"
+  },
+  {
+    "accountDescID": "AA021",
+    "accountDescName": "Total Revenue",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "= sum of revenue from all markets/niches"
+  },
+    {
+    "accountDescID": "AA025",
+    "accountDescName": "Cost of Sales Business",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": -1,
+    "accountDescription": "the cost of creating the offering by product-market. In this game it is simplified as a percentage of the revenue by market. E.g., cost of sales is 30% of the revenue.  The % is held in a database and can be changed by the adminstrator. Additionally, various ACTIONS selected and taken by the players may apply 'in game' increases or decreases to the % cost of sales. "
+  },
+  {
+    "accountDescID": "AA026",
+    "accountDescName": "Cost of Sales Consumer",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": -1,
+    "accountDescription": "the cost of creating the offering by product-market. In this game it is simplified as a percentage of the revenue by market. E.g., cost of sales is 30% of the revenue.  The % is held in a database and can be changed by the adminstrator. Additionally, various ACTIONS selected and taken by the players may apply 'in game' increases or decreases to the % cost of sales. "
+  },
+  {
+    "accountDescID": "AA029",
+    "accountDescName": "Total Cost of Sales",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": -1,
+    "accountDescription": "= sum of cost of sales from all markets/procducts"
+  },
+  {
+    "accountDescID": "AA031",
+    "accountDescName": "Revenue Niche 1",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "Business",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Sales revenue in dollars from each of 'n'"
+  },
+  {
+    "accountDescID": "AA032",
+    "accountDescName": "Revenue Niche 2",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "Consumer",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Sales revenue in dollars"
+  },
+  {
+    "accountDescID": "AA033",
+    "accountDescName": "Revenue Niche 3",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "Consumer",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Sales revenue in dollars"
+  },
+  {
+    "accountDescID": "AA041",
+    "accountDescName": "Total Revenue new offerings",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "= sum of revenue from all markets/niches"
+  },
+
+  {
+    "accountDescID": "AA131",
+    "accountDescName": "Cost of Sales Niche 1",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": -1,
+    "accountDescription": "the cost of creating the offering by product-market. In this game it is simplified as a percentage of the revenue by market. E.g., cost of sales is 30% of the revenue.  The % is held in a database and can be changed by the adminstrator. Additionally, various ACTIONS selected and taken by the players may apply 'in game' increases or decreases to the % cost of sales. "
+  },
+  {
+    "accountDescID": "AA132",
+    "accountDescName": "Cost of Sales Niche 2",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": -1,
+    "accountDescription": "the cost of creating the offering by product-market. In this game it is simplified as a percentage of the revenue by market. E.g., cost of sales is 30% of the revenue.  The % is held in a database and can be changed by the adminstrator. Additionally, various ACTIONS selected and taken by the players may apply 'in game' increases or decreases to the % cost of sales. "
+  },
+  {
+    "accountDescID": "AA133",
+    "accountDescName": "Cost of Sales Niche 3",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": -1,
+    "accountDescription": "the cost of creating the offering by product-market. In this game it is simplified as a percentage of the revenue by market. E.g., cost of sales is 30% of the revenue.  The % is held in a database and can be changed by the adminstrator. Additionally, various ACTIONS selected and taken by the players may apply 'in game' increases or decreases to the % cost of sales. "
+  },
+  {
+    "accountDescID": "AA141",
+    "accountDescName": "Total Cost of Sales",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": -1,
+    "accountDescription": "= sum of cost of sales from all markets/procducts"
+  },
+    {
+    "accountDescID": "AA200",
+    "accountDescName": "Grand Total Revenue",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Grand Total Revenue"
+  },
+  {
+    "accountDescID": "AA201",
+    "accountDescName": "Grand Total Cost of Sales",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Grand Total Cost of Sales"
+  },
+ {
+    "accountDescID": "AA202",
+    "accountDescName": "Grand Total Gross Margin",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Grand Total Gross Margin"
+  },
+  {
+    "accountDescID": "AA210",
+    "accountDescName": "Net Long Tail Revenue",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Net Long Tail Revenue"
+  },
+    {
+    "accountDescID": "AA211",
+    "accountDescName": "Grand Total Net Revenue",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Grand Total Net Revenue"
+  },
+    {
+    "accountDescID": "AB010",
+    "accountDescName": "Expenses(Leadship)",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Expenses(Leadship)"
+  },
+  {
+    "accountDescID": "AB011",
+    "accountDescName": "Expenses(Marketing & Sales)",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Expenses(Marketing & Sales)"
+  },
+  {
+    "accountDescID": "AB012",
+    "accountDescName": "Expenses(Digital Marketing)",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Players budget expenditure to drive the business. "
+  },
+  {
+    "accountDescID": "AB013",
+    "accountDescName": "Expenses(Social Media)",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Players budget expenditure to drive the business. "
+  },
+  {
+    "accountDescID": "AB014",
+    "accountDescName": "Expenses(Product development)",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Players budget expenditure to drive the business. "
+  },
+  {
+    "accountDescID": "AB015",
+    "accountDescName": "Expenses(Logistics & IT)",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Players budget expenditure to drive the business. "
+  },
+  {
+    "accountDescID": "AB016",
+    "accountDescName": "Expenses(Contingent costs)",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Players budget expenditure to drive the business. "
+  },
+  {
+    "accountDescID": "AB017",
+    "accountDescName": "Expenses(Administration Charges)",
+    "accountDescType": "PL",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Players budget expenditure to drive the business. "
+  },
+  {
+    "accountDescID": "AB021",
+    "accountDescName": "Total Overhead Costs",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Players budget expenditure to drive the business. "
+  },
+  {
+    "accountDescID": "AB031",
+    "accountDescName": "Net Margin before Interest, depn & Tax",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Players budget expenditure to drive the business. "
+  },
+  {
+    "accountDescID": "AB041",
+    "accountDescName": "Interest Charges (External Debt)",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Interest Charges "
+  },
+  {
+    "accountDescID": "AB051",
+    "accountDescName": "Net Margin before depreciation & tax",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Net Margin before depreciation & tax"
+  },
+  {
+    "accountDescID": "AB061",
+    "accountDescName": "Depreciation",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Net Margin before depreciation & tax"
+  },
+  {
+    "accountDescID": "AB071",
+    "accountDescName": "Taxable income",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Taxable income"
+  },
+  {
+    "accountDescID": "AB081",
+    "accountDescName": "Taxation",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Taxation"
+  },
+  {
+    "accountDescID": "AB100",
+    "accountDescName": "Net income after depreciation and taxes",
+    "accountDescType": "PL",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Net income after depreciation and taxes"
+  },
+   {
+    "accountDescID": "BA010",
+    "accountDescName": "Current Assets",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Current Assets-Cash on hand"
+  },
+  {
+    "accountDescID": "BA011",
+    "accountDescName": "Current Assets-Cash on hand",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Current Assets-Cash on hand"
+  },
+  {
+    "accountDescID": "BA012",
+    "accountDescName": "Current Assets-Accounts receivable - Business",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Accounts receivable Business"
+  },
+    {
+    "accountDescID": "BA013",
+    "accountDescName": "Current Assets-Accounts receivable - Consumer",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Accounts receivable Business"
+  },
+      {
+    "accountDescID": "BA014",
+    "accountDescName": "Current Assets-Accounts receivable - New Offerings",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Accounts receivable Business"
+  },
+  {
+    "accountDescID": "BA015",
+    "accountDescName": "Current Assets-Inventory - Business",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Inventory Business"
+  },
+    {
+    "accountDescID": "BA016",
+    "accountDescName": "Current Assets-Inventory - Consumer",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Inventory Business"
+  },
+      {
+    "accountDescID": "BA017",
+    "accountDescName": "Current Assets-Inventory - New Offerings",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Inventory Business"
+  },
+  {
+    "accountDescID": "BA021",
+    "accountDescName": "Total Current Assets",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Total Current Assets"
+  },
+
+    {
+    "accountDescID": "BA040",
+    "accountDescName": "Fixed Assets",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Purchases of fixed assets(+goodwill)"
+  },
+  {
+    "accountDescID": "BA041",
+    "accountDescName": "Fixed Assets-Purchases of fixed assets(+goodwill)",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Purchases of fixed assets(+goodwill)"
+  },
+  {
+    "accountDescID": "BA042",
+    "accountDescName": "Fixed Assets-Gross fixed assets ",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Gross fixed assets "
+  },
+  {
+    "accountDescID": "BA043",
+    "accountDescName": "Fixed Assets-Accumulated Depreciation",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Accumulated Depreciation"
+  },
+  {
+    "accountDescID": "BA051",
+    "accountDescName": "Net Fixed Assets",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Net Fixed Assets"
+  },
+    {
+    "accountDescID": "BA060",
+    "accountDescName": "Intrcompany loans granted",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Internal loans granted at start of period"
+  },
+  {
+    "accountDescID": "BA061",
+    "accountDescName": "Intrcompany loans granted - Internal investment",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Internal loans granted at start of period"
+  },
+  {
+    "accountDescID": "BA062",
+    "accountDescName": "Intrcompany loans granted - New Internal Investments or Repayments",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Internal loans granted at start of period"
+  },
+  {
+    "accountDescID": "BA063",
+    "accountDescName": "Intrcompany loans-Total intracompany loans granted",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Internal loans granted at start of period"
+  },
+  {
+    "accountDescID": "BA100",
+    "accountDescName": "Total Assets",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Total Assets"
+  },
+    {
+    "accountDescID": "BB010",
+    "accountDescName": "Current Liabilities",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Supplier accounts payable Business"
+  },
+  {
+    "accountDescID": "BB011",
+    "accountDescName": "Current Liabilities-Supplier accounts payable - Business",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Supplier accounts payable Business"
+  },
+    {
+    "accountDescID": "BB012",
+    "accountDescName": "Current Liabilities-Supplier accounts payable - Consumer",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Supplier accounts payable Business"
+  },
+    {
+    "accountDescID": "BB013",
+    "accountDescName": "Current Liabilities-Supplier accounts payable - New Offerings",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Supplier accounts payable Business"
+  },
+
+  {
+    "accountDescID": "BB014",
+    "accountDescName": "Current Liabilities-Customer Advance Payments - Business",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Customer Advance Payments: Business"
+  },
+    {
+    "accountDescID": "BB015",
+    "accountDescName": "Current Liabilities-Customer Advance Payments - Consumer",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Customer Advance Payments: Business"
+  },
+    {
+    "accountDescID": "BB016",
+    "accountDescName": "Current Liabilities-Customer Advance Payments - New Offerings",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Customer Advance Payments: Business"
+  },
+    {
+    "accountDescID": "BB017",
+    "accountDescName": "Current Liabilities-Taxes Payable",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Taxes Payable"
+  },
+      {
+    "accountDescID": "BB018",
+    "accountDescName": "Current Liabilities-Dividends payable",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Taxes Payable"
+  },
+  {
+    "accountDescID": "BB021",
+    "accountDescName": "Total Current Liabilities",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Total Current Liabilities"
+  },
+    {
+    "accountDescID": "BB031",
+    "accountDescName": "Long Term Debt",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Long Term Debt"
+  },
+    {
+    "accountDescID": "BB032",
+    "accountDescName": "Extra External Debt Raised",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Extra External Debt Raised"
+  },
+      {
+    "accountDescID": "BB040",
+    "accountDescName": "IntraCompany Loans Received",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "IntraCompany Loans Received"
+  },
+    {
+    "accountDescID": "BB041",
+    "accountDescName": "IntraCompany Loans Received - Internal long term debt",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "IntraCompany Loans Received"
+  },
+    {
+    "accountDescID": "BB042",
+    "accountDescName": "IntraCompany Loans Received - Extra intracompany debt raised/repaid in period",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "IntraCompany Loans Received"
+  },
+    {
+    "accountDescID": "BB050",
+    "accountDescName": "IntraCompany Loans Received - Total internal debt received",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "IntraCompany Loans Received"
+  },
+      {
+    "accountDescID": "BB060",
+    "accountDescName": "Total Long term debt",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Total Long term debt"
+  },
+    {
+    "accountDescID": "BB110",
+    "accountDescName": "Equity",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Shareholder Equity"
+  },
+  {
+    "accountDescID": "BB111",
+    "accountDescName": "Equity-Shareholder Equity",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Shareholder Equity"
+  },
+  {
+    "accountDescID": "BB112",
+    "accountDescName": "Equity-Tresury share transaction",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Tresury share transaction"
+  },
+  {
+    "accountDescID": "BB113",
+    "accountDescName": "Equity-Retained Earnings",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Retained Earnings"
+  },
+    {
+    "accountDescID": "BB114",
+    "accountDescName": "Equity-Dividends cumulative",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Dividends cumulative"
+  },
+    {
+    "accountDescID": "BB115",
+    "accountDescName": "Equity-Dividends this period",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Dividends this period"
+  },
+  {
+    "accountDescID": "BB121",
+    "accountDescName": "Total Equity",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Total Equity"
+  },
+  {
+    "accountDescID": "BB131",
+    "accountDescName": "Total Liabilities",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Total Liabilities"
+  },
+
+  {
+    "accountDescID": "BB200",
+    "accountDescName": "Balance",
+    "accountDescType": "BALANCE",
+    "accountDescLevel": "2",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Balance"
+  },
+  {
+    "accountDescID": "CA011",
+    "accountDescName": "Starting cash position",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Initial cash position"
+  },
+    {
+    "accountDescID": "CA020",
+    "accountDescName": "Add Back Cash from Operations",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Net income after depreciation and taxes"
+  },
+  {
+    "accountDescID": "CA021",
+    "accountDescName": "Cash from Operations-Net income after depreciation and taxes",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Net income after depreciation and taxes"
+  },
+  {
+    "accountDescID": "CA022",
+    "accountDescName": "Cash from Operations-Depreciation",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Depreciation"
+  },
+  {
+    "accountDescID": "CA023",
+    "accountDescName": "Cash from Operations-Change in accounts receivable - Business",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in accounts receivable Business"
+  },
+    {
+    "accountDescID": "CA024",
+    "accountDescName": "Cash from Operations-Change in accounts receivable - Consumer",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in accounts receivable Business"
+  },
+    {
+    "accountDescID": "CA025",
+    "accountDescName": "Cash from Operations-Change in accounts receivable - New Offerings",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in accounts receivable Business"
+  },
+  {
+    "accountDescID": "CA026",
+    "accountDescName": "Cash from Operations-Change in inventory - Business",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in inventory Business"
+  },
+    {
+    "accountDescID": "CA027",
+    "accountDescName": "Cash from Operations-Change in inventory - Consumer",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in inventory Business"
+  },
+    {
+    "accountDescID": "CA028",
+    "accountDescName": "Cash from Operations-Change in inventory - New Offerings",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in inventory Business"
+  },
+  {
+    "accountDescID": "CA029",
+    "accountDescName": "Cash from Operations-Change in Accounts Payable - Business",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in Accounts Payable Business"
+  },
+    {
+    "accountDescID": "CA030",
+    "accountDescName": "Cash from Operations-Change in Accounts Payable - Consumer",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in Accounts Payable Business"
+  },
+    {
+    "accountDescID": "CA031",
+    "accountDescName": "Cash from Operations-Change in Accounts Payable - New Offerings",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in Accounts Payable Business"
+  },
+  {
+    "accountDescID": "CA032",
+    "accountDescName": "Cash from Operations-Customer Advance Payments - Business",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in Accounts Payable Consumer"
+  },
+    {
+    "accountDescID": "CA033",
+    "accountDescName": "Cash from Operations-Customer Advance Payments - Consumer",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in Accounts Payable Consumer"
+  },
+    {
+    "accountDescID": "CA034",
+    "accountDescName": "Cash from Operations-Customer Advance Payments - New Offerings",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in Accounts Payable Consumer"
+  },
+  {
+    "accountDescID": "CA035",
+    "accountDescName": "Cash from Operations-Change in tax payable",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Change in tax payable"
+  },
+  {
+    "accountDescID": "CA041",
+    "accountDescName": "Net cash flow from operations",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Net cash flow from operations"
+  },
+  {
+    "accountDescID": "CA051",
+    "accountDescName": "Purchases or sales of fixed assets",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Purchases or sales of fixed assets"
+  },
+  {
+    "accountDescID": "CA052",
+    "accountDescName": "Financing",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Financing"
+  },
+  {
+    "accountDescID": "CA053",
+    "accountDescName": "Financing-Extra Debt raised",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Treasury Share additions"
+  },
+    {
+    "accountDescID": "CA054",
+    "accountDescName": "Financing-Changes in shareholder equity",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Treasury Share additions"
+  },
+    {
+    "accountDescID": "CA055",
+    "accountDescName": "Financing-Dividends paid",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "Treasury Share additions"
+  },
+  {
+    "accountDescID": "CA061",
+    "accountDescName": "Closing Cash Position before Internal investments",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Closing Cash Position before Internal investments"
+  },
+    {
+    "accountDescID": "CA071",
+    "accountDescName": "New Internal loans granted",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "New Internal loans granted"
+  },
+    {
+    "accountDescID": "CA081",
+    "accountDescName": "New internal loans received",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": false,
+    "calculateFlag": 1,
+    "accountDescription": "New internal loans received"
+  },
+    {
+    "accountDescID": "CA091",
+    "accountDescName": "Closing cash position after internal investments",
+    "accountDescType": "CF",
+    "accountDescLevel": "1",
+    "subAccountName": "",
+    "summaryFLag": true,
+    "calculateFlag": 1,
+    "accountDescription": "Closing cash position after internal investments"
+  }
+]

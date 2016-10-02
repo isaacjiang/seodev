@@ -1,0 +1,106 @@
+[
+
+{"processNo":0,"preProcess":0,"taskID":"10001","period":1,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10001","period":1,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10002","period":2,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10002","period":2,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10003","period":3,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10003","period":3,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10004","period":4,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10004","period":4,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10005","period":5,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10005","period":5,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10006","period":6,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10006","period":6,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10007","period":7,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
+{"processNo":0,"preProcess":0,"taskID":"10007","period":7,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
+
+{"processNo":3,"preProcess":[3],"taskID":"01001","period":1,"companyName":"NewCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
+{"processNo":5,"preProcess":[1,2],"taskID":"01005","period":1,"companyName":"NewCo","taskName":"Start-up Funding","comment":"Negotiation for funds and employees"},
+
+
+{"processNo":13,"preProcess":[1,2],"taskID":"02001","period":2,"companyName":"NewCo","taskName":"Hires","comment":"Select a Company and Role"},
+
+{"processNo":15,"preProcess":[4],"taskID":"02005","period":2,"companyName":"NewCo","taskName":"Visionary Competition","comment":"Compete for business Visionary relationships"},
+
+
+{"processNo":23,"preProcess":[3],"taskID":"03001","period":3,"companyName":"NewCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
+
+{"processNo":25,"preProcess":[4],"taskID":"03003","period":3,"companyName":"NewCo","taskName":"Resource Acquisition","comment":"PLAYERS WILL NEED TO OUTSOURCE PRODUCTION."},
+{"processNo":26,"preProcess":[1,2],"taskID":"03005","period":3,"companyName":"NewCo","taskName":"Growth Funding","comment":"Negotiation for funds and employees"},
+
+
+{"processNo":38,"preProcess":[1,2],"taskID":"04002","period":4,"companyName":"NewCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":25,"preProcess":[4],"taskID":"04003","period":4,"companyName":"NewCo","taskName":"Resource Acquisition","comment":"PLAYERS WILL NEED TO OUTSOURCE PRODUCTION."},
+{"processNo":34,"preProcess":[4],"taskID":"04004","period":4,"companyName":"NewCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":37,"preProcess":[1,2],"taskID":"04006","period":4,"companyName":"NewCo","taskName":"Actions","comment":"Actions"},
+{"processNo":31,"preProcess":0,"taskID":"04008","period":4,"companyName":"NewCo","taskName":"Niches","comment":"Select Niches to compete in"},
+{"processNo":39,"preProcess":0,"taskID":"04009","period":4,"companyName":"NewCo","taskName":"Corporate Acquisitions","comment":"Select Niches to compete in"},
+
+
+{"processNo":43,"preProcess":[3],"taskID":"05001","period":5,"companyName":"NewCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
+{"processNo":44,"preProcess":[1,2],"taskID":"05002","period":5,"companyName":"NewCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":45,"preProcess":[4],"taskID":"05003","period":5,"companyName":"NewCo","taskName":"Resource Acquisition","comment":"PLAYERS WILL NEED TO OUTSOURCE PRODUCTION."},
+{"processNo":46,"preProcess":[4],"taskID":"05004","period":5,"companyName":"NewCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":47,"preProcess":[1,2],"taskID":"05006","period":5,"companyName":"NewCo","taskName":"Actions","comment":"Actions"},
+
+
+{"processNo":51,"preProcess":0,"taskID":"06006","period":6,"companyName":"NewCo","taskName":"Actions","comment":"Publish Consolidated Public Accounts"},
+{"processNo":57,"preProcess":[1,2],"taskID":"06002","period":6,"companyName":"NewCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":54,"preProcess":[4],"taskID":"06004","period":6,"companyName":"NewCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+
+
+{"processNo":61,"preProcess":0,"taskID":"07006","period":7,"companyName":"NewCo","taskName":"Actions","comment":"Publish Consolidated Public Accounts"},
+{"processNo":62,"preProcess":[1,2],"taskID":"07002","period":7,"companyName":"NewCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":64,"preProcess":[4],"taskID":"07004","period":7,"companyName":"NewCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":65,"preProcess":[4],"taskID":"07003","period":7,"companyName":"NewCo","taskName":"Resource Acquisition","comment":"PLAYERS WILL NEED TO OUTSOURCE PRODUCTION."},
+
+
+{"processNo":1,"preProcess":[3],"taskID":"01001","period":1,"companyName":"LegacyCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
+{"processNo":2,"preProcess":[1,2],"taskID":"01002","period":1,"companyName":"LegacyCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":3,"preProcess":[4],"taskID":"01003","period":1,"companyName":"LegacyCo","taskName":"Resource Acquisition","comment":"PLAYERS WILL NEED TO OUTSOURCE PRODUCTION."},
+{"processNo":4,"preProcess":[4],"taskID":"01004","period":1,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":5,"preProcess":[1,2],"taskID":"01005","period":1,"companyName":"LegacyCo","taskName":"Start-up Funding","comment":"Negotiation for funds and employees"},
+{"processNo":7,"preProcess":[1,2],"taskID":"01006","period":1,"companyName":"LegacyCo","taskName":"Actions","comment":"Actions"},
+
+
+{"processNo":11,"preProcess":[1,2],"taskID":"02002","period":2,"companyName":"LegacyCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":12,"preProcess":[10],"taskID":"02005","period":2,"companyName":"LegacyCo","taskName":"Project","comment":"INSERT CURRENT INTERFACE. ACTIVATE CHOICES. RETAIN TABLE"},
+{"processNo":13,"preProcess":[1,2],"taskID":"02006","period":2,"companyName":"LegacyCo","taskName":"Actions","comment":"Actions"},
+{"processNo":14,"preProcess":[4],"taskID":"02004","period":2,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+
+
+{"processNo":23,"preProcess":[3],"taskID":"03001","period":3,"companyName":"LegacyCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
+{"processNo":24,"preProcess":[4],"taskID":"03004","period":3,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":25,"preProcess":[1,2],"taskID":"03005","period":3,"companyName":"LegacyCo","taskName":"Growth Funding","comment":"Negotiation for funds and employees"},
+{"processNo":27,"preProcess":[1,2],"taskID":"03006","period":3,"companyName":"LegacyCo","taskName":"Actions","comment":"Actions"},
+
+
+{"processNo":33,"preProcess":[3],"taskID":"04001","period":4,"companyName":"LegacyCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
+{"processNo":34,"preProcess":[4],"taskID":"04004","period":4,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":32,"preProcess":[1,2],"taskID":"04002","period":4,"companyName":"LegacyCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":37,"preProcess":[1,2],"taskID":"04006","period":4,"companyName":"LegacyCo","taskName":"Actions","comment":"Actions"},
+{"processNo":35,"preProcess":[10],"taskID":"04005","period":4,"companyName":"LegacyCo","taskName":"Project","comment":"INSERT CURRENT INTERFACE. ACTIVATE CHOICES. RETAIN TABLE"},
+
+
+{"processNo":41,"preProcess":0,"taskID":"05008","period":5,"companyName":"LegacyCo","taskName":"Niches","comment":"Select Niches to compete in"},
+{"processNo":43,"preProcess":[3],"taskID":"05003","period":5,"companyName":"LegacyCo","taskName":"Resource Acquisition","comment":"PLAYERS WILL NEED TO OUTSOURCE PRODUCTION."},
+{"processNo":44,"preProcess":[4],"taskID":"05004","period":5,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":45,"preProcess":[1,2],"taskID":"05006","period":5,"companyName":"LegacyCo","taskName":"Actions","comment":"Actions"},
+{"processNo":47,"preProcess":[1,2],"taskID":"05002","period":5,"companyName":"LegacyCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":49,"preProcess":[0],"taskID":"05009","period":5,"companyName":"LegacyCo","taskName":"Corporate Acquisitions","comment":"Select Niches to compete in"},
+
+
+{"processNo":51,"preProcess":0,"taskID":"06006","period":6,"companyName":"LegacyCo","taskName":"Actions","comment":"Publish Consolidated Public Accounts"},
+{"processNo":53,"preProcess":[3],"taskID":"06003","period":6,"companyName":"LegacyCo","taskName":"Resource Acquisition","comment":"PLAYERS WILL NEED TO OUTSOURCE PRODUCTION."},
+{"processNo":54,"preProcess":[4],"taskID":"06004","period":6,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":57,"preProcess":[1,2],"taskID":"06002","period":6,"companyName":"LegacyCo","taskName":"Workforce","comment":"Revise Workforce size"},
+  {"processNo":59,"preProcess":[0],"taskID":"06009","period":6,"companyName":"LegacyCo","taskName":"Corporate Acquisitions","comment":"Select Niches to compete in"},
+
+
+{"processNo":61,"preProcess":0,"taskID":"07006","period":7,"companyName":"LegacyCo","taskName":"Actions","comment":"Publish Consolidated Public Accounts"},
+{"processNo":64,"preProcess":[4],"taskID":"07004","period":7,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
+{"processNo":67,"preProcess":[1,2],"taskID":"07002","period":7,"companyName":"LegacyCo","taskName":"Workforce","comment":"Revise Workforce size"},
+{"processNo":69,"preProcess":[0],"taskID":"07009","period":7,"companyName":"LegacyCo","taskName":"Corporate Acquisitions","comment":"Select Niches to compete in"}
+
+]

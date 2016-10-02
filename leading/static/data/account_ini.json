@@ -1,0 +1,10 @@
+[
+    {"accountDescID":"BA011","period":0,"value":2000000,"type":"Credit","comments":"init data"},
+    {"accountDescID":"BA041","period":0,"value":3000000,"type":"Credit","comments":"init data"},
+    {"accountDescID":"BB031","period":0,"value":2000000,"type":"Credit","comments":"init data"},
+    {"accountDescID":"BA032","period":7,"value":-1000000,"type":"Credit","comments":"init data"},
+    {"accountDescID":"BB042","period":7,"value":-1000000,"type":"Credit","comments":"init data"},
+    {"accountDescID":"BB111","period":0,"value":3000000,"type":"Credit","comments":"init data"},
+
+    {"accountDescID":"BA062","period":1,"value":620000,"type":"Credit","comments":"init data"}
+]

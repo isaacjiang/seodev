@@ -1,0 +1,202 @@
+[
+  {
+    "budgetDescID": "BG100",
+    "budgetDescName": "CASH IN HAND AT START OF PERIOD",
+    "budgetDescType": "C",
+    "budgetDescLevel": "2",
+    "accountDescID": "BA011",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Grand Total Revenue",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG200",
+    "budgetDescName": "TOTAL REVENUE ALL OFFERINGS",
+    "budgetDescType": "C",
+    "budgetDescLevel": "2",
+    "accountDescID": "",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Grand Total Revenue",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG300",
+    "budgetDescName": "IMPLIED GROSS MARGIN ",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "2",
+    "accountDescID": "",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Grand Total Revenue",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG400",
+    "budgetDescName": "PROPOSED FUNCTION EXPENSES",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "2",
+    "accountDescID": "AB021",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Grand Total Revenue",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG500",
+    "budgetDescName": "TOTAL PROPOSED EXPENSES",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "2",
+    "accountDescID": "AB021",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Grand Total Revenue",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG600",
+    "budgetDescName": "NET MARGIN",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "2",
+    "accountDescID": "AB021",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Grand Total Revenue",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG700",
+    "budgetDescName": "BALANCE SHEET ITEMS",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "2",
+    "accountDescID": "AB011",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Grand Total Revenue",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG800",
+    "budgetDescName": "PROJECTED CASH ON HAND AT END OF PERIOD",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "2",
+    "accountDescID": "AB021",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Grand Total Revenue",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG401",
+    "budgetDescName": "Marketing & Advertising",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB011",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Marketing & Advertising",
+    "parent":"BG400"
+  },
+  {
+    "budgetDescID": "BG402",
+    "budgetDescName": "Sales & Distribution",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB012",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Sales & Distribution",
+    "parent":"BG400"
+  },
+  {
+    "budgetDescID": "BG403",
+    "budgetDescName": "Market Support",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB013",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Market Support",
+    "parent":"BG400"
+  },
+  {
+    "budgetDescID": "BG404",
+    "budgetDescName": "Logistics & IT",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB014",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Logistics & IT",
+    "parent":"BG400"
+  },
+  {
+    "budgetDescID": "BG405",
+    "budgetDescName": "Product Development",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB015",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Product Development",
+    "parent":""
+  },
+  {
+    "budgetDescID": "BG406",
+    "budgetDescName": "Contingencies",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB016",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Contingencies",
+    "parent":"BG400"
+  },
+  {
+    "budgetDescID": "BG407",
+    "budgetDescName": "Administration",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB017",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Administration",
+    "parent":"BG400"
+  },
+  {
+    "budgetDescID": "BG701",
+    "budgetDescName": "Cash outflow from acquisitions",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB011",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Cash outflow from acquisitions",
+    "parent":"BG700"
+  }
+,
+  {
+    "budgetDescID": "BG702",
+    "budgetDescName": "Cash inflow from asset sales or outflow from asset purchases",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB011",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Cash inflow from asset sales or outflow from asset purchases",
+    "parent":"BG700"
+  }
+,
+  {
+    "budgetDescID": "BG703",
+    "budgetDescName": "Cash inflow or outflow from intracompany loans",
+    "budgetDescType": "PL",
+    "budgetDescLevel": "3",
+    "accountDescID": "AB011",
+    "summaryFLag": true,
+    "calculateFlag": true,
+    "description": "Cash inflow or outflow from intracompany loans",
+    "parent":"BG700"
+  }
+]

@@ -1,0 +1,13 @@
+[
+   {"periodID":-3,"description":"Period #-3"},
+   {"periodID":-2,"description":"Period #-2"},
+   {"periodID":-1,"description":"Period #-1"},
+  {"periodID":0,"description":"Period #0"},
+   {"periodID":1,"description":"Period #1"},
+   {"periodID":2,"description":"Period #2"},
+   {"periodID":3,"description":"Period #3"},
+   {"periodID":4,"description":"Period #4"},
+   {"periodID":5,"description":"Period #5"},
+   {"periodID":6,"description":"Period #6"},
+   {"periodID":7,"description":"Period #7"}
+]

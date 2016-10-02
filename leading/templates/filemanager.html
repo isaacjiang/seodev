@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block jacascript %}
+    <!-- js files -->
+    <script src="{{ url_for('static', filename='lib/webix.js') }}" type="text/javascript"></script>
+
+    <!--
+    <script src="{{ url_for('static', filename='lib/pdfmake.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='lib/vfs_fonts.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='lib/FileSaver.js') }}" type="text/javascript"></script>
+    -->
+
+    <!-- css files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/webix.css') }}" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/filemanager.css') }}" type="text/css"
+          charset="utf-8">
+
+    <script src="{{ url_for('static', filename='script/filemanager.js') }}"></script>
+{% endblock %}
+{% block lefttopMenu %}
+    <div ng-controller="lefttopMenuCtrl" layout="row" flex>
+        <div flex>
+            <md-button ng-click="backtomap()"
+                       class="md-icon-button" layout-align="center center">
+                <md-icon aria-label="Menu"
+                         md-svg-icon="{{ url_for('static', filename='icon/ic_arrow_back_white_48px.svg') }}"></md-icon>
+            </md-button>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block menuitems %}
+{% endblock %}
+
+{% block rightmenuitems %}
+
+{% endblock %}
+
+{% block content %}
+
+        <div ng-controller="MultiController" style="margin-top: 72px;margin-left: 2px;"id="filemanager">
+        <!--
+
+        <script type="text/ng-template" id="tree-dnd-template-render.html">
+            <div ng-class="(treeData.length) ? '' : 'list-group-item'">
+                <ul tree-dnd-nodes style="min-height: 100px">
+                    <li tree-dnd-node="node" ng-repeat="node in treeData track by node.__hashKey__"
+                        ng-show="node.__visible__"
+                        ng-include="'tree-dnd-template-fetch.html'"></li>
+                </ul>
+            </div>
+        </script>
+        <script type="text/ng-template" id="tree-dnd-template-fetch.html">
+            <div class="list-group-item text-info"
+                 ng-class="(node.__selected__ ? 'list-group-item-success ':' ') + $node_class"
+                 ng-click="onClick(node)"
+                 ng-style="expandingProperty.cellStyle || {}">
+                <a class="btn btn-default" aria-label="Justify" type="button" tree-dnd-node-handle>
+                    <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span> </a>
+
+                {/% raw %}{/{node[expandingProperty.field] || node[expandingProperty]}/}{/% endraw %}
+
+                <span ng-class="node.__icon_class__" ng-click="toggleExpand(node)"></span>
+
+                <div class="pull-right">
+            <span ng-repeat="col in colDefinitions" ng-class="col.cellClass" ng-style="col.cellStyle"
+                  compile="col.cellTemplate">
+               {/% raw %} /{/{node[col.field]}}{/% endraw %}
+            </span>
+                </div>
+            </div>
+            <ul tree-dnd-nodes>
+                <li tree-dnd-node="node" ng-repeat="node in node.__children__ track by node.__hashKey__"
+                    ng-show="node.__visible__"
+                    ng-include="'tree-dnd-template-fetch.html'"></li>
+            </ul>
+        </script>
+        <div flex="30">
+            <panel title="Files Drive">
+                <tree-dnd tree-data="filestree_list"
+                          tree-control="filestree"
+                          enable-drag="true"
+                          enable-drop="true"
+                          column-defs="col_defs_list"
+                          expand-on="expanding_property"
+                          icon-expand="icon-expand"
+                          icon-collapse="static/icon/ic_folder_open_black_24px.svg"
+                ></tree-dnd>
+            </panel>
+        </div>
+
+        <div flex layout="column" layout-padding>
+            <div flex>
+                <panel>
+                    <tree-dnd
+                            tree-data="[]"
+                            tree-control="filestree"
+                            column-defs="col_defs_list"
+                            expand-on="expanding_property"
+                            template-url="tree-dnd-template-render.html"
+                            enable-drag="true"
+                            enable-drop="true"
+                            icon-leaf="none"
+                            icon-expand="glyphicon glyphicon-chevron-down"
+                            icon-collapse="glyphicon glyphicon-chevron-right">
+                    </tree-dnd>
+                </panel>
+            </div>
+
+        </div>
+-->
+
+    </div>
+
+
+{% endblock %}
