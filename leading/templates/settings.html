@@ -3,28 +3,15 @@
 {% block jacascript %}
 
     <script src="{{ url_for('static', filename='script/setting.js') }}"></script>
-    <script src="{{ url_for('static', filename='lib/md-data-table.js') }}"></script>
-
 
 {% endblock %}
 
-{% block lefttopMenu %}
-    <div ng-controller="lefttopMenuCtrlSettings">
-        <div flex>
-            <md-button ng-click="backtomap()"
-                       class="md-icon-button" layout-align="center center">
-                <md-icon aria-label="Menu"
-                         md-svg-icon="{{ url_for('static', filename='icon/ic_arrow_back_white_48px.svg') }}"></md-icon>
-            </md-button>
-        </div>
 
-    </div>
-{% endblock %}
 
 
 {% block content %}
-    <div ng-controller="settingsCtrl" layout="row" style="margin-top: 64px;" ng-cloak>
-        <md-sidenav class="md-sidenav-left" md-component-id="settings" md-is-locked-open="$mdMedia('gt-md')"
+    <div ng-controller="settingsCtrl" layout="row" ng-cloak>
+        <md-sidenav class="md-sidenav-left" md-component-id="settings" md-is-locked-open="true"
                     md-whiteframe="4" flex style="z-index: 0;">
             <md-toolbar class="md-accent">
                 <h1 class="md-toolbar-tools">Settings</h1>
@@ -33,8 +20,7 @@
                 <md-list class="md-dense" flex>
 
                     <md-list-item class="md-2-line" ng-click="toggleFunction(func.taskKey)"
-                                  aria-label="settings" ng-repeat=" func in tasks"
-                                  ng-if="func.taskKey != 'usersettings'">
+                                  aria-label="settings" ng-repeat=" func in tasks">
                         <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
                              class="md-avatar" alt="Photo"/>
                         <div class="md-list-item-text">
@@ -64,76 +50,6 @@
                         <h3 ng-bind="func.taskName"></h3>
                     </md-grid-tile-header>
 
-
-                    <div style="width:100%;" ng-style="setTableHeight()"
-                         ng-if="func.taskKey=='tagsmaintenance'&&func.rowspan!=1">
-                        <md-table-container>
-                            <table md-table>
-                                <thead md-head md-order="myOrder">
-                                <tr md-row>
-                                    <th md-column><span></span></th>
-                                    <th md-column md-order-by="tagName"><span>Tag Name</span></th>
-                                    <th md-column md-order-by="taggedDeviceNum"><span>Tagged Devices</span></th>
-                                    <th md-column md-order-by="taggedNum"><span>Tagged Routes</span></th>
-                                    <th md-column md-order-by="tagCreateDate"><span>Creation Date</span></th>
-                                    <th md-column md-order-by=""><span>Delete / Edit</span></th>
-                                <!--    <th md-column>
-                                        <md-button ng-click=""
-                                                   class="md-icon-button">
-                                            <md-icon aria-label="Menu"
-                                                     md-svg-icon="{{ url_for('static', filename='icon/ic_visibility_black_48px.svg') }}"></md-icon>
-                                        </md-button>
-                                    </th> -->
-                                </tr>
-                                </thead>
-                                <tbody md-body>
-                                <tr md-row
-                                    ng-repeat="rec in tags | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
-                                    <td md-cell>{% raw %}{{  $index+(query.limit*(query.page-1))+1  }}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['tagName']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['taggedDeviceNum']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['taggedNum']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['tagCreateDate']}}{% endraw %}</td>
-                                    <td md-cell>
-                                        <div layout flex="45">
-                                            <md-button ng-click="deleteTag(rec)"
-                                                       class="md-icon-button">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_black_48px.svg') }}"></md-icon>
-                                            </md-button>
-
-                                            <md-button ng-click="editTag(rec)"
-                                                       class="md-icon-button">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_edit_black_48px.svg') }}"></md-icon>
-                                            </md-button>
-                                        </div>
-                                    </td>
-                                    <!--
-                                    <td md-cell>
-                                        <md-switch ng-model="rec['tagFilter']" aria-label="tagFilter"
-                                                   ng-change="onChange(rec)" class=""></md-switch>
-
-                                            default color: blue
-                                            class="md-warn"  switch color: red
-
-                                    </td> -->
-                                </tr>
-
-                                </tbody>
-                            </table>
-                            <div>
-                                <md-button class="md-accent md-fab md-fab-bottom-right" ng-click="addTag()">
-                                    <md-icon aria-label="Menu"
-                                             md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
-                                </md-button>
-                            </div>
-                        </md-table-container>
-                        <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
-                                             md-total="{% raw %}{{tags.length}}{% endraw %}" md-page-select="false"
-                                             md-boundary-links="true"></md-table-pagination>
-
-                    </div>
 
                     <div style="width:100%;" ng-style="setTableHeight()"
                          ng-if="func.taskKey=='userpermission'&&func.rowspan!=1">
@@ -182,48 +98,6 @@
                         </md-table-container>
                         <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
                                              md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
-                                             md-boundary-links="true"></md-table-pagination>
-
-                    </div>
-
-                    <div style="width:100%;" ng-style="setTableHeight()"
-                         ng-if="func.taskKey=='deviceconfig'&&func.rowspan!=1">
-                        <md-table-container>
-                            <table md-table>
-                                <thead md-head md-order="myOrder">
-                                <tr md-row>
-                                    <th md-column><span></span></th>
-                                    <th md-column md-order-by="deviceGeneralName"><span>Name</span></th>
-                                    <th md-column md-order-by="deviceType"><span>Type</span></th>
-                                    <th md-column md-order-by="properties.portsCount"><span>Ports Count</span></th>
-                                    <th md-column md-order-by="properties.manufacturer"><span>Manufacturer</span></th>
-                                    <th md-column md-order-by="additionalInfo.typedCount"><span>No. of Device</span></th>
-                                </tr>
-                                </thead>
-                                <tbody md-body>
-                                <tr md-row
-                                    ng-repeat="rec in deviceConfigs | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
-                                    <td md-cell>{% raw %}{{  $index+(query.limit*(query.page-1))+1  }}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['deviceGeneralName']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['deviceType']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['properties']['portsCount']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['properties']['manufacturer']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['additionalInfo']['typedCount']}}{% endraw %}</td>
-
-                                </tr>
-
-                                </tbody>
-                            </table>
-                            <div>
-                                <md-button class="md-accent md-fab md-fab-bottom-right" ng-click="addTag()">
-                                    <md-icon aria-label="Menu"
-                                             md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
-                                </md-button>
-                            </div>
-                        </md-table-container>
-                        <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
-                                             md-total="{% raw %}{{deviceConfigs.length}}{% endraw %}"
-                                             md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>
 
                     </div>
@@ -326,16 +200,9 @@
 
                     </div>
 
-                    <div style="width:100%;" ng-if="func.taskKey=='tagsmaintenance'&&func.rowspan==1">
-                        Total tags: {% raw %} {{ tags.length }} {% endraw %}
-                        </div>
 
                     <div style="width:100%;" ng-if="func.taskKey=='userpermission'&&func.rowspan==1">
                         Total users: {% raw %} {{ users.length }} {% endraw %}
-                        </div>
-
-                    <div style="width:100%;" ng-if="func.taskKey=='deviceconfig'&&func.rowspan==1">
-                        Total device types: {% raw %} {{ deviceConfigs.length }} {% endraw %}
                         </div>
 
                     <div style="width:100%;" ng-if="func.taskKey=='databackup'&&func.rowspan==1">

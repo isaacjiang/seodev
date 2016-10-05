@@ -28,7 +28,7 @@ app.config(function ($mdThemingProvider) {
     });
     $mdThemingProvider.theme('default')
         .primaryPalette('leadingTheme')
-        .accentPalette('orange');
+        .accentPalette('blue');
 })
 
     .service('current_user', function ($http, $location, $q) {
@@ -145,8 +145,11 @@ app.config(function ($mdThemingProvider) {
             $window.location.href = '/help'
         };
         $scope.resert= function() {
-            $http.get('/server/reset?username='+$rootScope.current_user.username)
+           $http.get('/server/reset?username='+$rootScope.current_user.username)
         };
+        $scope.settings= function() {
+            $window.location.href = '/settings'
+            };
         $scope.instruction= function() {
             console.log('inst')
             instructionFn('hiring')

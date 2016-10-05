@@ -7,33 +7,21 @@ from flask import json
 #####
 
 class WorkFlow():
-    def __init__(self, processName=None, userName=None):
+    def __init__(self, processName=None):
         self.db = leadingdb
         self.processName = processName
-        self.userName = userName
-        self.status = 'normal'
-        workflowTemp = self.db.workflow.find({"processName": processName, "userName": userName}, {"_id": 0})
-        if workflowTemp.count() == 0:
-            workflowTemp = self.db.workflowTemp.find({"processName": processName}, {"_id": 0})
-            for workflow in workflowTemp:
-                if userName != None:
-                    workflow['userName'] = userName
-                    self.db.workflow.update_one(
-                        {"processName": processName, "userName": userName, "taskID": workflow['taskID']},
-                        {"$set": workflow}, upsert=True)
 
-    def get_all(self, processName=None, userName=None):
+    def get_all(self, processName=None):
         workflows = []
-        workflowTemp = self.db.workflow.find({"processName": processName, "userName": userName}, {"_id": 0}).sort(
+        workflowTemp = self.db.workflow.find({"processName": processName}, {"_id": 0}).sort(
             "taskID", 1)
-        if workflowTemp.count() == 0:
-            self.__init__(processName, userName)
-        for w in workflowTemp:
-            workflows.append(w)
+        if workflowTemp.count() != 0:
+            for w in workflowTemp:
+                workflows.append(w)
         return json.dumps(workflows)
 
-    def update_task(self, processName, userName, taskID, setValues):
-        self.db.workflow.update_one({"processName": processName, "userName": userName, "taskID": taskID},
+    def update_task(self, processName,taskID, setValues):
+        self.db.workflow.update_one({"processName": processName, "taskID": taskID},
                                     {"$set": setValues})
 
     def clear_user_all_task(self, processName, userName):

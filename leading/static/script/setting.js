@@ -2,62 +2,33 @@
  * Created by isaac on 31/08/15.
  */
 
-app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
-
-        $scope.backtomap = function () {
-            window.location.href = '/'
-        }
-    }])
-
-    .controller('SideNavCtrl', ['$rootScope', "$mdSidenav", function ($rootScope, $mdSidenav) {
-
-    }])
+app
 
     .controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', '$mdEditDialog', function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, $mdEditDialog) {
         current_user.getData().then(function () {
-            $scope.current_user = {}
-            $scope.current_user.username = current_user.username()
-            $scope.current_user.permission = current_user.permission()
-            $scope.current_user.status = current_user.status()
-            $scope.current_user.settings = current_user.settings()
-            console.log($scope.current_user.status)
+            $rootScope.current_user = {}
+            $rootScope.current_user.username = current_user.username()
+            $rootScope.current_user.permission = current_user.permission()
+            $rootScope.current_user.status = current_user.status()
 
-            $http.get('/rest/workflow/queryworkflow', {
+            $http.get('/api/workflow/queryworkflow', {
                 params: {
-                    processName: 'settings',
-                    username: $scope.current_user.username
+                    processName: 'settings'
                 }
             }).success(function (res) {
+                console.log(res)
                 $scope.tasks = res
-                $http.get('/rest/tags/gettags', {
-                    params: {
-                        params: 'all' //also the params could be 'all'
-                    }
-                }).success(function (res) {
-                    $scope.tags = res
-                })
 
-                $http({
-                    method: 'GET',
-                    url: '/rest/users/listallusers',
-                    params: {'params': 'all'}
-                }).then(function success(res) {
-                    $scope.users = res.data
-                })
 
-                $http.post('/rest/devices/getdeviceconfig', data = {
-                    'key': 'Device',
-                    'type': ['IPX', 'FP', 'MUX', 'DEMUX']
-                }).then(function success(res) {
-                    $scope.deviceConfigs = res.data
-                })
+                // $http({
+                //     method: 'GET',
+                //     url: '/rest/users/listallusers',
+                //     params: {'params': 'all'}
+                // }).then(function success(res) {
+                //     $scope.users = res.data
+                // })
 
-                $http.post('/rest/devices/getdeviceconfig', data = {
-                    'key': 'Device',
-                    'type': ['IPX', 'FP', 'MUX', 'DEMUX']
-                }).then(function success(res) {
-                    $scope.deviceConfigs = res.data
-                })
+
 
                 //console.log(res)
                 $scope.functions = []
@@ -73,18 +44,11 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
                     else if (t.taskKey == "userpermission") {
                         t.icon = 'ic_person_black_48px.svg'
                     }
-                    else if (t.taskKey == "usersettings") {
-                        t.icon = 'ic_folder_shared_black_48px.svg'
-                    }
+
                     else if (t.taskKey == "databackup") {
                         t.icon = 'ic_cloud_download_black_48px.svg'
                     }
-                    else if (t.taskKey == "deviceconfig") {
-                        t.icon = 'ic_dns_black_48px.svg'
-                    }
-                    else if (t.taskKey == "tagsmaintenance") {
-                        t.icon = 'ic_local_offer_black_48px.svg'
-                    }
+
                     if (t.taskKey != "systemsettings" || t.taskKey != "usersettings")
                         $scope.functions.push(t)
                 })
@@ -101,32 +65,6 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
             return style
         }
 
-        $rootScope.showProgress = function () {
-            $mdDialog.show({
-                controller: dialogController,
-                template: '<md-dialog>' +
-                '  <md-dialog-content>' +
-                '<div class="md-dialog-content">' +
-                '<h4>Hang on, We\'re working for you.</h4>' +
-                //'<span flex></span>' +
-                '</div>' +
-                '  <div style="min-height: 20px;min-width:480px" layout-padding layout-align="center center" layout> ' +
-                '<md-progress-linear md-mode="indeterminate" style="width:300px"></md-progress-linear>' +
-                '</div>' +
-                '<div layout="row" layout-align="end end"><md-button type="button" ng-click="closeDialog()" class="md-primary">Cancel</md-button></div>' +
-                '</md-dialog-content>' +
-                '</md-dialog>'
-            })
-        };
-        function dialogController($scope, $mdDialog) {
-            $scope.closeDialog = function () {
-                $mdDialog.hide();
-            }
-        }
-
-        $scope.cancel = function () {
-            $mdDialog.cancel();
-        };
 
         $rootScope.toggleFunction = function (func) {
             $scope.query = {
@@ -134,135 +72,7 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
                 limit: 5,
                 page: 1
             };
-            if (func == 'tagsmaintenance') {
-                $http.get('/rest/tags/gettags', {
-                    params: {
-                        params: 'all' //also the params could be 'all'
-                    }
-                }).success(function (res) {
-                    $scope.tags = res
-                    //$scope.columns = Object.keys($scope.data[0])
-
-                    $scope.deleteTag = function (d) {
-                        confirm = $mdDialog.confirm().title('Delete Tag')
-                            .content('<strong> Are you sure to delete tag: ' + d.tagName + '? </strong>')
-                            .cancel('No').ok('Yes')
-
-                        $mdDialog.show(confirm).then(function () {
-                            $http.post('/rest/tags/deletetag', data = d).success(function (res) {
-                                $rootScope.toggleFunction('tagsmaintenance')
-                            })
-                        }, function () {
-                            $mdDialog.cancel()
-                        }).finally(function () {
-                            confirm = undefined;
-                        });
-                    }
-
-                    $scope.onChange = function (rec) {
-                        $http.post('/rest/tags/settag', data = rec).success(function (res) {
-                            $rootScope.toggleFunction('tagsmaintenance')
-                        })
-                    }
-
-                    $scope.editTag = function (d) {
-                        $mdDialog.show({
-                            controller: tagCtrl,
-                            templateUrl: '/app/workflow/launchworkflow?process=addtags',
-                            parent: angular.element(document.body),
-                            //targetEvent: task.ev,
-                            clickOutsideToClose: false,
-                            locals: {selectedTag: d, method: 'edit'}
-                        })
-                    }
-
-                    $scope.addTag = function () {
-                        $mdDialog.show({
-                            controller: tagCtrl,
-                            templateUrl: '/app/workflow/launchworkflow?process=addtags',
-                            parent: angular.element(document.body),
-                            //targetEvent: task.ev,
-                            clickOutsideToClose: false,
-                            locals: {selectedTag: {}, method: 'add'}
-                        })
-                    }
-
-                    function tagCtrl($scope, $http, selectedTag, method) {
-                        $http.post('/rest/devices/getdeviceconfig', data = {
-                            'key': 'Device',
-                            'type': ['IPX', 'FP', 'MUX', 'DEMUX']
-                        }).then(function success(res) {
-                            $scope.deviceType = res.data
-                            $scope.cancelTag = function () {
-                                $mdDialog.cancel();
-                            };
-                            $scope.selectedType = []
-                            if (selectedTag.deviceTypeList != undefined) {
-                                $scope.deviceType.forEach(function (d) {
-                                    selectedTag.deviceTypeList.forEach(function (t) {
-                                        if (t == d.deviceGeneralName) {
-                                            $scope.selectedType.push(d)
-                                        }
-                                    })
-                                });
-                            }
-
-                            $scope.exists = function (item, list) {
-                                return list.indexOf(item) > -1;
-                            };
-
-                            $scope.toggle = function (item, list) {
-                                var idx = list.indexOf(item);
-                                if (idx > -1) {
-                                    list.splice(idx, 1);
-                                }
-                                else {
-                                    list.push(item);
-                                }
-                            };
-
-                            if (method == 'add') {
-                                $scope.newTag = {}
-                                $scope.title_dialog = 'Add Tag'
-                                $scope.newTag.tagType = 'Port'
-                                $scope.newTag.method = 'add'
-                            } else {
-                                $scope.title_dialog = 'Edit Tag'
-                                $scope.newTag = selectedTag
-                                $scope.newTag.method = 'edit'
-                            }
-
-                            $scope.submitTag = function (t) {
-                                //console.log($scope.selectedType)
-                                var typeList = [];
-                                $scope.newTag.deviceTypeList = []
-                                $scope.selectedType.forEach(function (t) {
-                                    typeList.push(t.deviceGeneralName)
-                                })
-                                $scope.newTag.deviceTypeList = typeList
-
-                                if ($scope.newTag.tagName == undefined || $scope.newTag.tagName == '' || $scope.newTag.tagName == null) {
-                                    $scope.message = 'Tag Name is required.';
-                                    $rootScope.notificationToast('Tag Name is required.');
-                                } else {
-                                    $scope.newTag.tagFilter = false
-
-                                    $http.post('/rest/tags/settag', data = t).success(function (res) {
-                                        $mdDialog.cancel();
-                                        $rootScope.toggleFunction('tagsmaintenance')
-                                    })
-                                }
-                            }
-                        })
-
-
-                    }
-
-
-                })
-
-            }
-            else if (func == 'userpermission') {
+          if (func == 'userpermission') {
                 $http({
                     method: 'GET',
                     url: '/rest/users/listallusers',
@@ -378,27 +188,10 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
                     }
                 })
             }
-            else if (func == 'deviceconfig') {
-                $http.post('/rest/devices/getdeviceconfig', data = {
-                    'key': 'Device',
-                    'type': ['IPX', 'FP', 'MUX', 'DEMUX']
-                }).then(function success(res) {
-                    $scope.deviceConfigs = res.data
-                    //console.log($scope.deviceConfigs)
-                    $scope.deviceConfigs.forEach(function (d) {
-                        if (d.deviceType == 'IPX') {
-                            d.deviceType = 'SWITCH'
-                        }
-                        if (d.deviceType == 'FP') {
-                            d.properties.portsCount = 'None'
-                        }
-                    })
 
-                })
-            }
             else if (func == 'databackup') {
                 //console.log(func, func == 'databackup')
-                $http.get('/rest/syssetting/listbackup', {
+                $http.get('/api/syssetting/listbackup', {
                     params: {
                         params: 'all' //also the params could be 'all'
                     }
@@ -433,7 +226,8 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
                         //console.log($scope.newSetting)
 
                         $scope.saveBackupSetting = function (t) {
-                            $http.post('/rest/syssetting/backupsetting', data = t).success(function (res) {
+                            $http.post('/api/syssetting/backupsetting', data = t).success(function (res) {
+                                console.log(res)
                                 $mdDialog.cancel()
                                 $rootScope.toggleFunction('userpermission')
                             })
@@ -442,8 +236,8 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
 
                         $scope.backup = function () {
                             console.log('backup')
-                            $rootScope.showProgress()
-                            $http.get('/rest/syssetting/startbackup', {
+                           // $rootScope.showProgress()
+                            $http.get('/api/syssetting/startbackup', {
                                 params: {
                                     username: username
                                 }
@@ -469,7 +263,7 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
 
                         $mdDialog.show(confirm).then(function () {
                             $rootScope.showProgress()
-                            $http.post('/rest/syssetting/deletebackup', data = d).success(function (res) {
+                            $http.post('/api/syssetting/deletebackup', data = d).success(function (res) {
                                 $scope.backupRecords = res
                                 $mdDialog.cancel()
                                 $rootScope.toggleFunction('databackup')
@@ -489,7 +283,7 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
 
                         $mdDialog.show(confirm).then(function () {
                             $rootScope.showProgress()
-                            $http.post('/rest/syssetting/restore', data = d).success(function (res) {
+                            $http.post('/api/syssetting/restore', data = d).success(function (res) {
                                 $scope.cancel()
                                 $scope.backupRecords = res
                             })
@@ -509,7 +303,7 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
 
                         $mdDialog.show(confirm).then(function () {
                             $rootScope.showProgress()
-                            $http.post('/rest/syssetting/downloadbackup', data = d).success(function (res) {
+                            $http.post('/api/syssetting/downloadbackup', data = d).success(function (res) {
                                 $mdDialog.cancel()
                                 $scope.backupRecords = res
                                 $rootScope.toggleFunction('databackup')
@@ -524,7 +318,7 @@ app.controller('lefttopMenuCtrlSettings', ['$scope', function ($scope) {
                 })
             }
             else if (func == 'systemsettings') {
-                $http.get('/rest/syssetting/getsettings', {
+                $http.get('/api/syssetting/getsettings', {
                     params: {
                         params: 'all' //also the params could be 'all'
                     }
