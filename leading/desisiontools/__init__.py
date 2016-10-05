@@ -19,7 +19,7 @@ blueprint.add_url_rule('/budget', view_func=controller.TasksService().budget,met
 blueprint.add_url_rule('/negotiate1', view_func=controller.TasksService().negotiate1,methods = ['GET','POST'])
 blueprint.add_url_rule('/negotiate2', view_func=controller.TasksService().negotiate2,methods = ['GET','POST'])
 blueprint.add_url_rule('/actions', view_func=controller.TasksService().actions,methods = ['GET','POST'])
-blueprint.add_url_rule('/project', view_func=controller.TasksService().project,methods = ['GET','POST'])
+blueprint.add_url_rule('/projects', view_func=controller.TasksService().projects,methods = ['GET','POST'])
 blueprint.add_url_rule('/visionarycompetition', view_func=controller.TasksService().visionarycompetition,methods = ['GET','POST'])
 blueprint.add_url_rule('/niches', view_func=controller.TasksService().niches,methods = ['GET','POST'])
 blueprint.add_url_rule('/corporateacquisitions', view_func=controller.TasksService().corporateacquisitions,methods = ['GET','POST'])

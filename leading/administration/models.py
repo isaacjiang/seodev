@@ -23,9 +23,9 @@ class DatabaseInit():
 
                 print "Input Data from : " + filename + " Completed."
 
-dataFileList = ['user','sys_task_list','teams','periods_def','employees_def','workforce_def']
+dataFileList = ['user','sys_task_list','teams','periods_def','employees_def','workforce_def','resources_def',
+                'budget_def','actions_def','negotiation_def','niches_def','projects_def','corporate_acquisitions_def']
 DatabaseInit().import_from_json(dataFileList)
-
 
 
 # def initDB():

@@ -140,32 +140,31 @@ class TasksService():
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
             print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
+            result = models.ResourceModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_init()
             return json.dumps(result)
 
         if request.method == 'POST':
             data= json.loads(request.data)
+            print data
             taskID = data["taskID"]
             companyName =  data["companyName"] if 'companyName' in data.keys() else None
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
-
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
-
+            tModel = models.ResourceModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
+            tModel.task_data_save(data['selectedResources'])
+            tModel.save(data['selectedResources'])
             tModel.task_complete()
             return json.dumps({"status":"success"})
 
     def budget(self):
-        if request.method =='GET':
-            taskID = request.args["taskID"]
-            companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
-            teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
-            period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
-            return json.dumps(result)
+        # if request.method =='GET':
+        #     taskID = request.args["taskID"]
+        #     companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
+        #     teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
+        #     period = request.args["period"] if 'period' in request.args.keys() else 0
+        #     print taskID
+        #     result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
+        #     return json.dumps(result)
 
         if request.method == 'POST':
             data= json.loads(request.data)
@@ -174,9 +173,9 @@ class TasksService():
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
 
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
+            tModel = models.BudgetModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
+            tModel.task_data_save(data['acc_budgets'])
+            tModel.save(data['acc_budgets'])
 
             tModel.task_complete()
             return json.dumps({"status":"success"})
@@ -188,7 +187,9 @@ class TasksService():
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
             print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
+            tModel = models.Negotiate1Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
+            result = tModel.get_init()
+            result['taskdata']=tModel.get_saved_data()
             return json.dumps(result)
 
         if request.method == 'POST':
@@ -198,11 +199,19 @@ class TasksService():
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
 
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
+            tModel = models.Negotiate1Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
+            print companyName
+            if companyName== "NewCo":
+               tModel.save(data)
+            else:
+                if data['action']:
+                    tModel.update_status('approved')
 
-            tModel.task_complete()
+                    tModel.task_data_save(data)
+                    tModel.task_complete()
+                else:
+                    tModel.update_status('returned')
+
             return json.dumps({"status":"success"})
 
 
@@ -213,7 +222,10 @@ class TasksService():
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
             print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
+            tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
+            result = tModel.get_init()
+
+            result['taskdata']=tModel.get_saved_data()
             return json.dumps(result)
 
         if request.method == 'POST':
@@ -223,11 +235,19 @@ class TasksService():
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
 
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
+            tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
+            print companyName
+            if companyName== "NewCo":
+                tModel.save(data)
+            else:
+                if data['action']:
+                    tModel.update_status('approved')
 
-            tModel.task_complete()
+                    tModel.task_data_save(data)
+                    tModel.task_complete()
+                else:
+                    tModel.update_status('returned')
+
             return json.dumps({"status":"success"})
 
     def actions(self):
@@ -237,7 +257,7 @@ class TasksService():
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
             print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
+            result = models.ActionsModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_init()
             return json.dumps(result)
 
         if request.method == 'POST':
@@ -247,21 +267,21 @@ class TasksService():
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
 
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
+            tModel = models.ActionsModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
+            tModel.task_data_save(data['actions'])
+            tModel.save(data['actions'])
 
             tModel.task_complete()
             return json.dumps({"status":"success"})
 
-    def project(self):
+    def projects(self):
         if request.method =='GET':
             taskID = request.args["taskID"]
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
             print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
+            result = models.ProjectsModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_init()
             return json.dumps(result)
 
         if request.method == 'POST':
@@ -271,9 +291,9 @@ class TasksService():
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
 
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
+            tModel = models.ProjectsModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
+            tModel.task_data_save(data['projects'])
+            tModel.save(data['projects'])
 
             tModel.task_complete()
             return json.dumps({"status":"success"})

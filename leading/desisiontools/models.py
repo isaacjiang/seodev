@@ -36,6 +36,12 @@ class TasksModel():
 
         return result
 
+    def get_task_data(self):
+        result = self.dbtaskdata.find_one({"teamName":self.teamName,"companyName":self.companyName,
+                                             "period":self.period},{self.taskID:1,"_id":0})
+
+        return result
+
     def auto_upgrade(self):
         result = self.dbtask.find({"teamName":self.teamName,"companyName":self.companyName,'period':self.period,'status':'Init'},{"_id":0})
         if result.count() ==0:
@@ -170,8 +176,142 @@ class ForecastModel(TasksModel):
     def update_forecast(self,forecast):
         self.db.forecast_com.update_one({"teamName":self.teamName,"companyName":self.companyName,
                                             "period":self.period},{"$set":{"forecast":forecast}},upsert=True)
-        return id
+        return forecast
 
+
+class ResourceModel(TasksModel):
+
+    def get_init(self):
+        result = {}
+        resources=[]
+        cursor = self.db.resources_def.find({'companyName':self.companyName,'startPeriod':self.period,
+                                             "status":"normal"},{"_id":0})
+        for item in cursor:
+            resources.append(item)
+        result["data"]=resources
+        result["status"] = "success"
+        return result
+
+    def save(self,resources):
+        for type in resources:
+            if len(resources[type]) > 0:
+                for res in resources[type]:
+                   self.db.resources_com.insert_one({"teamName":self.teamName,"companyName":self.companyName,'currentPeriod':self.teamName,'type':type,"resource":res})
+
+        return resources
+
+
+class BudgetModel(TasksModel):
+
+    # def get_init(self):
+    #     result = {}
+    #     resources=[]
+    #     cursor = self.db.resources_def.find({'companyName':self.companyName,'startPeriod':self.period,
+    #                                          "status":"normal"},{"_id":0})
+    #     for item in cursor:
+    #         resources.append(item)
+    #     result["data"]=resources
+    #     result["status"] = "success"
+    #     return result
+
+    def save(self,acc_budget):
+        self.db.budget_com.insert_one({"teamName":self.teamName,"companyName":self.companyName,
+                                       "currentPeriod":self.period,"acc_budget":acc_budget})
+
+        return acc_budget
+
+class ActionsModel(TasksModel):
+
+    def get_init(self):
+        result = {}
+        actions=[]
+        cursor = self.db.actions_def.find({},{"_id":0})
+        for item in cursor:
+            actions.append(item)
+        result["keyword"] = "allactions"
+        result["data"]=actions
+        return result
+
+    def save(self,actions):
+        for action in actions:
+            self.db.actions_com.insert_one({"teamName":self.teamName,"companyName":self.companyName,
+                                            "currentPeriod":self.period,"action":action})
+
+        return actions
+
+
+class ProjectsModel(TasksModel):
+
+    def get_init(self):
+        result = {}
+        projects=[]
+        cursor = self.db.projects_def.find({},{"_id":0})
+        for item in cursor:
+            projects.append(item)
+        result["keyword"] = "allprojects"
+        result["data"]=projects
+        return result
+
+    def save(self,projects):
+        for project in projects:
+            self.db.projects_com.update_one({"teamName":self.teamName,"companyName":self.companyName,
+                                     "currentPeriod":self.period,
+                                     'projectName':project['projectName']},{"$set":project},upsert=True)
+
+        return projects
+
+
+class Negotiate1Model(TasksModel):
+
+    def get_init(self):
+        result = {}
+        negotiationhr=[]
+        cursor = self.db.negotiation_def.find({},{"_id":0})
+        for item in cursor:
+            negotiationhr.append(item)
+        result["data"]=negotiationhr
+        return result
+
+    def get_saved_data(self):
+        taskdata = self.db.negotiation1_com.find_one({"teamName":self.teamName,
+                                                "currentPeriod":self.period},{"_id":0})
+        return taskdata
+
+    def save(self,data):
+        self.db.negotiation1_com.update_one({"teamName":self.teamName,
+                                             "currentPeriod":self.period},{"$set":{"status":"applied","negotiation":data}},upsert=True)
+
+        return data
+
+    def update_status(self,status):
+        self.db.negotiation1_com.update_one({"teamName":self.teamName,
+                                             "currentPeriod":self.period},{"$set":{"status":status}})
+
+class Negotiate2Model(TasksModel):
+
+    def get_init(self):
+        result = {}
+        negotiationhr=[]
+        cursor = self.db.negotiation_def.find({},{"_id":0})
+        for item in cursor:
+            negotiationhr.append(item)
+        result["data"]=negotiationhr
+        return result
+
+    def get_saved_data(self):
+        taskdata = self.db.negotiation2_com.find_one({"teamName":self.teamName,
+                                                      "currentPeriod":self.period},{"_id":0})
+        return taskdata
+
+    def save(self,data):
+        self.db.negotiation2_com.update_one({"teamName":self.teamName,
+                                             "currentPeriod":self.period},{"$set":{"status":"applied","negotiation":data}},upsert=True)
+
+        return data
+
+    def update_status(self,status):
+        self.db.negotiation2_com.update_one({"teamName":self.teamName,
+                                             "currentPeriod":self.period},{"$set":{"status":status}})
 
 class PeriodModel():
     def __init__(self, teamName=None,companyName=None):

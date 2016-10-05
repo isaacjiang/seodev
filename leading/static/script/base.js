@@ -738,7 +738,22 @@ app.config(function ($mdThemingProvider) {
                 };
                 $scope.submit = function () {
 
-                    $http.post('server/resources',data={"username":$rootScope.current_user.username,"companyName":$rootScope.userAtCompany.companyName,"teamName":$rootScope.userAtCompany.teamName,selectedResources:$scope.selectedResources}).success(function(d){
+                    //$http.post('server/resources',data={"username":$rootScope.current_user.username,"companyName":$rootScope.userAtCompany.companyName,
+                    // "teamName":$rootScope.userAtCompany.teamName,selectedResources:$scope.selectedResources})
+                    $http({
+                            method:'POST',
+                            url:"/api/dtools/resource",
+                            data:{
+                                username: $rootScope.current_user.username,
+                                taskID:task.taskID,
+                                companyName :task.companyName,
+                                teamName : task.teamName,
+                                period:task.period,
+                                selectedResources:$scope.selectedResources
+                            }
+                        }
+                    )
+                        .success(function(d){
                         console.log(d)
                     })
 
@@ -746,7 +761,23 @@ app.config(function ($mdThemingProvider) {
                     $mdSidenav('taskslist').close()
                     $window.location.reload();
                 };
-                $http.get('/server/queryresourcesbyusername?username='+$rootScope.current_user.username).success(function(d){
+
+                $http({
+                        method:'GET',
+                        url:"/api/dtools/resource",
+                        params:{
+                            username: $rootScope.current_user.username,
+                            taskID:task.taskID,
+                            companyName :task.companyName,
+                            teamName : task.teamName,
+                            period:task.period
+                        }
+                    }
+                )
+
+               // $http.get('/server/queryresourcesbyusername?username='+$rootScope.current_user.username)
+                    .success(function(d){
+                        console.log(d)
                     $scope.resources_ls = d.data.filter(function(e){return e.resourceType == "Lobbyist"})
                     $scope.resources_ma = d.data.filter(function(e){return e.resourceType == "AD&DM"})
                     $scope.resources_sa = d.data.filter(function(e){return e.resourceType == "Distribution Partners"})
@@ -958,7 +989,7 @@ app.config(function ($mdThemingProvider) {
                 }
                 //console.log($rootScope.userAtCompany.companyName,$rootScope.userAtCompany.currentPeriod )
                 $scope.if_show = function(company){
-                    return $rootScope.userAtCompany.companyName==company || ($rootScope.userAtCompany.companyName =='LegacyCo' && $rootScope.userAtCompany.currentPeriod == 5)
+                    return $rootScope.user_info.companyInfo.companyName==company || ($rootScope.user_info.companyInfo.companyName =='LegacyCo' && $rootScope.user_info.companyInfo.currentPeriod == 5)
                 }
                 //if ($rootScope.userAtCompany.companyName=='NewCo'){$scope.newco_show = true }
                 //if ($rootScope.userAtCompany.companyName=='LegacyCo'){$scope.legacyco_show = true }
@@ -968,12 +999,26 @@ app.config(function ($mdThemingProvider) {
                 };
                 $scope.submit = function (acc_budget,event) {
                     console.log(acc_budget)
-                    $http.post('server/budget',data={username:$rootScope.current_user.username,acc_budgets:acc_budget}).success(function(d){
+                    //$http.post('server/budget',data={username:$rootScope.current_user.username,acc_budgets:acc_budget})
+                    $http({
+                            method:'POST',
+                            url:"/api/dtools/budget",
+                            data:{
+                                username: $rootScope.current_user.username,
+                                taskID:task.taskID,
+                                companyName :task.companyName,
+                                teamName : task.teamName,
+                                period:task.period,
+                                acc_budgets:acc_budget
+                            }
+                        }
+                    )
+                        .success(function(d){
                         console.log(d)
                         $window.location.reload();
                     })
                     $mdDialog.cancel();
-                    $mdSidenav('left').close()
+                    $mdSidenav('taskslist').close()
 
                 };
                 $timeout(function () {
@@ -1031,8 +1076,8 @@ app.config(function ($mdThemingProvider) {
                     $mdDialog.cancel();
                 };
                 //console.log($rootScope.userAtCompany.currentPeriod == 1)
-                $scope.currentPeriod = $rootScope.userAtCompany.currentPeriod
-                $scope.companyName = $rootScope.userAtCompany.companyName
+                $scope.currentPeriod = $rootScope.user_info.companyInfo.currentPeriod
+                $scope.companyName = $rootScope.user_info.companyInfo.companyName
                 $scope.selectedEmployees = [];
                 //console.log($scope.selectedEmployees)
                 $scope.toggle = function (item, list) {
@@ -1101,15 +1146,50 @@ app.config(function ($mdThemingProvider) {
 
                     //console.log(selectedEmployees,funding)
 
-                    $http.post('server/negotiation1',data={username:$rootScope.current_user.username,selectedEmployees:selectedEmployees,funding:funding,sumInfluenceSales:sumInfluenceSales,calculatedValues:calculatedValues,action:action}).success(function(d){
+                    // $http.post('server/negotiation1',data={username:$rootScope.current_user.username,
+                    //     selectedEmployees:selectedEmployees,
+                    //     funding:funding,sumInfluenceSales:sumInfluenceSales,
+                    //     calculatedValues:calculatedValues,action:action})
+                    $http({
+                            method:'POST',
+                            url:"/api/dtools/negotiate1",
+                            data:{
+                                username: $rootScope.current_user.username,
+                                taskID:task.taskID,
+                                companyName :task.companyName,
+                                teamName : task.teamName,
+                                period:task.period,
+                                selectedEmployees:selectedEmployees,
+                                funding:funding,
+                                sumInfluenceSales:sumInfluenceSales,
+                                calculatedValues:calculatedValues,
+                                action:action
+                            }
+                        }
+                    )
+
+                        .success(function(d){
                         console.log(d)
-                        $window.location.reload();
+                       $window.location.reload();
                     })
                     $mdDialog.cancel();
                     $mdSidenav('left').close()
 
                 };
-                $http.get('/server/querywithdata?keyword=allnegotiationhr').success(function(data){
+                //$http.get('/server/querywithdata?keyword=allnegotiationhr')
+                $http({
+                        method:'GET',
+                        url:"/api/dtools/negotiate1",
+                        params:{
+                            username: $rootScope.current_user.username,
+                            taskID:task.taskID,
+                            companyName :task.companyName,
+                            teamName : task.teamName,
+                            period:task.period
+                        }
+                    }
+                )
+                    .success(function(data){
                     console.log(data)
                     $scope.negotiationhr_sales = []
                     $scope.negotiationhr_pd = []
@@ -1121,36 +1201,66 @@ app.config(function ($mdThemingProvider) {
                         else{$scope.negotiationhr_pd.push(d)}
 
                     })
+
+                        //task data
+                            if (data.taskdata.negotiation != null) {
+                                $scope.status = data.taskdata.status
+                                $scope.selectedEmployees = []
+                                data.taskdata.negotiation.selectedEmployees.forEach(function (d) {
+
+                                    if (d.title=="Top Salespeople") {
+                                        $scope.negotiationhr_sales.forEach(function (e) {
+                                            //console.log(e.employeeID, d.employeeID,e)
+                                            if (e.employeeID == d.employeeID) {e.selected = true}
+                                        })}
+                                    else if (d.title=="Technical Experts"){
+                                        $scope.negotiationhr_te.forEach(function (e) {
+                                            if (e.employeeID == d.employeeID) {e.selected = true}
+                                        })}
+                                    else{$scope.negotiationhr_pd.forEach(function (e) {
+                                        if (e.employeeID == d.employeeID) {e.selected = true}
+                                    })}
+
+                                    $scope.toggle(d,$scope.selectedEmployees)
+
+                                })
+
+                                $scope.funding =data.taskdata.negotiation.funding
+                                $scope.sumInfluenceSales =data.taskdata.negotiation.sumInfluenceSales
+                                $scope.calculatedValues =data.taskdata.negotiation.calculatedValues
+                                $scope.applyStatus = data.taskdata.status
+                            }
                 })
-                $http.get('/server/querynewconegotiationwithconditions?teamname='+$rootScope.userAtCompany.teamName).success(function(data){
-                    console.log(data)
-                    if (data.negotiation != null) {
-                        $scope.status = data.status
-                        $scope.selectedEmployees = []
-                        data.negotiation.selectedEmployees.forEach(function (d) {
-
-                            if (d.title=="Top Salespeople") {
-                                $scope.negotiationhr_sales.forEach(function (e) {
-                                    //console.log(e.employeeID, d.employeeID,e)
-                                    if (e.employeeID == d.employeeID) {e.selected = true}
-                                })}
-                            else if (d.title=="Technical Experts"){
-                                $scope.negotiationhr_te.forEach(function (e) {
-                                    if (e.employeeID == d.employeeID) {e.selected = true}
-                                })}
-                            else{$scope.negotiationhr_pd.forEach(function (e) {
-                                if (e.employeeID == d.employeeID) {e.selected = true}
-                            })}
-
-                            $scope.toggle(d,$scope.selectedEmployees)
-
-                        })
-
-                        $scope.funding =data.negotiation.funding
-                        $scope.sumInfluenceSales =data.negotiation.sumInfluenceSales
-                        $scope.calculatedValues =data.negotiation.calculatedValues
-                        $scope.applyStatus = data.status
-                    }  })
+                // $http.get('/server/querynewconegotiationwithconditions?teamname='+$rootScope.userAtCompany.teamName)
+                //     .success(function(data){
+                //     console.log(data)
+                //     if (data.negotiation != null) {
+                //         $scope.status = data.status
+                //         $scope.selectedEmployees = []
+                //         data.negotiation.selectedEmployees.forEach(function (d) {
+                //
+                //             if (d.title=="Top Salespeople") {
+                //                 $scope.negotiationhr_sales.forEach(function (e) {
+                //                     //console.log(e.employeeID, d.employeeID,e)
+                //                     if (e.employeeID == d.employeeID) {e.selected = true}
+                //                 })}
+                //             else if (d.title=="Technical Experts"){
+                //                 $scope.negotiationhr_te.forEach(function (e) {
+                //                     if (e.employeeID == d.employeeID) {e.selected = true}
+                //                 })}
+                //             else{$scope.negotiationhr_pd.forEach(function (e) {
+                //                 if (e.employeeID == d.employeeID) {e.selected = true}
+                //             })}
+                //
+                //             $scope.toggle(d,$scope.selectedEmployees)
+                //
+                //         })
+                //
+                //         $scope.funding =data.negotiation.funding
+                //         $scope.sumInfluenceSales =data.negotiation.sumInfluenceSales
+                //         $scope.calculatedValues =data.negotiation.calculatedValues
+                //         $scope.applyStatus = data.status
+                //     }  })
 
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
@@ -1224,22 +1334,53 @@ app.config(function ($mdThemingProvider) {
                             .cancel('Cancel')
                             .targetEvent(event)
                     ).then(function(d){
-                        $http.post('server/action',data={username:$rootScope.current_user.username,actions:$scope.selectedActions}).success(function(d){
+                        // $http.post('server/action',data={username:$rootScope.current_user.username,
+                        //     actions:$scope.selectedActions})
+                        $http({
+                                method:'POST',
+                                url:"/api/dtools/actions",
+                                data:{
+                                    username: $rootScope.current_user.username,
+                                    taskID:task.taskID,
+                                    companyName :task.companyName,
+                                    teamName : task.teamName,
+                                    period:task.period,
+                                    actions:$scope.selectedActions
+                                }
+                            }
+                        )
+
+
+                            .success(function(d){
                             console.log(d)
 
                             $mdDialog.cancel();
-                            $mdSidenav('left').close()
+                            $mdSidenav('taskslist').close()
                             $window.location.reload();
                         })
                         //$mdDialog.hide();
                     },function(){
-                        actionsfn($event)
+                        actionsfn(task)
                     })
                 };
-                $http.get('/server/querywithdata?keyword=allactions').success(function(d){
-                    console.log($rootScope.userAtCompany.companyName)
+              //  $http.get('/server/querywithdata?keyword=allactions')
+
+                $http({
+                        method:'GET',
+                        url:"/api/dtools/actions",
+                        params:{
+                            username: $rootScope.current_user.username,
+                            taskID:task.taskID,
+                            companyName :task.companyName,
+                            teamName : task.teamName,
+                            period:task.period
+                        }
+                    }
+                )
+                    .success(function(d){
+                   // console.log($rootScope.userAtCompany.companyName)
                     $scope.actions = d.data.filter(function (d) {
-                        return d.companyName ==$rootScope.userAtCompany.companyName
+                        return d.companyName ==task.companyName
                     })
                     $scope.leadershipActions=[]
                     $scope.marketingActions=[]
@@ -1331,20 +1472,49 @@ app.config(function ($mdThemingProvider) {
                             .cancel('Cancel')
 
                     ).then(function(d){
-                        $http.post('server/project',data={username:$rootScope.current_user.username,projects:$scope.selectedProjects}).success(function(d){
+                        // $http.post('server/project',data={username:$rootScope.current_user.username,
+                        //     projects:$scope.selectedProjects})
+                        $http({
+                                method:'POST',
+                                url:"/api/dtools/projects",
+                                data:{
+                                    username: $rootScope.current_user.username,
+                                    taskID:task.taskID,
+                                    companyName :task.companyName,
+                                    teamName : task.teamName,
+                                    period:task.period,
+                                    projects:$scope.selectedProjects
+                                }
+                            }
+                        )
+                            .success(function(d){
                             console.log(d)
                             $window.location.reload();
                         })
 
 
                         $mdDialog.cancel();
-                        $mdSidenav('left').close()
+                        $mdSidenav('taskslist').close()
                     },function(){
                         projectfn($event)
                     })
 
                 };
-                $http.get('/server/querywithdata?keyword=allprojects').success(function(d){
+                // $http.get('/server/querywithdata?keyword=allprojects')
+                $http({
+                        method:'GET',
+                        url:"/api/dtools/projects",
+                        params:{
+                            username: $rootScope.current_user.username,
+                            taskID:task.taskID,
+                            companyName :task.companyName,
+                            teamName : task.teamName,
+                            period:task.period
+                        }
+                    }
+                )
+                    .success(function(d){
+                        console.log(d)
                     $scope.projects = d.data
                     $scope.projects.forEach(function(d){
                         d.totalCost = d.costHitPDbudget.period2+d.costHitPDbudget.period3+d.costHitPDbudget.period4+d.costHitPDbudget.period5+d.costHitPDbudget.period6+d.costHitPDbudget.period7
@@ -1452,14 +1622,29 @@ app.config(function ($mdThemingProvider) {
                 $scope.submit = function (selectedNiches,event) {
 
                     //console.log(selectedNiches)
-                    $http.post('server/visionarycompetition',data={companyName:$rootScope.userAtCompany.companyName,teamName:$rootScope.userAtCompany.teamName,selectedNiches:selectedNiches}).success(function(d){
+                    // $http.post('server/visionarycompetition',data={companyName:$rootScope.userAtCompany.companyName,teamName:$rootScope.userAtCompany.teamName,
+                    //     selectedNiches:selectedNiches})
+                    $http({
+                            method:'POST',
+                            url:"/api/dtools/visionarycompetition",
+                            data:{
+                                username: $rootScope.current_user.username,
+                                taskID:task.taskID,
+                                companyName :task.companyName,
+                                teamName : task.teamName,
+                                period:task.period,
+                                selectedNiches:selectedNiches
+                            }
+                        }
+                    )
+                        .success(function(d){
                         console.log(d)
                         $window.location.reload();
                     })
 
 
                     $mdDialog.cancel();
-                    $mdSidenav('left').close()
+                    $mdSidenav('taskslist').close()
 
                 };
                 $timeout(function () {
@@ -1502,7 +1687,7 @@ app.config(function ($mdThemingProvider) {
                 bindToController: true,
                 controller: negotiate2Ctrl,
                 controllerAs: 'dialog',
-                templateUrl:  '/api/dtools/getpage?pagename=nigotiation2',
+                templateUrl:  '/api/dtools/getpage?pagename=negotiation2',
                 locals:{func:instructionFn,timer:timerFn}
             });
 
@@ -1514,10 +1699,23 @@ app.config(function ($mdThemingProvider) {
                 $scope.close = function () {
                     $mdDialog.cancel();
                 };
-                $scope.currentPeriod = $rootScope.userAtCompany.currentPeriod
-                $scope.companyName = $rootScope.userAtCompany.companyName
+                $scope.currentPeriod = $rootScope.user_info.companyInfo.currentPeriod
+                $scope.companyName = $rootScope.user_info.companyInfo.companyName
 
-                $http.get('/server/querynewconegotiation2withconditions?teamname='+$rootScope.userAtCompany.teamName).success(function(data){
+                //$http.get('/server/querynewconegotiation2withconditions?teamname='+$rootScope.userAtCompany.teamName)
+                $http({
+                        method:'GET',
+                        url:"/api/dtools/negotiate2",
+                        params:{
+                            username: $rootScope.current_user.username,
+                            taskID:task.taskID,
+                            companyName :task.companyName,
+                            teamName : task.teamName,
+                            period:task.period
+                        }
+                    }
+                )
+                    .success(function(data){
                     console.log(data)
                     if (data.negotiation != null) {
                         $scope.status = data.status
@@ -1535,22 +1733,38 @@ app.config(function ($mdThemingProvider) {
                     }
                 })
                 //$scope.selectedIndex=1
-                $http.get('/server/queryworkforceatstart?username='+$rootScope.current_user.username).success(function(d){
-                    // console.log(d)
-                    $scope.workforce={"marketing": {"valueatstart": d.marketing.adjustment+d.marketing.valueatstart, "valuebyhr": d.marketing.adjustment+d.marketing.valueatstart+100, "adjustment": 0},
-                        "sales": {"valueatstart": d.sales.adjustment+d.sales.valueatstart, "valuebyhr": d.sales.adjustment+d.sales.valueatstart+100, "adjustment": 0},
-                        "support": {"valueatstart": d.support.adjustment+d.support.valueatstart, "valuebyhr": d.support.adjustment+d.support.valueatstart+100, "adjustment": 0},
-                        "logisticsit": {"valueatstart": d.logisticsit.adjustment+d.logisticsit.valueatstart, "valuebyhr": d.logisticsit.adjustment+d.logisticsit.valueatstart+100, "adjustment": 0},
-                        "productdevelopment": {"valueatstart": d.productdevelopment.adjustment+d.productdevelopment.valueatstart, "valuebyhr": d.productdevelopment.adjustment+d.productdevelopment.valueatstart+100, "adjustment": 0}}
-                })
+                // $http.get('/server/queryworkforceatstart?username='+$rootScope.current_user.username).success(function(d){
+                //     // console.log(d)
+                //     $scope.workforce={"marketing": {"valueatstart": d.marketing.adjustment+d.marketing.valueatstart, "valuebyhr": d.marketing.adjustment+d.marketing.valueatstart+100, "adjustment": 0},
+                //         "sales": {"valueatstart": d.sales.adjustment+d.sales.valueatstart, "valuebyhr": d.sales.adjustment+d.sales.valueatstart+100, "adjustment": 0},
+                //         "support": {"valueatstart": d.support.adjustment+d.support.valueatstart, "valuebyhr": d.support.adjustment+d.support.valueatstart+100, "adjustment": 0},
+                //         "logisticsit": {"valueatstart": d.logisticsit.adjustment+d.logisticsit.valueatstart, "valuebyhr": d.logisticsit.adjustment+d.logisticsit.valueatstart+100, "adjustment": 0},
+                //         "productdevelopment": {"valueatstart": d.productdevelopment.adjustment+d.productdevelopment.valueatstart, "valuebyhr": d.productdevelopment.adjustment+d.productdevelopment.valueatstart+100, "adjustment": 0}}
+                // })
 
                 $scope.submit = function (estimatedIncome,Costs,expenditure,action) {
 
-                    $http.post('server/negotiation2',data={username:$rootScope.current_user.username,estimatedIncome:estimatedIncome,costs:Costs,expenditure:expenditure,action:action}).success(function(d){
+                    // $http.post('server/negotiation2',data={username:$rootScope.current_user.username,
+                    //     estimatedIncome:estimatedIncome,costs:Costs,expenditure:expenditure,action:action})
+                    $http({
+                            method:'POST',
+                            url:"/api/dtools/negotiate2",
+                            data:{
+                                username: $rootScope.current_user.username,
+                                taskID:task.taskID,
+                                companyName :task.companyName,
+                                teamName : task.teamName,
+                                period:task.period,
+                                estimatedIncome:estimatedIncome,costs:Costs,expenditure:expenditure,action:action
+                            }
+                        }
+                    )
+
+                        .success(function(d){
                         $window.location.reload();
                         console.log(d)})
                     $mdDialog.cancel();
-                    $mdSidenav('left').close()
+                    $mdSidenav('taskslist').close()
                 };
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
