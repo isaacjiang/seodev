@@ -1,12 +1,12 @@
 __author__ = 'isaac'
-import models
-from flask import json, request
-import importlib
 from datetime import datetime, timedelta
+from flask import json, request
 from threading import Timer
 
+import models
 
 class SystemService():
+
     def __init__(self):
         self.model = models
 
@@ -80,3 +80,14 @@ class SystemService():
             # print data['_id']
             result = self.model.SystemSetting(data['_id']).set(group=data['group'], content=data['content'])
         return json.dumps('Setting changed!')
+
+    def set_data_config(self):
+        dataConf = json.loads(request.data)
+        result = self.model.DataInitialization().set_data_config(dataConf=dataConf)
+        return json.dumps(result)
+
+    def get_data_config(self):
+        result = self.model.DataInitialization().get_data_config()
+        return json.dumps(result)
+
+

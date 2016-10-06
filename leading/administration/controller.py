@@ -11,10 +11,7 @@ def userLogin():
 def backupSetting():
     return render_template('system/backupsetting.html')
 
-def scanports():
-    return render_template('scanports.html')
-
-def exportExcel():
-    return render_template('exportExcel.html')
+def datainit():
+    return render_template('system/addDataConf.html')
 
 

@@ -16,3 +16,6 @@ blueprint.add_url_rule('/backupsetting', methods=['POST'],
 
 blueprint.add_url_rule('/getsettings', view_func=controller.SystemService().get_all_setting)
 blueprint.add_url_rule('/setsystemsetting', methods=['POST'], view_func=controller.SystemService().set_system_setting)
+
+blueprint.add_url_rule('/getdataconfig', view_func=controller.SystemService().get_data_config)
+blueprint.add_url_rule('/setdataconfig', methods=['POST'], view_func=controller.SystemService().set_data_config)

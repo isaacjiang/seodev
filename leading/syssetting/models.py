@@ -3,6 +3,9 @@ from leading.config import leadingdb, DATABASE_DOMAIN, DATABASE_PORT
 from datetime import datetime
 import subprocess
 from flask import json
+from bson.son import SON
+from openpyxl import Workbook,load_workbook
+import os
 
 
 #####
@@ -108,3 +111,32 @@ class SystemSetting():
     def set(self, **kwargs):
         self.update_id(group=kwargs['group'])
         self.db.settings.update_one({"_id": self._id}, {"$set": kwargs}, upsert=True)
+
+class DataInitialization():
+    def __init__(self):
+        self.db = leadingdb
+
+    def set_data_config(self,dataConf):
+        self.db.data_conf_def.update_one({'item':dataConf['item']},{"$set":dataConf},upsert=True)
+        return self.get_data_config()
+
+    def get_data_config(self):
+        result = self.db.data_conf_def.find({},{"_id":0})
+        return list(result)
+
+    def export_db_to_excel(self,list):
+
+        wb = Workbook()
+
+        ws0 = wb.active
+        ws0.title='task_list'
+        source_data = sdb.sys_tasks_list.find({'period':{"$gt":0}}, {"_id": 0,"preProcess":0}).sort([('companyName',pymongo.ASCENDING)
+                                                                                                        ,('period',pymongo.ASCENDING),('processNo',pymongo.ASCENDING)])
+        keys=['companyName','period','processNo','taskID','taskName','comment']
+        for index1,sd in enumerate(source_data):
+            if index1 == 0:
+                for index2,key in enumerate(keys):
+                    ws0.cell(column=index2+1, row=1, value=key)
+            for index3,key in enumerate(keys):
+                ws0.cell(column=index3+1, row=index1+2, value=sd[key])
+

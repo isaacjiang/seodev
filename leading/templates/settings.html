@@ -11,14 +11,12 @@
 
 {% block content %}
     <div ng-controller="settingsCtrl" layout="row" ng-cloak>
-        <md-sidenav class="md-sidenav-left" md-component-id="settings" md-is-locked-open="true"
-                    md-whiteframe="4" flex style="z-index: 0;">
+        <md-sidenav class="md-sidenav-left" md-component-id="settings" md-is-locked-open="true" flex style="z-index: 0">
             <md-toolbar class="md-accent">
                 <h1 class="md-toolbar-tools">Settings</h1>
             </md-toolbar>
             <md-content layout-padding>
                 <md-list class="md-dense" flex>
-
                     <md-list-item class="md-2-line" ng-click="toggleFunction(func.taskKey)"
                                   aria-label="settings" ng-repeat=" func in tasks">
                         <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
@@ -200,6 +198,58 @@
 
                     </div>
 
+                    <div style="width:100%;" ng-style="setTableHeight()"
+                         ng-if="func.taskKey=='datainitialization'&&func.rowspan!=1">
+                        <md-table-container>
+                            <table md-table>
+                                <thead md-head md-order="myOrder">
+                                <tr md-row>
+                                    <th md-column><span></span></th>
+                                    <th md-column md-order-by="item"><span>Item</span></th>
+                                    <th md-column md-order-by="sheetname"><span>Sheet Name</span></th>
+                                    <th md-column md-order-by="orderlist"><span>Order</span></th>
+                                    <th md-column md-order-by="status"><span>Status</span></th>
+                                    <th md-column md-order-by=""><span>Upload / Download</span></th>
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row
+                                    ng-repeat="dc in dataConf | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
+                                    <td md-cell>{% raw %}{{  $index+(query.limit*(query.page-1))+1  }}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{ dc['item']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{ dc['sheetname']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{ dc['orderlist']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{ dc['status']}}{% endraw %}</td>
+                                    <td md-cell>
+                                        <div layout flex="45">
+                                            <md-button ng-click="deleteUser(rec)"
+                                                       class="md-icon-button">
+                                                <md-icon aria-label="Menu"
+                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_black_48px.svg') }}"></md-icon>
+                                            </md-button>
+                                            <md-button ng-click="editUser(rec)"
+                                                       class="md-icon-button">
+                                                <md-icon aria-label="Menu"
+                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_edit_black_48px.svg') }}"></md-icon>
+                                            </md-button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <div>
+                                <md-button class="md-accent md-fab md-fab-bottom-right" ng-click="addDataConf()">
+                                    <md-icon aria-label="Menu"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
+                                </md-button>
+                            </div>
+                        </md-table-container>
+                        <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
+                                             md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
+                                             md-boundary-links="true"></md-table-pagination>
+
+                    </div>
 
                     <div style="width:100%;" ng-if="func.taskKey=='userpermission'&&func.rowspan==1">
                         Total users: {% raw %} {{ users.length }} {% endraw %}
