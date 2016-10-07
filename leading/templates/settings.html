@@ -208,7 +208,7 @@
                                     <th md-column md-order-by="item"><span>Item</span></th>
                                     <th md-column md-order-by="sheetname"><span>Sheet Name</span></th>
                                     <th md-column md-order-by="orderlist"><span>Order</span></th>
-                                    <th md-column md-order-by="status"><span>Status</span></th>
+                                    <th md-column md-order-by="upload_date"><span>Upload Date</span></th>
                                     <th md-column md-order-by=""><span>Upload / Download</span></th>
                                 </tr>
                                 </thead>
@@ -219,19 +219,26 @@
                                     <td md-cell>{% raw %}{{ dc['item']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{ dc['sheetname']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{ dc['orderlist']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{ dc['status']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{ dc['upload_date']}}{% endraw %}</td>
                                     <td md-cell>
-                                        <div layout flex="45">
-                                            <md-button ng-click="deleteUser(rec)"
+                                        <div layout flex="80">
+                                            <md-button ng-click="downloadfile(dc)"
                                                        class="md-icon-button">
                                                 <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_black_48px.svg') }}"></md-icon>
+                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_file_download_black_48px.svg') }}"></md-icon>
                                             </md-button>
-                                            <md-button ng-click="editUser(rec)"
-                                                       class="md-icon-button">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_edit_black_48px.svg') }}"></md-icon>
+
+                                            <md-button class="md-icon-button" aria-label="fileupload">
+                                                <div ngf-select="fileSelected($files,dc)" accept=".xlsx">
+                                                    <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_cloud_upload_black_48px.svg') }}"
+                                                             aria-label="Files upload"></md-icon>
+                                                </div>
                                             </md-button>
+{#                                            <md-button ng-click="uploadfile(dc)"#}
+{#                                                       class="md-icon-button">#}
+{#                                                <md-icon aria-label="Menu"#}
+{#                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_cloud_upload_black_48px.svg') }}"></md-icon>#}
+{#                                            </md-button>#}
                                         </div>
                                     </td>
                                 </tr>

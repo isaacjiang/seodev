@@ -4,8 +4,8 @@
 
 app
 
-    .controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', '$mdEditDialog',
-        function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, $mdEditDialog) {
+    .controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', 'Upload',
+        function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, Upload) {
         $scope.setHeight = function () {
             var style = {height: windowsize.height - 80 + 'px'}
             return style
@@ -367,21 +367,42 @@ app
                     }
                 )
                     .success(function(d){
-                        console.log(d)
+                       // console.log(d)
                       $scope.dataConf =d
                     })
 
+                $scope.fileSelected=function(file,dataConf) {
+                    Upload.upload({
+                        url: '/api/syssetting/savefiletmp',
+                        data: {files: file}
+                    }).then(function (response) {
 
-                console.log('init data')
+                        dataConf['filename']=response.data.filename
+                        dataConf['upload_date']=response.data.upload_date
+                        dataConf['status']=response.data.status
+                        $http({
+                                method:'POST',
+                                url:"/api/syssetting/datainitialize",
+                                data:dataConf
+                            }
+                        )
+                            .success(function(d){
+                                console.log(d)
+                                $mdDialog.cancel();
+                                $rootScope.toggleFunction('datainitialization')
+                            })
+                    });
+                }
+
                 $scope.addDataConf = function () {
                     $mdDialog.show({
                         controller: addDataConfCtrl,
                         templateUrl: '/app/system/datainit',
                         parent: angular.element(document.body),
                         clickOutsideToClose: false,
-                        locals: {selectedUser: {}, method: 'add', allUser: $scope.users}
+                        locals: {}
                     })
-                    function addDataConfCtrl($scope, $http, selectedUser, method, allUser) {
+                    function addDataConfCtrl($scope, $http) {
                         $scope.cancel = function () {
                             $mdDialog.cancel();
                         };
@@ -398,8 +419,11 @@ app
                                     $rootScope.toggleFunction('datainitialization')
                                 })
                         }
+
                     }
+
                 }
+
             }
             else {
             $scope.data = []

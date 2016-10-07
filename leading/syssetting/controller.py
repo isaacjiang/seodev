@@ -90,4 +90,21 @@ class SystemService():
         result = self.model.DataInitialization().get_data_config()
         return json.dumps(result)
 
+    def save_file_tmp(self):
+        dataConf ={}
+        if len(request.files) > 0:
+            file = request.files['files[0]'].read()
+            filename=request.files['files[0]'].filename
+            self.model.DataInitialization().save_file_tmp(file=file,filename =filename)
 
+            dataConf['filename'] = filename
+            dataConf['upload_date'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            dataConf['status'] = 'Updated'
+           #self.model.DataInitialization().set_data_config(dataConf)
+        return json.dumps(dataConf)
+
+    def data_initialize(self):
+        dataConf =json.loads(request.data)
+        result = self.model.DataInitialization().init_db_from_excel(dataConf=dataConf)
+        self.model.DataInitialization().set_data_config(dataConf)
+        return json.dumps(result)

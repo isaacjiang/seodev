@@ -1,14 +1,13 @@
-from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
-from leading.config import leadingdb, DATABASE_DOMAIN, DATABASE_PORT
+from pymongo import ASCENDING, DESCENDING
+from leading.config import leadingdb,leadingfiledb, DATABASE_DOMAIN, DATABASE_PORT,APPLICATION_DATA
 from datetime import datetime
 import subprocess
 from flask import json
-from bson.son import SON
 from openpyxl import Workbook,load_workbook
 import os
+import gridfs
+from bson.objectid import ObjectId
 
-
-#####
 class DatabaseBackup():
     def __init__(self):
         self.sourcedb_host = DATABASE_DOMAIN
@@ -140,3 +139,27 @@ class DataInitialization():
             for index3,key in enumerate(keys):
                 ws0.cell(column=index3+1, row=index1+2, value=sd[key])
 
+    def save_file_tmp(self,file,filename):
+        if os.path.isfile(os.path.join(APPLICATION_DATA,filename)):
+            os.remove(os.path.join(APPLICATION_DATA,filename))
+        f = open(os.path.join(APPLICATION_DATA,filename), 'w')
+        f.write(file)
+        f.close()
+
+    def init_db_from_excel(self,dataConf):
+        wb = load_workbook(os.path.join(APPLICATION_DATA,dataConf['filename']))
+        print wb.get_sheet_names()
+        sheetsList = wb.get_sheet_names()
+        if dataConf['sheetname'] not in sheetsList:
+            return {'error': 'Can not find the Sheet Name in the file.'}
+
+        # if 'account_desc' in sheetsList:
+        #     ws1 = wb['account_desc']
+        #     title=[]
+        #     for c in range(1,len(ws1.columns)+1):
+        #         title.append(ws1.cell(row=1,column=c).value)
+        #     for r in range(2,len(ws1.rows)+1):
+        #         row_value = {}
+        #         for c in range(1,len(ws1.columns)+1):
+        #             row_value[title[c-1]] = ws1.cell(row=r,column=c).value
+        #         sdb.account_desc.update_one({"accountDescID":row_value['accountDescID']},{"$set":row_value},upsert=True)
