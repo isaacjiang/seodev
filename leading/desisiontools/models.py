@@ -22,11 +22,15 @@ class TasksModel():
             result.append(r)
         return result
 
+    def check_peer_status(self, taskID, companyName):
+        res = self.dbtask.find({"taskID": taskID, "companyName": companyName, "status": "Init"}).count()
+        return False if res > 0 else True
+
     def update_task_file(self,id,**kwargs):
         task= self.dbtask.find_one({"_id":ObjectId(id)},{"_id":0})
 
-        self.db.sys_task_list.update_one({'taskID':task['taskID'],'companyName':task['companyName'],
-                                          'period':task['period']},{"$set":kwargs})
+        self.db.task_list.update_one({'taskID': task['taskID'], 'companyName': task['companyName'],
+                                          'period':task['period']}, {"$set":kwargs})
         return kwargs
 
 
@@ -87,7 +91,7 @@ class TeamInitialization(TasksModel):
 
     def task_init(self):
         if self.dbtask.find({"teamName": self.teamName}).count() == 0:  # test
-            t = leadingdb.sys_task_list.find({}, {"_id": 0}).sort([("taskID", ASCENDING)])
+            t = leadingdb.task_list.find({}, {"_id": 0}).sort([("taskID", ASCENDING)])
             for task in t:
                 task['teamName'] = self.teamName
                 task['status'] = 'Init'
@@ -103,7 +107,6 @@ class TeamInitialization(TasksModel):
                  "currentPeriod": 0})
             #Alarms(source='company_init', alarm="Company init complete:" + teamName)
         print "company init complete, team Name",  self.teamName
-
 
 class EmployeeModel(TasksModel):
 

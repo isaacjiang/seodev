@@ -1,6 +1,8 @@
 __author__ = 'isaac'
 from datetime import datetime, timedelta
-from flask import json, request
+from flask import json, request, send_file, make_response
+from leading.config import APPLICATION_DATA
+import os
 from threading import Timer
 
 import models
@@ -91,20 +93,35 @@ class SystemService():
         return json.dumps(result)
 
     def save_file_tmp(self):
-        dataConf ={}
+        dataConf = {}
         if len(request.files) > 0:
             file = request.files['files[0]'].read()
             filename=request.files['files[0]'].filename
-            self.model.DataInitialization().save_file_tmp(file=file,filename =filename)
-
-            dataConf['filename'] = filename
-            dataConf['upload_date'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            content_type = request.files['files[0]'].content_type,
+            self.model.DataInitialization().save_file_tmp(file=file, filename=filename, content_type=content_type)
             dataConf['status'] = 'Updated'
+            dataConf['filename'] = filename
+            dataConf['content_type'] = content_type
+            dataConf['upload_date'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
            #self.model.DataInitialization().set_data_config(dataConf)
         return json.dumps(dataConf)
+
+    def get_file_tmp(self):
+        filename = request.args['filename']
+        return send_file(os.path.join(APPLICATION_DATA, filename), as_attachment=True, attachment_filename=filename)
 
     def data_initialize(self):
         dataConf =json.loads(request.data)
         result = self.model.DataInitialization().init_db_from_excel(dataConf=dataConf)
         self.model.DataInitialization().set_data_config(dataConf)
         return json.dumps(result)
+
+    def generate_file(self):
+        dataConf = json.loads(request.data)
+        print dataConf
+        filename = dataConf['filename']
+        # content_type = dataConf['content_type']
+        objectID = dataConf['objectID']
+        dataConf = self.model.DataInitialization().export_db_to_excel(dataConf)
+        # .update_file(objectID)
+        return json.dumps(dataConf)

@@ -85,7 +85,7 @@ app.config(function ($mdThemingProvider) {
             }
             else{
 
-                console.log($rootScope.current_user)
+                //  console.log($rootScope.current_user)
 
                     $http({
                             method:'GET',
@@ -93,7 +93,7 @@ app.config(function ($mdThemingProvider) {
                             params:{username:$rootScope.current_user.username}
                         }
                     ).success(function(d){
-                 console.log(d)
+                        //  console.log(d)
                         $rootScope.user_info = d
 
                     })

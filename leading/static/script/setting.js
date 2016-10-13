@@ -372,6 +372,7 @@ app
                     })
 
                 $scope.fileSelected=function(file,dataConf) {
+
                     Upload.upload({
                         url: '/api/syssetting/savefiletmp',
                         data: {files: file}
@@ -379,7 +380,11 @@ app
 
                         dataConf['filename']=response.data.filename
                         dataConf['upload_date']=response.data.upload_date
+                        dataConf['objectID'] = response.data.objectID
+                        dataConf['content_type'] = response.data.content_type
+                        dataConf['length'] = response.data.length
                         dataConf['status']=response.data.status
+
                         $http({
                                 method:'POST',
                                 url:"/api/syssetting/datainitialize",
@@ -388,10 +393,26 @@ app
                         )
                             .success(function(d){
                                 console.log(d)
+                                $rootScope.notificationToast(d.status)
                                 $mdDialog.cancel();
                                 $rootScope.toggleFunction('datainitialization')
                             })
                     });
+                }
+                $scope.downloadfile = function (dataConf) {
+                    console.log(dataConf)
+                    $http({
+                            method: 'POST',
+                            url: "/api/syssetting/generatefile",
+                            data: dataConf
+                        }
+                    )
+                        .success(function (d) {
+                            //if(!contentType) contentType = 'application/octet-stream';
+                            location.href = '/api/syssetting/getfiletmp?filename=' + d['filename']
+                            console.log(d)
+                        })
+
                 }
 
                 $scope.addDataConf = function () {
@@ -412,18 +433,14 @@ app
                                     url:"/api/syssetting/setdataconfig",
                                     data:dataConf
                                 }
-                            )
-                                .success(function(d){
+                            ).success(function (d) {
                                     console.log(d)
                                     $mdDialog.cancel();
                                     $rootScope.toggleFunction('datainitialization')
-                                })
+                            })
                         }
-
                     }
-
                 }
-
             }
             else {
             $scope.data = []

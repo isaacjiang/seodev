@@ -123,43 +123,71 @@ class DataInitialization():
         result = self.db.data_conf_def.find({},{"_id":0})
         return list(result)
 
-    def export_db_to_excel(self,list):
-
-        wb = Workbook()
-
-        ws0 = wb.active
-        ws0.title='task_list'
-        source_data = sdb.sys_tasks_list.find({'period':{"$gt":0}}, {"_id": 0,"preProcess":0}).sort([('companyName',pymongo.ASCENDING)
-                                                                                                        ,('period',pymongo.ASCENDING),('processNo',pymongo.ASCENDING)])
-        keys=['companyName','period','processNo','taskID','taskName','comment']
-        for index1,sd in enumerate(source_data):
-            if index1 == 0:
-                for index2,key in enumerate(keys):
-                    ws0.cell(column=index2+1, row=1, value=key)
-            for index3,key in enumerate(keys):
-                ws0.cell(column=index3+1, row=index1+2, value=sd[key])
-
-    def save_file_tmp(self,file,filename):
+    def save_file_tmp(self, file, filename, content_type):
         if os.path.isfile(os.path.join(APPLICATION_DATA,filename)):
             os.remove(os.path.join(APPLICATION_DATA,filename))
         f = open(os.path.join(APPLICATION_DATA,filename), 'w')
         f.write(file)
         f.close()
 
+        # gfs = gridfs.GridFS(leadingfiledb)
+        # objectID = gfs.put(file,content_type=content_type,filename=filename)
+        # gridfsOut = gfs.get(objectID)  # .length,gfs.get(objectID).upload_date
+        # output={"objectID": str(objectID),
+        #                "content_type": gridfsOut.content_type[0],
+        #                "filename": gridfsOut.filename,
+        #                "length": gridfsOut.length,
+        #                "upload_date": gridfsOut.upload_date.strftime('%Y-%m-%d %H:%M:%S')
+        #                }
+        return filename
+
+
     def init_db_from_excel(self,dataConf):
         wb = load_workbook(os.path.join(APPLICATION_DATA,dataConf['filename']))
-        print wb.get_sheet_names()
         sheetsList = wb.get_sheet_names()
         if dataConf['sheetname'] not in sheetsList:
             return {'error': 'Can not find the Sheet Name in the file.'}
+        else:
+            ws = wb[dataConf['sheetname']]
+            title = []
+            for index, row in enumerate(ws.iter_rows()):
+                if index == 0:
+                    for cel in row:
+                        title.append(cel.value)
+                else:
+                    rowDic = {}
+                    for i, c in enumerate(row):
+                        rowDic[title[i]] = c.value
+                    self.db.get_collection(dataConf['sheetname']).update_one({dataConf['key']: rowDic[dataConf['key']]},
+                                                                             {"$set": rowDic}, upsert=True)
 
-        # if 'account_desc' in sheetsList:
-        #     ws1 = wb['account_desc']
-        #     title=[]
-        #     for c in range(1,len(ws1.columns)+1):
-        #         title.append(ws1.cell(row=1,column=c).value)
-        #     for r in range(2,len(ws1.rows)+1):
-        #         row_value = {}
-        #         for c in range(1,len(ws1.columns)+1):
-        #             row_value[title[c-1]] = ws1.cell(row=r,column=c).value
-        #         sdb.account_desc.update_one({"accountDescID":row_value['accountDescID']},{"$set":row_value},upsert=True)
+            return {'status': "import data from " + dataConf['filename'] + ' successfully.'}
+
+    def export_db_to_excel(self, dataConf):
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = dataConf['sheetname']
+        # ws = wb.create_sheet(dataConf['sheetname'])
+        sortList = []
+        for k in dataConf['key'].split(','):
+            sortList.append((k, ASCENDING))
+        source_data = self.db.get_collection(dataConf['sheetname']).find({}, {'_id': 0}).sort(sortList)
+        if dataConf['orderlist']:
+            for i1, key1 in enumerate(dataConf['orderlist'].split(',')):
+                ws.cell(row=1, column=i1 + 1, value=key1)
+
+            for index, sd in enumerate(source_data):
+                for i2, key2 in enumerate(dataConf['orderlist'].split(',')):
+                    ws.cell(row=2 + index, column=i2 + 1, value=sd[key2])
+
+        else:
+            for index, sd in enumerate(source_data):
+                if index == 0:
+                    for i1, key1 in enumerate(sd.keys()):
+                        ws.cell(row=1, column=i1 + 1, value=key1)
+                for i2, key2 in enumerate(sd.keys()):
+                    ws.cell(row=2 + index, column=i2 + 1, value=sd[key2])
+
+        wb.save(os.path.join(APPLICATION_DATA, dataConf['filename']))
+        return dataConf

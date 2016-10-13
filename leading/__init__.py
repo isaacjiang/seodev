@@ -1,7 +1,7 @@
 # blueprint
 import config
 import users, sessions, syssetting, workflow,pages
-import account,desisiontools,entities,indexes,general
+import account, desisiontools, entities, general
 import syslogging,administration,files
 
 from flask import Flask
@@ -26,13 +26,9 @@ app.register_blueprint(blueprint=pages.blueprint)
 app.register_blueprint(blueprint=account.blueprint)
 app.register_blueprint(blueprint=desisiontools.blueprint)
 app.register_blueprint(blueprint=entities.blueprint)
-app.register_blueprint(blueprint=indexes.blueprint)
 app.register_blueprint(blueprint=general.blueprint)
 
 
 login_manager.init_app(app)
 # # session init
 app.session_interface = MongoSessionInterface()
-
-# socketio init
-#socketio.init_app(rstapp)

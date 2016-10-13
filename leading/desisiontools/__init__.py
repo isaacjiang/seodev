@@ -1,7 +1,6 @@
 from flask import Blueprint
 import controller, models
 
-print __name__
 blueprint = Blueprint(__name__, __name__, url_prefix='/api/dtools')
 
 blueprint.add_url_rule('/taskslist', view_func=controller.TasksService().get_tasks_list)

@@ -21,3 +21,6 @@ blueprint.add_url_rule('/getdataconfig', view_func=controller.SystemService().ge
 blueprint.add_url_rule('/setdataconfig', methods=['POST'], view_func=controller.SystemService().set_data_config)
 blueprint.add_url_rule('/savefiletmp', methods=['POST'], view_func=controller.SystemService().save_file_tmp)
 blueprint.add_url_rule('/datainitialize', methods=['POST'], view_func=controller.SystemService().data_initialize)
+# blueprint.add_url_rule('/getfiletmp', methods=['POST'], view_func=controller.SystemService().save_file_tmp)
+blueprint.add_url_rule('/generatefile', methods=['POST'], view_func=controller.SystemService().generate_file)
+blueprint.add_url_rule('/getfiletmp', view_func=controller.SystemService().get_file_tmp)

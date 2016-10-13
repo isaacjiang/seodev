@@ -1,4 +1,18 @@
 [
+  {
+    "group": "systemInfo",
+    "content": [
+      {
+        "name": "SystemPeriod",
+        "key": "systemperiod",
+        "value": 0,
+        "status": "",
+        "memo": "",
+        "group": "systemInfo",
+        "method": "text"
+      }
+    ]
+  },
   { "group": "Session",
     "content": [
       {

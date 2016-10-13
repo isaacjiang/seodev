@@ -1,4 +1,5 @@
 import models
+from leading.config import leadingdb
 from flask import json, request,render_template
 from leading.entities.models import EntitiesModel
 from datetime import datetime
@@ -214,7 +215,6 @@ class TasksService():
 
             return json.dumps({"status":"success"})
 
-
     def negotiate2(self):
         if request.method =='GET':
             taskID = request.args["taskID"]
@@ -369,3 +369,69 @@ class TasksService():
 
             tModel.task_complete()
             return json.dumps({"status":"success"})
+
+
+class PeriodicTasksService():
+    def __init__(self):
+        self.db = leadingdb
+        self.model = models
+
+    def hiringDecision(self):
+        systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
+        tasks = self.db.task_list.find({'taskName': 'Hires', 'period': systemInfo['content'][0]['value']}, {'_id': 0})
+        for task in tasks:
+            if self.model.TasksModel().check_peer_status(taskID=task['taskID'], companyName=task['companyName']):
+                employees = self.db.employees_def.find({"status": "Hiring", "companyName": task['companyName']},
+                                                       {"_id": 0})
+                for employee in employees:
+                    if employee and 'offer' in employee.keys():
+                        successed = max(employee['offer'], key=lambda x: x['salaryOffer'])
+                        self.db.employees_def.update_one({"employeeID": employee['employeeID']},
+                                                         {"$set": {"status": "Hired", "HiredBy": successed}})
+                        #
+                        #     period = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
+                        #     maxoffers = sdb.employees_offers.aggregate([{"$match": {"offeredEmployees.startAtPeriod": period['period']}},
+                        #                                                 {"$group": {"_id": "$offeredEmployees.employeeID", "maxoffer": {
+                        #                                                     "$max": "$offeredEmployees.salaryOffer"}}}])
+                        #     for offer in maxoffers:
+                        #         successoffer = sdb.employees_offers.find_one(
+                        #             {"offeredEmployees.employeeID": offer["_id"], "offeredEmployees.salaryOffer": offer["maxoffer"]},
+                        #             {"username": 1, "offeredEmployees": 1, "_id": 0})
+                        #         userinfo = getCurrentPeriod(successoffer["username"])
+                        #         successoffer["teamName"] = userinfo["teamName"]
+                        #         successoffer["companyName"] = userinfo["companyName"]
+                        #         # print successoffer
+                        #         # save
+                        #         # sdb.employees_hired.insert_one(successoffer)
+                        #         setmessage(category='resource', teamName=teamName, companyName=companyName,
+                        #                    message="Team :" + successoffer["teamName"] + "," + successoffer["companyName"] + ", hired : " +
+                        #                            successoffer["offeredEmployees"]["employeeName"] + ",Offer:" + str(
+                        #                        successoffer["offeredEmployees"]["salaryOffer"]))
+                        #         # update
+                        #         sdb.employees_def.find_one_and_update({"employeeID": successoffer["offeredEmployees"]["employeeID"]}, {
+                        #             "$set": {"status": "employed", "teamName": successoffer["teamName"],
+                        #                      "companyName": successoffer["companyName"]}})
+                        #         for p in range(period['period'] + 1, 8):
+                        #             Account(successoffer["teamName"], successoffer["companyName"], p).bookkeeping(
+                        #                 categoryToItem(successoffer['offeredEmployees']['category']), offer["maxoffer"], 'Detail',
+                        #                 successoffer["offeredEmployees"]["employeeID"])
+                        #         Index(successoffer["teamName"], successoffer["companyName"], period['period']).bookkeeping(
+                        #             "competenceIndex", categoryToItem(successoffer['offeredEmployees']['category']),
+                        #             successoffer['offeredEmployees']["competenceIndexEffect"], 'Detail',
+                        #             successoffer["offeredEmployees"]["employeeID"])
+                        #         Index(successoffer["teamName"], successoffer["companyName"], period['period']).bookkeeping(
+                        #             "legitimacyIndex", categoryToItem(successoffer['offeredEmployees']['category']),
+                        #             successoffer['offeredEmployees']["legitimacy"], 'Detail',
+                        #             successoffer["offeredEmployees"]["employeeID"])
+                        #         HumanResource(successoffer["teamName"], successoffer["companyName"], period['period']).bookkeeping(
+                        #             successoffer["offeredEmployees"]["employeeID"], 1, offer["maxoffer"],
+                        #             categoryToItem(successoffer['offeredEmployees']['category']), period['period'] + 1,
+                        #             successoffer["offeredEmployees"]["employeeID"])
+                        #         # accountBookkeeping(successoffer["teamName"],successoffer["companyName"],p,'AB017',"Credit",offer["maxoffer"],successoffer["offeredEmployees"]["employeeID"])
+                        #         # competenceIndex(successoffer["teamName"],successoffer["companyName"],p,'Hiring',"AB010",successoffer['offeredEmployees']["competenceIndexEffect"],successoffer['offeredEmployees']["employeeID"])
+                        #     result = {"result": "success", "offers": successoffer}
+                        #     # print result
+                        # return result
+
+
+PeriodicTasksService().hiringDecision()

@@ -1,8 +1,6 @@
 __author__ = 'isaac'
 
-
 from leading import app
-
 
 #app.register_blueprint(bppwiki)
 
