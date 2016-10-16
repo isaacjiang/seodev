@@ -111,6 +111,16 @@ class SystemSetting():
         self.update_id(group=kwargs['group'])
         self.db.settings.update_one({"_id": self._id}, {"$set": kwargs}, upsert=True)
 
+    def get_system_current_period(self):
+        systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
+        return systemInfo['content'][0]['value']
+
+    def upgrade_system_current_period(self):
+        systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
+        currentPeriod = systemInfo['content'][0]['value']
+        self.db.systeminfo.update_one({"group": "systemInfo"}, {"$set": {"content.0.value": currentPeriod + 1}})
+        return currentPeriod + 1
+
 class DataInitialization():
     def __init__(self):
         self.db = leadingdb

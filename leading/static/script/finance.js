@@ -10,7 +10,7 @@ app.controller('contentCtrl', ['$scope', "$http", "$rootScope", "$timeout", 'cur
    $rootScope.current_user.permission = current_user.permission()
    $rootScope.current_user.status = current_user.status()
    $scope.current_user.settings = current_user.settings()
-
+      console.log(current_user)
 
     $http.get("/server/queryaccounts",{params:{username:$rootScope.current_user.username}}).success(function(data){
 

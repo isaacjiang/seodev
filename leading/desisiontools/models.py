@@ -112,7 +112,8 @@ class EmployeeModel(TasksModel):
 
     def get_employees_list(self):
         result ={}
-        conditions = {"status":"unemployed","companyName":self.companyName,"startAtPeriod":{"$gt":self.period}}
+        conditions = {"$or": [{"status": "unemployed"}, {"status": "Hiring"}], "companyName": self.companyName,
+                      "startAtPeriod": {"$gt": self.period}}
         res = self.db.employees_def.find(conditions)
         for r in res:
             r['_id'] = str(r['_id'])
@@ -160,8 +161,10 @@ class WorkforceModel(TasksModel):
         # s =  self.db.employees_def.find_one({"_id":ObjectId(id)})
         # if 'offer' not in s.keys():
         #     self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{"offer":[]}})
-        self.db.workforce_com.update_one({"teamName":self.teamName,"companyName":self.companyName,
-                                          "period":self.period},{"$set":{'workforce':workforce}},upsert=True)
+        for wf in workforce:
+            self.db.workforce_com.update_one({"teamName": self.teamName, "companyName": self.companyName,
+                                              "period": self.period, 'functions': wf['functions']}, {"$set": wf},
+                                             upsert=True)
         return workforce
 
 

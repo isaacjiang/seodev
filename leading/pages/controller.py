@@ -13,8 +13,9 @@ def dashboard():
 def market():
     return render_template('market.html')
 
-def finance():
-    return render_template('finance.html')
+
+def account():
+    return render_template('account.html')
 
 def help():
     return render_template('finance.html')

@@ -42,5 +42,49 @@
     "taskName": "Data Backup",
     "startFlag": true,
     "endFlag": true
+  },
+  {
+    "processName": "account",
+    "taskID": 1,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "summary",
+    "description": "Summary of accounts.",
+    "taskName": "Summary",
+    "startFlag": true,
+    "endFlag": false
+  },
+  {
+    "processName": "account",
+    "taskID": 2,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "pl",
+    "description": "the profit and loss statement.",
+    "taskName": "Profit and Loss Statement",
+    "startFlag": true,
+    "endFlag": false
+  },
+  {
+    "processName": "account",
+    "taskID": 3,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "balance",
+    "description": "Balance Sheet.",
+    "taskName": "Balance Sheet",
+    "startFlag": true,
+    "endFlag": false
+  },
+  {
+    "processName": "account",
+    "taskID": 4,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "cashflow",
+    "description": "Cash Flow.",
+    "taskName": "Cash Flow",
+    "startFlag": true,
+    "endFlag": false
   }
 ]

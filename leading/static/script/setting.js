@@ -2,9 +2,7 @@
  * Created by isaac on 31/08/15.
  */
 
-app
-
-    .controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', 'Upload',
+app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', 'Upload',
         function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, Upload) {
         $scope.setHeight = function () {
             var style = {height: windowsize.height - 80 + 'px'}

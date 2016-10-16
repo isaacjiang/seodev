@@ -29,23 +29,18 @@ class HumanResource():
 
 
 class Account():
-    def __init__(self, teamName, comapanyName, period):
+    def __init__(self, teamName, companyName, period):
+        self.db = leadingdb
         self.data = leadingdb.account_bookkeeping
         self.teamName = teamName
-        self.companyName = comapanyName
+        self.companyName = companyName
         self.period = period
 
-    def bookkeeping(self, accountDescID, value, type=None, comments=None):
-        if type == 'Detail':
-            result = self.data.insert_one(
-                {"teamName": self.teamName, "companyName": self.companyName, "period": self.period,
-                 "accountDescID": accountDescID,
-                 "type": type, "value": value, "comments": comments})
-        else:
-            result = self.data.update_one(
-                {"teamName": self.teamName, "companyName": self.companyName, "period": self.period,
-                 "accountDescID": accountDescID},
-                {"$set": {"value": value, "type": type, "comments": comments}}, upsert=True)
+    def bookkeeping(self, accountDescID, value, objectID=None, type=None, comments=None):
+        result = self.data.update_one(
+            {"originID": str(objectID), "accountDescID": accountDescID, "period": self.period},
+            {"$set": {"teamName": self.teamName, "companyName": self.companyName,
+                      "value": value, "comments": comments}}, upsert=True)
         return result
 
     def get_item_sum(self, accountDescID):
@@ -73,18 +68,20 @@ class Account():
 
     def subset_plus(self, itemList, destItem, rate):
         value = self.get_item_sum(itemList)
-        self.bookkeeping(destItem, value=value * rate, type='SubSum', comments='sum' + destItem)
+        self.bookkeeping(accountDescID=destItem, value=value * rate, type='SubSum', comments='sum' + destItem)
 
     def subset_minus(self, itemA, itemB, destItem, rate):
         valueA = self.get_item_sum(itemA)
         valueB = self.get_item_sum(itemB)
-        self.bookkeeping(destItem, value=(valueA - valueB) * rate, type='Minus', comments='sum' + destItem)
+        self.bookkeeping(accountDescID=destItem, value=(valueA - valueB) * rate, type='Minus',
+                         comments='sum' + destItem)
 
     def trans_item(self, sourceItem, destItem, destPeriod, rate=None):
         value = Account(self.teamName, self.companyName, destPeriod - 1).get_item_sum(sourceItem)
         if rate is None:
             rate = 1
-        Account(self.teamName, self.companyName, destPeriod).bookkeeping(destItem, value=value * rate, type='Trans',
+        Account(self.teamName, self.companyName, destPeriod).bookkeeping(accountDescID=destItem, value=value * rate,
+                                                                         type='Trans',
                                                                          comments='trans' + destItem)
 
     def sum(self):
@@ -198,6 +195,34 @@ class Account():
         self.subset_plus(["AB100", "BB113"], "BB113", 1)
         self.subset_plus(["BB111", "BB112", 'BB113'], "BB121", 1)
         self.subset_plus(["BB021", "BB060", 'BB121'], "BB131", 1)
+
+    def query_all(self):
+        result = []
+        accounts_desc = self.db.account_def.find({}, {"_id": 0})
+        for acc in accounts_desc:
+            row_value = {'Account Description': acc['accountDescName'], 'Desc ID': acc['accountDescID'],
+                         'accountDescType': acc['accountDescType'], 'summaryFLag': acc['summaryFLag']}
+            periods = self.db.periods_def.find({"periodID": {"$lte": self.period}}, {'_id': 0})
+            for p in periods:
+                print p
+
+                # print  userinfo["teamName"],userinfo["companyName"],p['periodID'],acc['accountDescID']
+                value = self.db.account_bookkeeping.aggregate(
+                    [{"$match": {"teamName": self.teamName, "companyName": self.companyName,
+                                 "period": p['periodID'], "accountDescID": acc['accountDescID']}},
+                     {"$group": {"_id": {"teamName": "$teamName", "companyName": "$companyName",
+                                         "period": "$period", "accountDescID": "$accountDescID"},
+                                 "total_value": {"$sum": "$value"}}}
+                     ])
+                # value = sdb.account_bookkeeping.find({"teamName": userinfo["teamName"],"companyName":userinfo["companyName"],"period":p['periodID'],"accountDescID":acc['accountDescID']},{"_id":0})
+                for v in value:
+                    # print v
+                    pID = str(p['periodID']) if p['periodID'] >= 0 else 'Pre' + str(-p['periodID'])
+                    row_value['Period' + pID] = '{0:,.0f}'.format(v['total_value'])
+            result.append(row_value)
+            # print result
+        return result
+
 
 
 class Index():

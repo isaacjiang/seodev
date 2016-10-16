@@ -38,7 +38,6 @@ app.config(function ($mdThemingProvider) {
         current_user.getData = function () {
             $http({method: 'GET', url: '/api/users/userstatus'}).then(function success(res) {
                 userStatus = res.data
-
                 deffered.resolve();
             });
             return deffered.promise;
@@ -79,7 +78,7 @@ app.config(function ($mdThemingProvider) {
             $rootScope.current_user.permission = current_user.permission()
             $rootScope.current_user.status = current_user.status()
 
-            //console.log($scope.current_user.status)
+
             if ($rootScope.current_user.status.is_anonymous) {
                 userLogin()
             }
@@ -130,16 +129,17 @@ app.config(function ($mdThemingProvider) {
             else{$window.location.href = '/dashboard'
                 //console.log('dashboard')
                 }
-
         };
         $scope.market = function() {
             if ($rootScope.current_user.username == null){$window.location.href = '/'}
             else{$window.location.href = '/market'}
 
         };
-        $scope.finance= function() {
+            $scope.account = function () {
             if ($rootScope.current_user.username == null){$window.location.href = '/'}
-            else{$window.location.href = '/finance'}
+            else {
+                $window.location.href = '/account'
+            }
         };
         $scope.help= function() {
             $window.location.href = '/help'

@@ -42,17 +42,12 @@
                 <div>
                     <md-button ng-click="dashboard()" class="md-icon-button" layout-align="center end">
                         <md-icon aria-label="Menu"
-                                 md-svg-icon="{{ url_for('static', filename='icon/ic_dvr_white_48px.svg') }}"></md-icon>
-                    </md-button>
-                </div>
-                <div>
-                    <md-button ng-click="market()" class="md-icon-button" layout-align="center end">
-                        <md-icon aria-label="Menu"
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_poll_white_48px.svg') }}"></md-icon>
                     </md-button>
                 </div>
+
                 <div>
-                    <md-button ng-click="finance()" class="md-icon-button" layout-align="center end">
+                    <md-button ng-click="account()" class="md-icon-button" layout-align="center end">
                         <md-icon aria-label="Menu"
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_account_balance_white_48px.svg') }}"></md-icon>
                     </md-button>
@@ -63,7 +58,7 @@
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_settings_white_48px.svg') }}"></md-icon>
                     </md-button>
                 </div>
-                <div>
+                <div ng-if="false">
                     <md-button ng-click="toggleSidenav('right')" class="md-icon-button" layout-align="center end">
                         <md-icon aria-label="Menu"
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_school_white_48px.svg') }}"></md-icon>

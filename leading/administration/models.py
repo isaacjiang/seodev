@@ -25,7 +25,7 @@ class DatabaseInit():
 
 
 dataFileList = ['systeminfo', 'user', 'workflow', 'task_list', 'teams', 'periods_def', 'employees_def', 'workforce_def',
-                'resources_def',
+                'resources_def', 'account_def',
                 'budget_def','actions_def','negotiation_def','niches_def','projects_def','corporate_acquisitions_def']
 DatabaseInit().import_from_json(dataFileList)
 
