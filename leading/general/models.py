@@ -140,3 +140,99 @@ class PerformanceModel():
                                 #
                                 # Account(n['teamName'], n['company'], n['period']).bookkeeping(accountDescID2,(
                                 #     n['averageRecenuePPPC'] * n['totalCustomers'] * companyValue['value'] / companies / totalvalue) / 4,'Detail','Market Share')
+
+    def queryCurrentMarketData(self):
+        username = request.args["username"]
+        currentPeriod = models.getCurrentPeriod(username)
+        result={}
+        if "companyName" in currentPeriod.keys():
+
+            niche_marketingshare = sdb.marketingshare_niche.find({"flag": "#nicheSum", "companyName": currentPeriod['companyName'], })
+            marketPerformance = {}
+            marketValue = {}
+            for niche_v in niche_marketingshare:
+                if niche_v['niche'] not in marketPerformance.keys():
+                    marketPerformance[niche_v['niche']] = {'niche':niche_v['niche']}
+                if niche_v['teamName'] not in marketPerformance[niche_v['niche']].keys():
+                    marketPerformance[niche_v['niche']][niche_v['teamName']] = []
+
+                #great Value
+                if niche_v['teamName'] not in marketValue.keys():
+                    marketValue[niche_v['teamName']] = {'teamName': niche_v['teamName']}
+                if niche_v['currentPeriod'] not in marketValue[niche_v['teamName']].keys():
+                    marketValue[niche_v['teamName']][niche_v['currentPeriod']] = 0
+
+                if niche_v['niche'] =='B2B' and niche_v['currentPeriod'] <=4 and currentPeriod['companyName'] =='LegacyCo':
+                    marketValue[niche_v['teamName']][niche_v['currentPeriod']] += niche_v['shareRate']* 0.7
+                elif niche_v['niche'] == 'B2C' and niche_v['currentPeriod'] <= 4 and currentPeriod['companyName'] == 'LegacyCo':
+                    marketValue[niche_v['teamName']][niche_v['currentPeriod']] += niche_v['shareRate'] * 0.3
+                else:
+                    marketValue[niche_v['teamName']][niche_v['currentPeriod']] += niche_v['totalCustomers']
+
+                marketPerformance[niche_v['niche']][niche_v['teamName']].append({'x':niche_v['currentPeriod'],"y":niche_v['shareRate']*100})
+
+            result["marketPerformance"] = marketPerformance
+            result["marketValue"] = marketValue
+            index_com = sdb.marketingshare_com.find({"flag": "#comSum", "companyName": currentPeriod['companyName']},{"_id": 0})
+
+            managementPerformance_ci = {}
+            managementPerformance_si = {}
+            managementPerformance_ai = {}
+            managementValue = {}
+            for index in index_com:
+                # print index
+                if itemToCatogory(index['accountDescID']) not in managementPerformance_ci.keys():
+                    managementPerformance_ci[itemToCatogory(index['accountDescID'])] = {'category':itemToCatogory(index['accountDescID']),'accItem':'c'+index['accountDescID']}
+                    managementPerformance_si[itemToCatogory(index['accountDescID'])] = {'category': itemToCatogory(index['accountDescID']),'accItem':'s'+index['accountDescID']}
+                    managementPerformance_ai[itemToCatogory(index['accountDescID'])] = {'category': itemToCatogory(index['accountDescID']),'accItem':'a'+index['accountDescID']}
+                if index['teamName'] not in managementPerformance_ci[itemToCatogory(index['accountDescID'])].keys():
+                    managementPerformance_ci[itemToCatogory(index['accountDescID'])][index['teamName']] = []
+                    managementPerformance_si[itemToCatogory(index['accountDescID'])][index['teamName']] = []
+                    managementPerformance_ai[itemToCatogory(index['accountDescID'])][index['teamName']] = []
+
+                    managementPerformance_ci[itemToCatogory(index['accountDescID'])][index['teamName']].append(
+                        {'x': index['currentPeriod'], "y": index['competenceIndex'] * 100})
+                    managementPerformance_si[itemToCatogory(index['accountDescID'])][index['teamName']].append(
+                        {'x': index['currentPeriod'],  "y": index['stressIndex'] * 100})
+                    managementPerformance_ai[itemToCatogory(index['accountDescID'])][index['teamName']].append(
+                        {'x': index['currentPeriod'],  "y": index['adaptabilityIndex'] * 100})
+
+                    #great value
+
+                if index['teamName'] not in managementValue.keys():
+                    managementValue[index['teamName']] = {'teamName': index['teamName']}
+                if index['currentPeriod'] not in managementValue[index['teamName']].keys():
+                    managementValue[index['teamName']][index['currentPeriod']] = 1
+                managementValue[index['teamName']][index['currentPeriod']] = managementValue[index['teamName']][index['currentPeriod']]*index['weight'] * index['competenceIndex'] * 100* 0.5 * index['stressIndex'] * 100 *0.3 * index['adaptabilityIndex'] * 100 *0.2
+
+            result["managementPerformance_ci"] = managementPerformance_ci
+            result["managementPerformance_si"] = managementPerformance_si
+            result["managementPerformance_ai"] = managementPerformance_ai
+            result["managementValue"] = managementValue
+
+            financialPerformance={}
+            financialValue = {}
+
+            acc_ranking_com = sdb.account_ranking.find({"companyName": currentPeriod["companyName"]},{"_id": 0})
+
+            for acc_com in acc_ranking_com:
+                for item in ['ROA','ROS','NOCG']:
+                    if item not in financialPerformance.keys():
+                        financialPerformance[item] = {'item': item}
+                    if acc_com['teamName'] not in financialPerformance[item].keys():
+                        financialPerformance[item][acc_com['teamName']] = []
+
+                        financialPerformance[item][acc_com['teamName']].append(
+                            {'x': acc_com['period'], "y": acc_com[item]})
+
+                        # great value
+
+                if acc_com['teamName'] not in financialValue.keys():
+                    financialValue[acc_com['teamName']] = {'teamName': acc_com['teamName']}
+                if acc_com['period'] not in financialValue[acc_com['teamName']].keys():
+                    financialValue[acc_com['teamName']][acc_com['period']] = {"NOCG":acc_com['NOCG'],"EBITDA":acc_com['AB031']}
+
+            result['financialPerformance'] = financialPerformance
+            result['financialValue'] = financialValue
+
+        return json.dumps(result)

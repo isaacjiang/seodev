@@ -223,8 +223,6 @@ class Account():
             # print result
         return result
 
-
-
 class Index():
     def __init__(self, teamName, comapanyName, period):
         self.data = leadingdb.index_bookkeeping

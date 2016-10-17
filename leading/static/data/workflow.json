@@ -86,5 +86,49 @@
     "taskName": "Cash Flow",
     "startFlag": true,
     "endFlag": false
+  },
+  {
+    "processName": "dashboard",
+    "taskID": 1,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "value",
+    "description": "Value Created",
+    "taskName": "Value Created",
+    "startFlag": true,
+    "endFlag": false
+  },
+  {
+    "processName": "dashboard",
+    "taskID": 2,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "market",
+    "description": "Market Performance.",
+    "taskName": "Market Performance",
+    "startFlag": true,
+    "endFlag": false
+  },
+  {
+    "processName": "dashboard",
+    "taskID": 3,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "financial",
+    "description": "Financial Performance.",
+    "taskName": "Financial Performance",
+    "startFlag": true,
+    "endFlag": false
+  },
+  {
+    "processName": "dashboard",
+    "taskID": 4,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "management",
+    "description": "Management Performance.",
+    "taskName": "Management Performance",
+    "startFlag": true,
+    "endFlag": false
   }
 ]
