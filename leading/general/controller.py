@@ -21,7 +21,7 @@ class PerformanceService():
         self.companyName = userInfo['companyInfo']['companyName']
         self.currentPeriod = userInfo['companyInfo']['currentPeriod']
 
-        models.PerformanceModel().marketingShare(self.teamName, self.companyName, '0' + str(self.currentPeriod) + '100')
+        #models.PerformanceModel().marketingShare(self.teamName, self.companyName, '0' + str(self.currentPeriod) + '100')
         result = {}
         if self.companyName is not None:
             niches = ['B2B', 'B2C', 'Education', 'Government', 'Entertainment']
@@ -29,7 +29,6 @@ class PerformanceService():
             for period in [self.currentPeriod - 1, self.currentPeriod]:
                 #rank
                 for niche in niches:
-
                     niche_marketingshare_ranking = self.db.marketingshare_niche.find(
                         {"flag": "#nicheSum", "niche": niche, "companyName": self.companyName,
                          "currentPeriod": period}).sort([("shareRate", pymongo.ASCENDING)])

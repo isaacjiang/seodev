@@ -28,7 +28,6 @@
 
 <body layout="column" layout-fill ng-cloak ng-controller="menuCtrl" >
 
-
 <div >
     <md-toolbar>
         <div class="md-toolbar-tools" layout="row" layout-align="space-between end">
@@ -120,7 +119,10 @@
 
         </div>
     </md-toolbar>
+    <md-progress-linear md-mode="determinate" class="md-accent md-hue-3"
+                        value="{% raw  %} {{ user_info.companyInfo.currentPeriod*12.5 }}{% endraw %}"></md-progress-linear>
 </div>
+
 <div layout="column">
     <section layout="row" flex>
         <md-sidenav class="md-sidenav-left " md-component-id="taskslist" )>
@@ -145,7 +147,6 @@
 
             </md-content>
         </md-sidenav>
-
 
         <md-sidenav class="md-sidenav-right" md-component-id="right">
             <md-toolbar class="md-theme-light">

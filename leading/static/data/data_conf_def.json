@@ -1,0 +1,69 @@
+[
+  {
+    "item" : "actions",
+    "key" : "actionID",
+    "sheetname" : "actions_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "employees",
+    "key" : "employeeID",
+    "sheetname" : "employees_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "workforce",
+    "key" : "functions,period",
+    "sheetname" : "workforce_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "resources",
+    "key" : "resourceName",
+    "sheetname" : "resources_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "account",
+    "key" : "accountDescID",
+    "sheetname" : "account_def",
+    "status" : "Init"
+  },
+
+  {
+    "item" : "budget",
+    "key" : "budgetDescID",
+    "sheetname" : "budget_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "negotiation",
+    "key" : "employeeID",
+    "sheetname" : "negotiation_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "niches_def",
+    "key" : "niche,period",
+    "sheetname" : "niches_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "projects",
+    "key" : "projectName",
+    "sheetname" : "projects_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "corporate_acquisitions",
+    "key" : "companyID",
+    "sheetname" : "corporate_acquisitions_def",
+    "status" : "Init"
+  },
+  {
+    "item" : "teams",
+    "key" : "teamID",
+    "sheetname" : "teams",
+    "status" : "Init"
+  }
+]

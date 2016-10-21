@@ -38,9 +38,9 @@ class Account():
 
     def bookkeeping(self, accountDescID, value, objectID=None, type=None, comments=None):
         result = self.data.update_one(
-            {"originID": str(objectID), "accountDescID": accountDescID, "period": self.period},
-            {"$set": {"teamName": self.teamName, "companyName": self.companyName,
-                      "value": value, "comments": comments}}, upsert=True)
+            {"originID": str(objectID), "accountDescID": accountDescID, "teamName": self.teamName,
+             "companyName": self.companyName,"period": self.period},
+            {"$set": {"value": value, "comments": comments}}, upsert=True)
         return result
 
     def get_item_sum(self, accountDescID):
@@ -196,6 +196,7 @@ class Account():
         self.subset_plus(["BB111", "BB112", 'BB113'], "BB121", 1)
         self.subset_plus(["BB021", "BB060", 'BB121'], "BB131", 1)
 
+
     def query_all(self):
         result = []
         accounts_desc = self.db.account_def.find({}, {"_id": 0})
@@ -224,23 +225,18 @@ class Account():
         return result
 
 class Index():
-    def __init__(self, teamName, comapanyName, period):
+    def __init__(self, teamName, companyName, period):
+        self.db = leadingdb
         self.data = leadingdb.index_bookkeeping
         self.teamName = teamName
-        self.companyName = comapanyName
+        self.companyName = companyName
         self.period = period
 
-    def bookkeeping(self, indexName, category, value, type=None, comments=None):
-        if type == 'Detail':
-            result = self.data.insert_one(
-                {"teamName": self.teamName, "companyName": self.companyName, "period": self.period,
-                 "indexName": indexName, "category": category,
-                 "type": type, "value": value, "comments": comments})
-        else:
-            result = self.data.update_one(
-                {"teamName": self.teamName, "companyName": self.companyName, "period": self.period,
-                 "indexName": indexName, "category": category},
-                {"$set": {"value": value, "type": type, "comments": comments}}, upsert=True)
+    def bookkeeping(self,indexName, value, objectID=None, type=None, comments=None):
+        result = self.data.update_one(
+            {"originID": str(objectID), "indexName": indexName, "teamName": self.teamName,
+             "companyName": self.companyName,"period": self.period},
+            {"$set": {"value": value, "comments": comments}}, upsert=True)
         return result
 
     def get_index_multi(self, indexName):

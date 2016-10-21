@@ -183,7 +183,7 @@ class DataInitialization():
         for k in dataConf['key'].split(','):
             sortList.append((k, ASCENDING))
         source_data = self.db.get_collection(dataConf['sheetname']).find({}, {'_id': 0}).sort(sortList)
-        if dataConf['orderlist']:
+        if 'orderlist' in dataConf.keys():
             for i1, key1 in enumerate(dataConf['orderlist'].split(',')):
                 ws.cell(row=1, column=i1 + 1, value=key1)
 

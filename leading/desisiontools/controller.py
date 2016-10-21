@@ -2,7 +2,8 @@ import models
 from leading.config import leadingdb
 from flask import json, request,render_template
 from leading.entities.models import EntitiesModel
-from leading.account.models import Account, IndexModel, HumanResource
+from leading.account.models import Account, Index, HumanResource
+from leading.general.models import PerformanceModel
 from leading.syssetting.models import SystemSetting
 
 
@@ -393,6 +394,16 @@ class PeriodicTasksService():
             accountDescID = 'AB010'
         return accountDescID
 
+    def account_sum(self):
+        companys  = self.db.companies.find({"status":"Active"},{"_id":0})
+        for com in companys:
+            Account(companyName=com['companyName'],teamName=com['teamName'],period=com['currentPeriod']).sum()
+
+    def marketing_share(self):
+        companys  = self.db.companies.find({"status":"Active"},{"_id":0})
+        for com in companys:
+            PerformanceModel().marketingShare(companyName=com['companyName'],teamName=com['teamName'],period=com['currentPeriod'])
+
     def hiringDecision(self):
         tasks = self.db.task_list.find({'taskName': 'Hires', 'period': self.systemCurrentPeriod}, {'_id': 0})
         for task in tasks:
@@ -410,12 +421,24 @@ class PeriodicTasksService():
         for employee in employees:
             if employee['HiredBy']['period'] <= self.systemCurrentPeriod:
                 Account(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
-                        period=self.systemCurrentPeriod).bookkeeping(employee["_id"],
+                        period=self.systemCurrentPeriod).bookkeeping(objectID=employee["_id"],
                                                                      accountDescID=self.categoryToItem(
                                                                          employee['category']),
                                                                      value=employee['HiredBy']['salaryOffer'],
                                                                      comments=employee['employeeID'])
 
+                Index(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
+                      period=employee['startAtPeriod']).bookkeeping(
+                    objectID = employee["_id"],
+                    indexName="competenceIndex",
+                    value=employee['competenceIndexEffect'],
+                    comments=employee['employeeID'])
+                Index(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
+                      period=employee['startAtPeriod']).bookkeeping(
+                     objectID = employee["_id"],
+                    indexName="legitimacyIndex",
+                    value=employee['legitimacy'],
+                    comments=employee['employeeID'])
 
 
                         #
@@ -470,7 +493,7 @@ class PeriodicTasksService():
                 acc = Account(teamName=workforce['teamName'], companyName=workforce['companyName'],
                               period=self.systemCurrentPeriod)
                 value = int(workforce['adjustmentcost_total'].replace(',', ''))
-                acc.bookkeeping(workforce["_id"],
+                acc.bookkeeping(objectID=workforce["_id"],
                                 accountDescID=self.categoryToItem(workforce['functions']),
                                 value=value, comments='Workforce ' + workforce['functions'])
 
@@ -705,5 +728,5 @@ class PeriodicTasksService():
         # accountBookkeeping(teamName, 'NewCo', 5, 'BB142', 'Credit', expenditure1, 'Transfer from LegacyCo.')
 
 
-# PeriodicTasksService().employeesAccountBookkeeping()
-Account(teamName="Team B", companyName='LegacyCo', period=1).sum()
+#PeriodicTasksService().employeesAccountBookkeeping()
+#Account(teamName="Team B", companyName='LegacyCo', period=1).sum()

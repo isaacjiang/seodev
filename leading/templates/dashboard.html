@@ -1,24 +1,19 @@
 {% extends "base.html" %}
 
 {% block jacascript %}
-
-    <script src="{{ url_for('static', filename='script/setting.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='script/dashboard.js') }}"></script>
 {% endblock %}
 
-
-
-
 {% block content %}
-    <div ng-controller="settingsCtrl" layout="row" ng-cloak>
+    <div ng-controller="dashboardCtrl" layout="row" ng-cloak>
         <md-sidenav class="md-sidenav-left" md-component-id="settings" md-is-locked-open="true" flex style="z-index: 0">
             <md-toolbar class="md-accent">
-                <h1 class="md-toolbar-tools">Settings</h1>
+                <h1 class="md-toolbar-tools">Dashboard</h1>
             </md-toolbar>
             <md-content layout-padding>
                 <md-list class="md-dense" flex>
                     <md-list-item class="md-2-line" ng-click="toggleFunction(func.taskKey)"
-                                  aria-label="settings" ng-repeat=" func in tasks">
+                                  aria-label="settings" ng-repeat="func in tasks">
                         <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
                              class="md-avatar" alt="Photo"/>
                         <div class="md-list-item-text">
@@ -27,8 +22,6 @@
                         </div>
                         <md-divider></md-divider>
                     </md-list-item>
-
-
                 </md-list>
                 <md-divider></md-divider>
             </md-content>
@@ -48,55 +41,41 @@
                         <h3 ng-bind="func.taskName"></h3>
                     </md-grid-tile-header>
 
-
                     <div style="width:100%;" ng-style="setTableHeight()"
-                         ng-if="func.taskKey=='userpermission'&&func.rowspan!=1">
+                         ng-if="func.taskKey=='summary'&&func.rowspan!=1">
                         <md-table-container>
                             <table md-table>
                                 <thead md-head md-order="myOrder">
                                 <tr md-row>
-                                    <th md-column><span></span></th>
-                                    <th md-column md-order-by="username"><span>User Name</span></th>
-                                    <th md-column md-order-by="permissionText"><span>Permission</span></th>
-                                    <th md-column md-order-by="email"><span>Email</span></th>
-                                    <th md-column md-order-by="teamName"><span>Team Name</span></th>
-                                    <th md-column md-order-by="companyName"><span>Company Name</span></th>
-                                    <th md-column md-order-by="" ng-if="false"><span>Delete / Edit</span></th>
+                                    <th md-column md-order-by="accountDescID"><span>Desc ID</span></th>
+                                    <th md-column md-order-by="accountDescription"><span>Account Description</span></th>
+                                    <th md-column md-order-by="Period1"><span>Period 1</span></th>
+                                    <th md-column md-order-by="Period2"><span>Period 2</span></th>
+                                    <th md-column md-order-by="Period3"><span>Period 3</span></th>
+                                    <th md-column md-order-by="Period4"><span>Period 4</span></th>
+                                    <th md-column md-order-by="Period5"><span>Period 5</span></th>
+                                    <th md-column md-order-by="Period6"><span>Period 6</span></th>
+                                    <th md-column md-order-by="Period7"><span>Period 7</span></th>
+
                                 </tr>
                                 </thead>
                                 <tbody md-body>
                                 <tr md-row
-                                    ng-repeat="rec in users | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
-                                    <td md-cell>{% raw %}{{  $index+(query.limit*(query.page-1))+1  }}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['username']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['permissionText']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['email']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['teamName']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['companyName']}}{% endraw %}</td>
-                                    <td md-cell>
-                                        <div layout flex="45" ng-if="false">
-                                            <md-button ng-click="deleteUser(rec)"
-                                                       class="md-icon-button">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_black_48px.svg') }}"></md-icon>
-                                            </md-button>
-                                            <md-button ng-click="editUser(rec)"
-                                                       class="md-icon-button">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_edit_black_48px.svg') }}"></md-icon>
-                                            </md-button>
-                                        </div>
-                                    </td>
+                                    ng-repeat="rec in data_total | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
+                                    <td md-cell>{% raw %}{{rec['Desc ID']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['Account Description']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['Period1']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['Period2']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['Period3']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['Period4']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['Period5']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['Period6']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['Period7']}}{% endraw %}</td>
                                 </tr>
 
                                 </tbody>
                             </table>
-                            <div>
-                                <md-button class="md-accent md-fab md-fab-bottom-right" ng-click="addUser()" ng-if="false">
-                                    <md-icon aria-label="Menu"
-                                             md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
-                                </md-button>
-                            </div>
+
                         </md-table-container>
                         <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
                                              md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
@@ -252,7 +231,7 @@
 
                                 </tbody>
                             </table>
-                            <div ng-if="false">
+                            <div>
                                 <md-button class="md-accent md-fab md-fab-bottom-right" ng-click="addDataConf()">
                                     <md-icon aria-label="Menu"
                                              md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
@@ -260,7 +239,7 @@
                             </div>
                         </md-table-container>
                         <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
-                                             md-total="{% raw %}{{dataConf.length}}{% endraw %}" md-page-select="false"
+                                             md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>
 
                     </div>
@@ -276,9 +255,6 @@
                     <div style="width:100%;" ng-if="func.taskKey=='systemsettings'&&func.rowspan==1">
                         Total settings: {% raw %} {{ settings.length }} {% endraw %}
                         </div>
-
-
-
 
                 </md-grid-tile>
             </md-grid-list>

@@ -1,9 +1,9 @@
 /**
- * Created by isaac on 31/08/15.
+ * Created by isaacjiang on 2016-10-15.
  */
 
-app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', 'Upload',
-        function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, Upload) {
+app.controller("accountCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', 'Upload',
+    function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, Upload) {
         $scope.setHeight = function () {
             var style = {height: windowsize.height - 80 + 'px'}
             return style
@@ -18,234 +18,215 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
             $rootScope.current_user.username = current_user.username()
             $rootScope.current_user.permission = current_user.permission()
             $rootScope.current_user.status = current_user.status()
+            console.log($rootScope.current_user)
 
-        $http.get('/api/workflow/queryworkflow', {
+            $http.get('/api/workflow/queryworkflow', {
                 params: {
-                    processName: 'settings'
+                    processName: 'account'
                 }
             })
                 .success(function (res) {
-               // console.log(res)
-                $scope.tasks = res
-                $scope.functions = []
-                $scope.tasks.forEach(function (t) {
-                    t.colspan = 1
-                    t.rowspan = 1
-                    $scope.functions.push(t)
-                    if (t.taskKey == "systemsettings") {
-                        t.icon = 'ic_beenhere_black_48px.svg'
-                        t.colspan = 5
-                        t.rowspan = 5
-                        $rootScope.toggleFunction("systemsettings")
-                    }
-                    else if (t.taskKey == "userpermission") {
-                        t.icon = 'ic_person_black_48px.svg'
-                    }
+                   // console.log(res)
+                    $scope.tasks = res
+                    $scope.functions = []
+                    $scope.tasks.forEach(function (t) {
+                        t.colspan = 1
+                        t.rowspan = 1
+                        $scope.functions.push(t)
+                        if (t.taskKey == "summary") {
+                            t.icon = 'ic_traffic_black_48px.svg'
+                            t.colspan = 5
+                            t.rowspan = 5
+                            $rootScope.toggleFunction("summary")
+                        }
+                        else if (t.taskKey == "pl") {
+                            t.icon = 'ic_network_check_black_48px.svg'
+                        }
 
-                    else if (t.taskKey == "databackup") {
-                        t.icon = 'ic_cloud_download_black_48px.svg'
-                    }
-                    else if (t.taskKey == "datainitialization") {
-                        t.icon = 'ic_description_black_48px.svg'
-                    }
-                    else{
-                        t.icon = 'ic_star_black_48px.svg'
-                    }
+                        else if (t.taskKey == "balance") {
+                            t.icon = 'ic_redeem_black_48px.svg'
+                        }
+                        else if (t.taskKey == "cashflow") {
+                            t.icon = 'ic_attach_money_black_48px.svg'
+                        }
+                        else{
+                            t.icon = 'ic_star_black_48px.svg'
+                        }
 
 
+                    })
                 })
-            })
 
         })
 
 
         $rootScope.toggleFunction = function (func) {
             $scope.query = {
-                order: '_id',
+                order: 'accountDescID',
                 limit: 10,
                 page: 1
             };
 
-            if (func == 'systemsettings') {
-                $http.get('/api/syssetting/getsettings', {
-                    params: {
-                        params: 'all' //also the params could be 'all'
-                    }
+            if (func == 'summary') {
+                $http.get('/api/account/getaccountinfo', {
+                    params:{username:$rootScope.current_user.username}
                 }).success(function (res) {
-                    $scope.settings = res
+                    console.log(res)
+                    $scope.data_profitAndLoss = res.filter(function(d){return d.accountDescType=="PL"})
+                    $scope.data_balance = res.filter(function(d){return d.accountDescType=="BALANCE"})
+                    $scope.data_cashflow = res.filter(function(d){return d.accountDescType=="CF"})
+                    $scope.data_total = res.filter(function(d){return d.summaryFLag==true})
+
+
+
+                    // $scope.query = {order: 'accountDescID', page: 1};
+                    //
+                    // $scope.limit_profitAndLoss = {limit: $scope.data_profitAndLoss.length};
+                    // $scope.limit_balance = {limit: $scope.data_balance.length};
+                    // $scope.limit_cashflow = {limit: $scope.data_cashflow.length};
+                    // $scope.limit_total = {limit: $scope.data_total.length};
                     //console.log($scope.settings)
                     //$scope.columns = Object.keys($scope.data[0])
 
-                    $scope.editSetting = function (d) {
-                        $mdDialog.show({
-                            controller: settingCtrl,
-                            templateUrl: '/app/workflow/launchworkflow?process=editsettings',
-                            parent: angular.element(document.body),
-                            //targetEvent: task.ev,
-                            clickOutsideToClose: false,
-                            locals: {selectedSetting: d, method: 'edit'}
-                        })
-                    }
-
-                    function settingCtrl($scope, $http, selectedSetting, method) {
-                        $scope.cancelTag = function () {
-                            $mdDialog.cancel();
-                        };
-
-                        $scope.title_dialog = 'Edit ' + selectedSetting.group
-                        $scope.currentSetting = selectedSetting
-                        $scope.currentSetting.method = 'edit'
-
-
-                        $scope.submitTag = function (t) {
-
-                            $http.post('/rest/syssetting/setsystemsetting', data = t).success(function (res) {
-                                $mdDialog.cancel();
-                                $rootScope.toggleFunction('systemsettings')
-                                $rootScope.notificationToast('System setting changed!');
-                            })
-
-                        }
-
-                    }
 
                 })
 
             }
-            else if (func == 'databackup') {
-            //console.log(func, func == 'databackup')
-            $http.get('/api/syssetting/listbackup', {
-                params: {
-                    params: 'all' //also the params could be 'all'
-                }
-            }).success(function (res) {
-                $scope.backupRecords = res
-                //$scope.columns = Object.keys($scope.data[0])
-                //console.log(res)
+            else if (func == 'pl') {
+                //console.log(func, func == 'databackup')
+                $http.get('/api/syssetting/listbackup', {
+                    params: {
+                        params: 'all' //also the params could be 'all'
+                    }
+                }).success(function (res) {
+                    $scope.backupRecords = res
+                    //$scope.columns = Object.keys($scope.data[0])
+                    //console.log(res)
 
-                $scope.backupsetting = function () {
-                    $mdDialog.show({
-                        controller: backupsettingCtrl,
-                        templateUrl: '/app/system/backupsetting',
-                        parent: angular.element(document.body),
-                        clickOutsideToClose: false,
-                        locals: {username: $scope.current_user.username}
-                    })
-                }
-
-                function backupsettingCtrl($scope, $http, username) {
-                    //console.log('username', username)
-                    $scope.cancel = function () {
-                        $mdDialog.cancel();
-                    };
-                    $scope.newSetting = {username: username}
-                    $scope.selectedMethod = 'single'
-                    $scope.newSetting.startDate = new Date()
-                    $scope.newSetting.starthour = new Date().getHours()
-                    $scope.newSetting.startminute = (new Date().getMinutes() / 5).toFixed(0) * 5
-                    //console.log($scope.newSetting.startminute)
-                    $scope.hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
-                    $scope.minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
-                    //console.log($scope.newSetting)
-
-                    $scope.saveBackupSetting = function (t) {
-                        $http.post('/api/syssetting/backupsetting', data = t).success(function (res) {
-                            console.log(res)
-                            $mdDialog.cancel()
-                            $rootScope.toggleFunction('userpermission')
+                    $scope.backupsetting = function () {
+                        $mdDialog.show({
+                            controller: backupsettingCtrl,
+                            templateUrl: '/app/system/backupsetting',
+                            parent: angular.element(document.body),
+                            clickOutsideToClose: false,
+                            locals: {username: $scope.current_user.username}
                         })
-
                     }
 
-                    $scope.backup = function () {
-                        console.log('backup')
-                       // $rootScope.showProgress()
-                        $http.get('/api/syssetting/startbackup', {
-                            params: {
-                                username: username
-                            }
+                    function backupsettingCtrl($scope, $http, username) {
+                        //console.log('username', username)
+                        $scope.cancel = function () {
+                            $mdDialog.cancel();
+                        };
+                        $scope.newSetting = {username: username}
+                        $scope.selectedMethod = 'single'
+                        $scope.newSetting.startDate = new Date()
+                        $scope.newSetting.starthour = new Date().getHours()
+                        $scope.newSetting.startminute = (new Date().getMinutes() / 5).toFixed(0) * 5
+                        //console.log($scope.newSetting.startminute)
+                        $scope.hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+                        $scope.minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
+                        //console.log($scope.newSetting)
 
-                        }).success(function (res) {
-                            $scope.backupRecords = res
-                            $rootScope.toggleFunction('databackup')
-                            $timeout(function () {
+                        $scope.saveBackupSetting = function (t) {
+                            $http.post('/api/syssetting/backupsetting', data = t).success(function (res) {
+                                console.log(res)
                                 $mdDialog.cancel()
-                            }, 500)
+                                $rootScope.toggleFunction('userpermission')
+                            })
+
+                        }
+
+                        $scope.backup = function () {
+                            console.log('backup')
+                            // $rootScope.showProgress()
+                            $http.get('/api/syssetting/startbackup', {
+                                params: {
+                                    username: username
+                                }
+
+                            }).success(function (res) {
+                                $scope.backupRecords = res
+                                $rootScope.toggleFunction('databackup')
+                                $timeout(function () {
+                                    $mdDialog.cancel()
+                                }, 500)
 
 
-                        })
+                            })
 
+                        }
                     }
-                }
 
-                $scope.deleteBackup = function (d) {
+                    $scope.deleteBackup = function (d) {
 
-                    var confirm = $mdDialog.confirm().title('Delete Backup!')
-                        .content('<strong> Are you sure to delete \"' + d.backupName + '\" ? </strong>')
-                        .cancel('No').ok('Yes')
+                        var confirm = $mdDialog.confirm().title('Delete Backup!')
+                            .content('<strong> Are you sure to delete \"' + d.backupName + '\" ? </strong>')
+                            .cancel('No').ok('Yes')
 
-                    $mdDialog.show(confirm).then(function () {
-                        $rootScope.showProgress()
-                        $http.post('/api/syssetting/deletebackup', data = d).success(function (res) {
-                            $scope.backupRecords = res
+                        $mdDialog.show(confirm).then(function () {
+                            $rootScope.showProgress()
+                            $http.post('/api/syssetting/deletebackup', data = d).success(function (res) {
+                                $scope.backupRecords = res
+                                $mdDialog.cancel()
+                                $rootScope.toggleFunction('databackup')
+                            })
+                        }, function () {
                             $mdDialog.cancel()
                             $rootScope.toggleFunction('databackup')
-                        })
-                    }, function () {
-                        $mdDialog.cancel()
-                        $rootScope.toggleFunction('databackup')
-                    }).finally(function () {
-                        confirm = undefined;
-                    });
-                }
+                        }).finally(function () {
+                            confirm = undefined;
+                        });
+                    }
 
-                $scope.restore = function (d) {
-                    var confirm = $mdDialog.confirm().title('restore Backup!')
-                        .content('<strong> Are you sure to restore \"' + d.backupName + '\" ? </strong>')
-                        .cancel('No').ok('Yes')
+                    $scope.restore = function (d) {
+                        var confirm = $mdDialog.confirm().title('restore Backup!')
+                            .content('<strong> Are you sure to restore \"' + d.backupName + '\" ? </strong>')
+                            .cancel('No').ok('Yes')
 
-                    $mdDialog.show(confirm).then(function () {
-                        $rootScope.showProgress()
-                        $http.post('/api/syssetting/restore', data = d).success(function (res) {
-                            $scope.cancel()
-                            $scope.backupRecords = res
-                        })
-                    }, function () {
-                        $mdDialog.cancel()
-                        $rootScope.toggleFunction('databackup')
-                    }).finally(function () {
-                        confirm = undefined;
-                    });
-                }
-
-                $scope.downloadbackup = function (d) {
-                    // console.log(d)
-                    var confirm = $mdDialog.confirm().title('Download Backup file')
-                        .content('<strong> Download \"' + d.backupName + '\" ? </strong>')
-                        .cancel('No').ok('Yes')
-
-                    $mdDialog.show(confirm).then(function () {
-                        $rootScope.showProgress()
-                        $http.post('/api/syssetting/downloadbackup', data = d).success(function (res) {
+                        $mdDialog.show(confirm).then(function () {
+                            $rootScope.showProgress()
+                            $http.post('/api/syssetting/restore', data = d).success(function (res) {
+                                $scope.cancel()
+                                $scope.backupRecords = res
+                            })
+                        }, function () {
                             $mdDialog.cancel()
-                            $scope.backupRecords = res
                             $rootScope.toggleFunction('databackup')
-                        })
-                    }, function () {
-                        $mdDialog.cancel()
-                    }).finally(function () {
-                        confirm = undefined;
-                    });
-                }
+                        }).finally(function () {
+                            confirm = undefined;
+                        });
+                    }
 
-            })
-        }
-            else if (func == 'userpermission') {
+                    $scope.downloadbackup = function (d) {
+                        // console.log(d)
+                        var confirm = $mdDialog.confirm().title('Download Backup file')
+                            .content('<strong> Download \"' + d.backupName + '\" ? </strong>')
+                            .cancel('No').ok('Yes')
+
+                        $mdDialog.show(confirm).then(function () {
+                            $rootScope.showProgress()
+                            $http.post('/api/syssetting/downloadbackup', data = d).success(function (res) {
+                                $mdDialog.cancel()
+                                $scope.backupRecords = res
+                                $rootScope.toggleFunction('databackup')
+                            })
+                        }, function () {
+                            $mdDialog.cancel()
+                        }).finally(function () {
+                            confirm = undefined;
+                        });
+                    }
+
+                })
+            }
+            else if (func == 'balance') {
                 $http({
                     method: 'GET',
-                    url: '/api/entities/getuserslist'
+                    url: '/rest/users/listallusers',
+                    params: {'params': 'all'}
                 }).then(function success(res) {
-                    console.log(res)
+                    //console.log(res.data)
                     $scope.users = res.data
                     $scope.users.forEach(function (u) {
                         switch (u.permission) {
@@ -264,7 +245,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                     })
 
                     $scope.deleteUser = function (u) {
-                        confirm = $mdDialog.confirm().title('Delete User!')
+                        confirm = $mdDialog.confirm().title('Delete Tag!')
                             .content('<strong> Are you sure to delete user: ' + u.username + '? </strong>')
                             .cancel('No').ok('Yes')
 
@@ -355,15 +336,15 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                     }
                 })
             }
-            else if (func== 'datainitialization'){
+            else if (func== 'cashflow'){
                 $http({
                         method:'GET',
                         url:"/api/syssetting/getdataconfig"
                     }
                 )
                     .success(function(d){
-                       // console.log(d)
-                      $scope.dataConf =d
+                        // console.log(d)
+                        $scope.dataConf =d
                     })
 
                 $scope.fileSelected=function(file,dataConf) {
@@ -375,7 +356,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
 
                         dataConf['filename']=response.data.filename
                         dataConf['upload_date']=response.data.upload_date
-                        //dataConf['objectID'] = response.data.objectID
+                        dataConf['objectID'] = response.data.objectID
                         dataConf['content_type'] = response.data.content_type
                         dataConf['length'] = response.data.length
                         dataConf['status']=response.data.status
@@ -387,7 +368,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                             }
                         )
                             .success(function(d){
-                               // console.log(d)
+                                console.log(d)
                                 $rootScope.notificationToast(d.status)
                                 $mdDialog.cancel();
                                 $rootScope.toggleFunction('datainitialization')
@@ -405,7 +386,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                         .success(function (d) {
                             //if(!contentType) contentType = 'application/octet-stream';
                             location.href = '/api/syssetting/getfiletmp?filename=' + d['filename']
-                            //console.log(d)
+                            console.log(d)
                         })
 
                 }
@@ -429,18 +410,18 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                                     data:dataConf
                                 }
                             ).success(function (d) {
-                                    console.log(d)
-                                    $mdDialog.cancel();
-                                    $rootScope.toggleFunction('datainitialization')
+                                console.log(d)
+                                $mdDialog.cancel();
+                                $rootScope.toggleFunction('datainitialization')
                             })
                         }
                     }
                 }
             }
             else {
-            $scope.data = []
-            $scope.columns = []
-        }
+                $scope.data = []
+                $scope.columns = []
+            }
 
             $scope.functions.forEach(function (f) {
                 if (f.taskKey == func) {
@@ -459,4 +440,4 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
 
 
     }
-    ])
+])

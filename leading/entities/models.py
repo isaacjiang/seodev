@@ -34,6 +34,11 @@ class EntitiesModel():
         result = self.dbt.find({},{"_id":0})
         return list(result)
 
+    def get_users_list(self):
+        result = self.dbu.find({},{"_id":0,"password":0})
+        return list(result)
+
+
     def update_user_status(self,**kwargs):
         self.dbu.update_one({"username":self.username},{"$set":kwargs})
 

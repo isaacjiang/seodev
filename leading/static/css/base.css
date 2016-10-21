@@ -70,85 +70,10 @@ h1.elegantshadow {
 .pdf-controls { width: 100%; display: block; background: #eee; padding: 1em;}
 .fixed { position: fixed; top: 0; left: calc(50% - 480px); z-index: 100; width: 100%; padding: 1em; background: rgba(238, 238, 238,.9); width: 960px; }
 
-.totalprogressline{
-    position:relative;
-    margin-top:3px;
-}
-
 .md-sidenav-left,.md-sidenav-right { z-index: 101}
 
 .md-toolbar-tools h1 {
     font-size: inherit;
     font-weight: inherit;
     margin: inherit;
-}
-
-#popupContainer {
-    position: relative;
-}
-#chart svg,#chart2 svg {
-    padding-left: 40px;
-    padding-right: 40px;
-    margin-top:20px
-}
-
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-.line {
-    stroke: #8DBF41;
-    fill: none;
-    stroke-width: 1.25px;
-}
-
-.line.line0 {
-    stroke: #8DBF41;
-}
-
-.line.line1 {
-    stroke: #febc01;
-}
-
-.overlay {
-    fill: none;
-    pointer-events: all;
-}
-
-.focus circle, .focus2 circle {
-    fill: none;
-}
-
-.focus circle.y0 {
-    stroke: blue;
-}
-
-.focus2 circle.y1 {
-    stroke: red;
-}
-
-.focus line, .focus2 line {
-    stroke: purple;
-    shape-rendering: crispEdges;
-}
-
-.focus line.y0 {
-    stroke: steelblue;
-    stroke-dasharray: 3 3;
-    opacity: .5;
-}
-
-.focus2 line.y1 {
-    stroke: indianred;
-    stroke-dasharray: 3 3;
-    opacity: .5;
-}
-
-.brush .extent {
-    stroke: #fff;
-    fill-opacity: .125;
-    shape-rendering: crispEdges;
 }

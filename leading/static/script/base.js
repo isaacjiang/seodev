@@ -28,7 +28,7 @@ app.config(function ($mdThemingProvider) {
     });
     $mdThemingProvider.theme('default')
         .primaryPalette('leadingTheme')
-        .accentPalette('blue');
+        .accentPalette('orange');
 })
 
     .service('current_user', function ($http, $location, $q) {
@@ -126,8 +126,10 @@ app.config(function ($mdThemingProvider) {
         };
         $scope.dashboard = function() {
             if ($rootScope.current_user.username == null){$window.location.href = '/'}
+
             else{$window.location.href = '/dashboard'
                 //console.log('dashboard')
+
                 }
         };
         $scope.market = function() {
@@ -139,6 +141,7 @@ app.config(function ($mdThemingProvider) {
             if ($rootScope.current_user.username == null){$window.location.href = '/'}
             else {
                 $window.location.href = '/account'
+                //$mdSidenav('account').toggle()
             }
         };
         $scope.help= function() {

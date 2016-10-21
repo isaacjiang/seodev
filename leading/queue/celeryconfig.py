@@ -12,8 +12,18 @@ CELERY_IGNORE_RESULT = True
 
 CELERYBEAT_SCHEDULE = {
     'tasks-per-10s': {
-        'task': 'leading.queue.task1',
+        'task': 'leading.queue.taskTasksCompleted',
         'schedule': timedelta(seconds=10),
-        'args': ('XX',)
+        'args': ('tasks-per-10s',)
+    },
+    'tasks-per-30s': {
+        'task': 'leading.queue.taskAccountSum',
+        'schedule': timedelta(seconds=30),
+        'args': ('tasks-per-30s',)
+    },
+    'tasks-per-30s2': {
+        'task': 'leading.queue.taskPerformance',
+        'schedule': timedelta(seconds=30),
+        'args': ('tasks-per-30s2',)
     },
 }

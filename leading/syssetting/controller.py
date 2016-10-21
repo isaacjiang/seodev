@@ -121,7 +121,7 @@ class SystemService():
         print dataConf
         filename = dataConf['filename']
         # content_type = dataConf['content_type']
-        objectID = dataConf['objectID']
+        #objectID = dataConf['objectID']
         dataConf = self.model.DataInitialization().export_db_to_excel(dataConf)
         # .update_file(objectID)
         return json.dumps(dataConf)
