@@ -131,6 +131,17 @@ class EmployeeModel(TasksModel):
         self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{'status':"Hiring"},"$addToSet":{"offer":offer}})
         return id
 
+    def update_employees_photo(self, id, photo):
+        print id, photo
+        # offer['teamName']=self.teamName
+        # offer['companyName']=self.companyName
+        # offer['period'] =self.period
+        # s =  self.db.employees_def.find_one({"_id":ObjectId(id)})
+        # if 'offer' not in s.keys():
+        #     self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{"offer":[]}})
+        self.db.employees_def.update_one({"_id": ObjectId(id)}, {"$set": {'photo': photo}})
+        return id
+
 class WorkforceModel(TasksModel):
 
     def get_init_value(self):

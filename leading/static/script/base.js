@@ -132,11 +132,7 @@ app.config(function ($mdThemingProvider) {
 
                 }
         };
-        $scope.market = function() {
-            if ($rootScope.current_user.username == null){$window.location.href = '/'}
-            else{$window.location.href = '/market'}
 
-        };
             $scope.account = function () {
             if ($rootScope.current_user.username == null){$window.location.href = '/'}
             else {
@@ -147,9 +143,7 @@ app.config(function ($mdThemingProvider) {
         $scope.help= function() {
             $window.location.href = '/help'
         };
-        $scope.resert= function() {
-           $http.get('/server/reset?username='+$rootScope.current_user.username)
-        };
+
         $scope.settings= function() {
             $window.location.href = '/settings'
             };
@@ -644,35 +638,75 @@ app.config(function ($mdThemingProvider) {
                 };
 
 
-                $http({
-                        method:'GET',
-                        url:"/api/dtools/hiring",
-                        params:{
-                            username: $rootScope.current_user.username,
-                            taskID:task.taskID,
-                            companyName :task.companyName,
-                            teamName : task.teamName,
-                            period:task.period
+                var getInitData = function () {
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/hiring",
+                            params: {
+                                username: $rootScope.current_user.username,
+                                taskID: task.taskID,
+                                companyName: task.companyName,
+                                teamName: task.teamName,
+                                period: task.period
+                            }
                         }
-                    }
-                )
-                    .success(function(d){
-                    $scope.employees = d
-                    $scope.employees_keys = Object.keys(d)
-                        // $scope.employees_keys.forEach(function (key) {
-                        //     $scope.employees[key].forEach(function (e) {
-                        //
-                        //         console.log(e,e.minimumSalary)
-                        //         e.salaryOffer_t = e.minimumSalary == undefined? 0:formatNum(parseInt(e.minimumSalary))
-                        //         e.salaryOffer = e.minimumSalary
-                        //     })
-                        // })
+                    )
+                        .success(function (d) {
+                            console.log(d)
+                            $scope.employees = d
+                            $scope.employees_keys = Object.keys(d)
+                            $scope.employees_keys.forEach(function (key) {
+                                $scope.employees[key].forEach(function (e) {
 
-                    })
+                                    if (e.photo) {
+                                        e.url = "/files/download?filename=" + e.photo['filename'] +
+                                            "&id=" + e.photo['objectID'] + "&ctype=" + e.photo['content_type']
+                                    }
+                                    // e.salaryOffer_t = e.minimumSalary == undefined? 0:formatNum(parseInt(e.minimumSalary))
+                                    // e.salaryOffer = e.minimumSalary
+                                })
+                            })
 
-               $timeout(function () {
-                   timer('2016-09-22 01:01:38')
-                   },1000)
+                        })
+                }
+                getInitData()
+                $timeout(function () {
+                    timer('2016-09-22 01:01:38')
+                }, 1000)
+
+                $scope.photoUpload = function (file, employeeid) {
+
+                    Upload.upload({
+                        url: '/files/upload',
+                        data: {files: file}
+                    }).then(function (response) {
+                        console.log(response)
+                        $http({
+                                method: 'POST',
+                                url: "/api/dtools/uploademployeephoto",
+                                data: {
+                                    employeeid: employeeid,
+                                    photo: response.data[0]
+                                }
+                            }
+                        ).success(function () {
+                            getInitData()
+                            // $scope.employees_keys.forEach(function (key) {
+                            //     $scope.employees[key].forEach(function (e) {
+                            //
+                            //         if (e._id == employeeid){
+                            //             e.url = "/files/download?filename="+e.photo['filename']+
+                            //                 "&id="+ e.photo['objectID']+ "&ctype="+ e.photo['content_type']
+                            //         }
+                            //         // e.salaryOffer_t = e.minimumSalary == undefined? 0:formatNum(parseInt(e.minimumSalary))
+                            //         // e.salaryOffer = e.minimumSalary
+                            //     })
+                            // })
+                            $rootScope.notificationToast('File uploaded.')
+                        })
+
+                    });
+                }
 
                 $scope.fileSelected=function(file) {
                   // var fileID =  fileUpload(file)
@@ -696,9 +730,7 @@ app.config(function ($mdThemingProvider) {
                                     }
                                 })
                                 $rootScope.notificationToast('File uploaded.')
-                        }
-
-                        )
+                        })
 
                     });
                 }

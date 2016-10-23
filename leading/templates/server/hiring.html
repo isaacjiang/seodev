@@ -99,8 +99,8 @@
            <div layout ng-repeat="employee in employees[category]">
                         <div flex="45" layout layout-align="center center">
                             <md-list-item class="md-3-line">
-                                <img ng-src="{% raw %}{{ '/photo/'+ employee.employeeName +'.GIF'}}{% endraw %}" class="md-avatar"
-                                     alt="Name"/>
+                                <img ng-src="{% raw %}{{ employee.url}}{% endraw %}" class="md-avatar"
+                                     alt="Name" ngf-select="photoUpload($files,employee._id)" accept="image/*"/>
                                 <div flex class="md-list-item-text" layout="column">
                                     <h3 ng-bind="employee.employeeName"></h3>
                                     <p ng-bind="employee.title"></p>
