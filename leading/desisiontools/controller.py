@@ -386,15 +386,16 @@ class PeriodicTasksService():
         self.systemCurrentPeriod = SystemSetting().get_system_current_period()
 
     def categoryToItem(self, category):
-        if category in ['Marketing & Advertizing', 'Marketing']:
+        category = category.lower()
+        if category in ['marketing & advertizing', 'marketing&advertizing', 'marketing']:
             accountDescID = 'AB012'
-        elif category in ['Sales & Distribution', 'Sales']:
+        elif category in ['sales & distribution', 'sales&distribution', 'sales']:
             accountDescID = 'AB011'
-        elif category in ['Social Media']:
+        elif category in ['social media', 'support']:
             accountDescID = 'AB013'
-        elif category in ['Logistics & IT', 'Logistics']:
+        elif category in ['logistics & it', 'logisticsit', 'logistics']:
             accountDescID = 'AB014'
-        elif category in ['Product Development']:
+        elif category in ['product development', 'productdevelopment']:
             accountDescID = 'AB015'
         else:
             accountDescID = 'AB010'
@@ -503,99 +504,52 @@ class PeriodicTasksService():
                                 accountDescID=self.categoryToItem(workforce['functions']),
                                 value=value, comments='Workforce ' + workforce['functions'])
 
-    def budgetComplete(teamName, companyName, taskID):
-        period = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-        b = sdb.budget_com.find_one(
-            {"teamName": teamName, "companyName": companyName, "currentPeriod": period['period']},
-            {"_id": 0}, sort=[("$natural", -1)])
+    def budgetAccountBookkeeping(self):
+        budget = self.db.budget_com.find()
+        for b in budget:
+            acc = Account(teamName=b['teamName'], companyName=b['companyName'],
+                          period=b['period'])
+            value1 = (b['acc_budget']['B2C_AA'] if 'B2C_AA' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['B2B_AA'] if 'B2B_AA' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche1_AA'] if 'Niche1_AA' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche2_AA'] if 'Niche2_AA' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche3_AA'] if 'Niche3_AA' in b['acc_budget'].keys() else 0)
+            acc.bookkeeping(objectID=b['_id'], accountDescID='AB011', value=value1, comments='AA')
 
-        if 'B2B_AA' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB011', "Credit",
-                               b['acc_budget']['B2B_AA'], 'B2B')
-        if 'B2C_AA' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB011', "Credit",
-                               b['acc_budget']['B2C_AA'], 'B2C')
-        if 'B2B_DM' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB012', "Credit",
-                               b['acc_budget']['B2B_DM'], 'B2B')
-        if 'B2C_DM' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB012', "Credit",
-                               b['acc_budget']['B2C_DM'], 'B2C')
-        if 'B2B_PD' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB014', "Credit",
-                               b['acc_budget']['B2B_PD'], 'B2B')
-        if 'B2C_PD' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB014', "Credit",
-                               b['acc_budget']['B2C_PD'], 'B2C')
+            value2 = (b['acc_budget']['B2B_DM'] if 'B2B_DM' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['B2C_DM'] if 'B2C_DM' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche1_DM'] if 'Niche1_DM' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche2_DM'] if 'Niche2_DM' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche3_DM'] if 'Niche3_DM' in b['acc_budget'].keys() else 0)
+            acc.bookkeeping(objectID=b['_id'], accountDescID='AB012', value=value2, comments='DM')
 
-        if 'Niche1_AA' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB011', "Credit",
-                               b['acc_budget']['Niche1_AA'], 'Niche1_AA')
-        if 'Niche2_AA' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB011', "Credit",
-                               b['acc_budget']['Niche2_AA'], 'Niche2_AA')
-        if 'Niche3_AA' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB011', "Credit",
-                               b['acc_budget']['Niche3_AA'], 'Niche3_AA')
+            value3 = (b['acc_budget']['B2B_PD'] if 'B2B_PD' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['B2C_PD'] if 'B2C_PD' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche1_PD'] if 'Niche1_PD' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche2_PD'] if 'Niche2_PD' in b['acc_budget'].keys() else 0) \
+                     + (b['acc_budget']['Niche3_PD'] if 'Niche3_PD' in b['acc_budget'].keys() else 0)
+            acc.bookkeeping(objectID=b['_id'], accountDescID='AB014', value=value3, comments='PD')
 
-        if 'Niche1_DM' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB012', "Credit",
-                               b['acc_budget']['Niche1_DM'], 'Niche1_DM')
-        if 'Niche2_DM' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB012', "Credit",
-                               b['acc_budget']['Niche2_DM'], 'Niche2_DM')
-        if 'Niche3_DM' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB012', "Credit",
-                               b['acc_budget']['Niche3_DM'], 'Niche3_DM')
-
-        if 'Niche1_PD' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB014', "Credit",
-                               b['acc_budget']['Niche1_PD'], 'Niche1_PD')
-        if 'Niche2_PD' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB014', "Credit",
-                               b['acc_budget']['Niche2_PD'], 'Niche2_PD')
-        if 'Niche3_PD' in b['acc_budget'].keys():
-            accountBookkeeping(b["teamName"], b["companyName"], b['currentPeriod'], 'AB014', "Credit",
-                               b['acc_budget']['Niche3_PD'], 'Niche3_PD')
-
-        result = {"result": "success", "Discretionary Expenditure": b}
-        # print result
-        return result
-
-    def actionsComplete(teamName, companyName, taskID):
-        currentPeriod = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-        actions = sdb.actions_com.find(
-            {"teamName": teamName, "companyName": companyName, "currentPeriod": currentPeriod['period']}, {"_id": 0})
+    def actionsAccountBookkeeping(self):
+        actions = self.db.actions_com.find()
         for action in actions:
             a = action['action']
-            if a['category'] == 'leadership':
-                accountDesc = "AB010"
-            elif a['category'] == "marketing&advertising":
-                accountDesc = "AB011"
-            elif a['category'] == "sales&distribution":
-                accountDesc = "AB012"
-            elif a['category'] == "support":
-                accountDesc = "AB013"
-            elif a['category'] == "logistics&it":
-                accountDesc = "AB014"
-            elif a['category'] == "productdevelopment":
-                accountDesc = "AB015"
-            else:
-                accountDesc = "AB010"
-
-            account = Account(teamName, companyName, a['periodStart'])
-            account.bookkeeping(accountDesc, a["immediateIncrementalCost"], "Detail", a['actionID'])
-            account2 = Account(teamName, companyName, a['periodStart'] + 1)
-            account2.bookkeeping(accountDesc, a["associatedCost"], "Detail", a['actionID'])
-
-            # accountBookkeeping(teamName, companyName, a['periodStart'], accountDesc, "Credit",
-            # a["immediateIncrementalCost"], a['actionID'])
-            # accountBookkeeping(teamName, companyName, a['periodStart'] + 1, accountDesc, "Credit", a["associatedCost"],
-            # a['actionID'])
-            Index(teamName, companyName, a['periodStart']).bookkeeping('competenceIndex', accountDesc,
-                                                                       a["competenceIndex"], 'Detail', a['actionID'])
-            # competenceIndex(teamName, companyName, a['periodStart'], "Actions", accountDesc, a["competenceIndex"],
-            # a['actionID'])
+            accountDesc = self.categoryToItem(a['category'])
+            if a["immediateIncrementalCost"] > 0:
+                account = Account(teamName=action['teamName'], companyName=action['companyName'],
+                                  period=a['periodStart'])
+                account.bookkeeping(objectID=action['_id'], accountDescID=accountDesc,
+                                    value=a["immediateIncrementalCost"],
+                                    comments='action')
+            if a["associatedCost"] > 0:
+                account2 = Account(teamName=action['teamName'], companyName=action['companyName'],
+                                   period=a['periodStart'] + 1)
+                account2.bookkeeping(objectID=action['_id'], accountDescID=accountDesc, value=a["associatedCost"],
+                                     comments='action2')
+            if a["competenceIndex"] > 0:
+                Index(teamName=action['teamName'], companyName=action['companyName'], period=a['periodStart']) \
+                    .bookkeeping(objectID=action['_id'], indexName='competenceIndex', value=a["competenceIndex"],
+                                 comments=a['actionID'])
 
     def nichesComplete(teamName, companyName, taskID):
         currentPeriod = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
@@ -681,24 +635,29 @@ class PeriodicTasksService():
                 # print successCom[res]
         return successCom
 
-    def negotiation1Complete(teamName, companyName, taskID):
-        currentPeriod = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-        negotiation1 = sdb.negotiation1_com.find_one({"userTeam.teamName": teamName, "status": "approved"}, {"_id": 0})
-        expense = 0
-        for person in negotiation1['negotiation']['selectedEmployees']:
-            expense += person['avgExpense'] + person['avgWage']
+    def negotiation1AccountBookkeeping(self):
+        # currentPeriod = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
+        negotiation1s = self.db.negotiation1_com.find({"status": "approved"})
+        for negotiation1 in negotiation1s:
+            expense = 0
+            for person in negotiation1['negotiation']['selectedEmployees']:
+                expense += person['avgExpense'] + person['avgWage']
 
-        fundings = negotiation1['negotiation']['funding']['additinalProductDeveloperNumber'] * 170000 + \
-                   negotiation1['negotiation']['funding']['additinalSalesNumber'] * 40000
+            fundings = negotiation1['negotiation']['funding']['additinalProductDeveloperNumber'] * 170000 + \
+                       negotiation1['negotiation']['funding']['additinalSalesNumber'] * 40000
 
-        Account(teamName, 'LegacyCo', currentPeriod['period']).bookkeeping('BA032', expense + fundings, 'Detail',
-                                                                           'Transfer to NewCo.')
-        # accountBookkeeping(teamName, 'LegacyCo', currentPeriod['period'], 'BA032', 'Credit', expense + fundings,
-        # 'Transfer to NewCo.')
-        Account(teamName, 'NewCo', currentPeriod['period']).bookkeeping('BB142', expense + fundings, 'Detail',
-                                                                        'Transfer from LegacyCo.')
-        # accountBookkeeping(teamName, 'NewCo', currentPeriod['period'], 'BB142', 'Credit', expense + fundings,
-        # 'Transfer from LegacyCo.')
+            Account(teamName=negotiation1['teamName'], companyName='LegacyCo',
+                    period=negotiation1['negotiation']['startAtPeriod']) \
+                .bookkeeping(objectID=negotiation1['_id'], accountDescID='BA032', value=expense,
+                             comments='Transfer to NewCo.')
+            # accountBookkeeping(teamName, 'LegacyCo', currentPeriod['period'], 'BA032', 'Credit', expense + fundings,
+            # 'Transfer to NewCo.')
+            Account(teamName=negotiation1['teamName'], companyName='NewCo',
+                    period=negotiation1['negotiation']['startAtPeriod']) \
+                .bookkeeping(objectID=negotiation1['_id'], accountDescID='BB142', value=expense,
+                             comments='Transfer from LegacyCo.')
+            # accountBookkeeping(teamName, 'NewCo', currentPeriod['period'], 'BB142', 'Credit', expense + fundings,
+            # 'Transfer from LegacyCo.')
 
     def negotiation2Complete(teamName, companyName, taskID):
         currentPeriod = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
@@ -734,5 +693,5 @@ class PeriodicTasksService():
         # accountBookkeeping(teamName, 'NewCo', 5, 'BB142', 'Credit', expenditure1, 'Transfer from LegacyCo.')
 
 
-#PeriodicTasksService().employeesAccountBookkeeping()
+PeriodicTasksService().actionsAccountBookkeeping()
 #Account(teamName="Team B", companyName='LegacyCo', period=1).sum()

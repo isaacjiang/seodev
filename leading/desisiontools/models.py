@@ -232,8 +232,8 @@ class BudgetModel(TasksModel):
     #     return result
 
     def save(self,acc_budget):
-        self.db.budget_com.insert_one({"teamName":self.teamName,"companyName":self.companyName,
-                                       "currentPeriod":self.period,"acc_budget":acc_budget})
+        self.db.budget_com.update_one({"teamName": self.teamName, "companyName": self.companyName,
+                                       "period": self.period}, {"$set": {"acc_budget": acc_budget}}, upsert=True)
 
         return acc_budget
 

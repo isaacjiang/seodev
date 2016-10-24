@@ -196,7 +196,6 @@ class Account():
         self.subset_plus(["BB111", "BB112", 'BB113'], "BB121", 1)
         self.subset_plus(["BB021", "BB060", 'BB121'], "BB131", 1)
 
-
     def query_all(self):
         result = []
         accounts_desc = self.db.account_def.find({}, {"_id": 0})
