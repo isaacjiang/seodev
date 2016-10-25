@@ -27,6 +27,12 @@ class TasksService():
         result = models.EmployeeModel().update_employees_photo(employeeid, photo=data["photo"])
         return json.dumps(result)
 
+    def upload_negotiation_photo(self):
+        data = json.loads(request.data)
+        employeeid = data['employeeid']
+        result = models.Negotiate1Model().update_employees_photo(employeeid, photo=data["photo"])
+        return json.dumps(result)
+
     def get_tasks_list(self):
         username = request.args["username"]
         if username != 'null':

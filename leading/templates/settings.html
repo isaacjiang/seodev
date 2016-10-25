@@ -11,7 +11,8 @@
 
 {% block content %}
     <div ng-controller="settingsCtrl" layout="row" ng-cloak>
-        <md-sidenav class="md-sidenav-left" md-component-id="settings" md-is-locked-open="true" flex style="z-index: 0">
+        <md-sidenav class="md-sidenav-left" md-component-id="settings" md-is-locked-open="true" flex style="z-index: 0"
+                    ng-if="false">
             <md-toolbar class="md-accent">
                 <h1 class="md-toolbar-tools">Settings</h1>
             </md-toolbar>
@@ -42,15 +43,16 @@
                           md-gutter="6px" md-gutter-gt-sm="4px">
                 <md-grid-tile class="gray" md-colspan="{% raw %}{{ func.colspan }}{% endraw %}"
                               md-rowspan="{% raw %}{{ func.rowspan }}{% endraw %}" md-colspan-sm="1" md-colspan-xs="1"
-                              md-whiteframe ng-repeat="func in functions">
+                              md-whiteframe ng-repeat="func in functions" ng-click="toggleFunction(func.taskKey)"
+                              ng-click="toggleFunction(func.taskKey)">
 
                     <md-grid-tile-header>
                         <h3 ng-bind="func.taskName"></h3>
                     </md-grid-tile-header>
 
-
                     <div style="width:100%;" ng-style="setTableHeight()"
                          ng-if="func.taskKey=='userpermission'&&func.rowspan!=1">
+
                         <md-table-container>
                             <table md-table>
                                 <thead md-head md-order="myOrder">

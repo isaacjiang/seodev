@@ -58,7 +58,6 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
 
         })
 
-
         $rootScope.toggleFunction = function (func) {
             $scope.query = {
                 order: '_id',

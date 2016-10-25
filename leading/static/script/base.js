@@ -84,16 +84,15 @@ app.config(function ($mdThemingProvider) {
             }
             else{
 
-                //  console.log($rootScope.current_user)
-
                     $http({
                             method:'GET',
                             url:"/api/entities/getuserinfo",
                             params:{username:$rootScope.current_user.username}
                         }
                     ).success(function(d){
-                        //  console.log(d)
+                        //console.log(d)
                         $rootScope.user_info = d
+                        $rootScope.notificationToast("Current Accessed User " + d.userInfo.username + ".")
 
                     })
 
@@ -129,7 +128,7 @@ app.config(function ($mdThemingProvider) {
 
             else{$window.location.href = '/dashboard'
                 //console.log('dashboard')
-
+                $rootScope.notificationToast("Landing to Dashboard page.")
                 }
         };
 
@@ -138,6 +137,7 @@ app.config(function ($mdThemingProvider) {
             else {
                 $window.location.href = '/account'
                 //$mdSidenav('account').toggle()
+                $rootScope.notificationToast("Landing to account page.")
             }
         };
         $scope.help= function() {
@@ -146,9 +146,9 @@ app.config(function ($mdThemingProvider) {
 
         $scope.settings= function() {
             $window.location.href = '/settings'
+            $rootScope.notificationToast("Landing to settings page.")
             };
         $scope.instruction= function() {
-            console.log('inst')
             instructionFn('hiring')
         };
 
@@ -462,10 +462,12 @@ app.config(function ($mdThemingProvider) {
                             $mdDialog.cancel();
                             $mdSidenav('taskslist').close()
                             $window.location.href = '/'
+                          $rootScope.notificationToast("Join to Team " + selectedTeam[0].teamName)
                         })
                     }
                     else{
                         $scope.message=="Please select one and only one team."
+                        $rootScope.notificationToast($scope.message)
                         joinTeam()
                     }
 
@@ -502,65 +504,6 @@ app.config(function ($mdThemingProvider) {
 
 
         }
-
-
-        function inintData() {
-            // Show the dialog
-            $mdDialog.show({
-                clickOutsideToClose: true,
-                bindToController: true,
-                controller: initDataCtrl,
-                parent: angular.element(document.body),
-                templateUrl: '/server/initdata'
-            });
-
-            function initDataCtrl ($scope,$mdDialog,$http) {
-                $scope.cancel = function () {
-                    $mdDialog.cancel();
-                };
-                $scope.items = ['task_list', 'account_desc', 'employees', 'actions',
-                    'niches', 'negotiation', 'projects', 'resources', 'stories', 'corporates']
-                $scope.selected = ['task_list'];
-                $scope.toggle = function (item, list) {
-                    var idx = list.indexOf(item);
-                    if (idx > -1) {
-                        list.splice(idx, 1);
-                    }
-                    else {
-                        list.push(item);
-                    }
-                };
-                $scope.exists = function (item, list) {
-                    return list.indexOf(item) > -1;
-                };
-                $scope.isIndeterminate = function() {
-                    return ($scope.selected.length !== 0 &&
-                    $scope.selected.length !== $scope.items.length);
-                };
-                $scope.isChecked = function() {
-                    return $scope.selected.length === $scope.items.length;
-                };
-                $scope.toggleAll = function() {
-                    if ($scope.selected.length === $scope.items.length) {
-                        $scope.selected = [];
-                    } else if ($scope.selected.length === 0 || $scope.selected.length > 0) {
-                        $scope.selected = $scope.items.slice(0);
-                    }
-                }
-                $scope.downloadfile = function (list) {
-
-                    location.href = '/server/initdata?keyword=getfile'+'&list='+$scope.selected
-
-
-                };
-                $scope.uploadfile = function (file) {
-
-                };
-
-
-            }
-        }
-
         function hiringfn(task) {
             // Show the dialog
             $mdDialog.show({
@@ -630,7 +573,7 @@ app.config(function ($mdThemingProvider) {
                         })
                         $mdDialog.cancel();
                         $mdSidenav('taskslist').close()
-
+                        $rootScope.notificationToast("You made offers to  " + offeredEmployees.length + "  candidates.")
 
                     },function(){
                         hiringfn($event)
@@ -691,17 +634,6 @@ app.config(function ($mdThemingProvider) {
                             }
                         ).success(function () {
                             getInitData()
-                            // $scope.employees_keys.forEach(function (key) {
-                            //     $scope.employees[key].forEach(function (e) {
-                            //
-                            //         if (e._id == employeeid){
-                            //             e.url = "/files/download?filename="+e.photo['filename']+
-                            //                 "&id="+ e.photo['objectID']+ "&ctype="+ e.photo['content_type']
-                            //         }
-                            //         // e.salaryOffer_t = e.minimumSalary == undefined? 0:formatNum(parseInt(e.minimumSalary))
-                            //         // e.salaryOffer = e.minimumSalary
-                            //     })
-                            // })
                             $rootScope.notificationToast('File uploaded.')
                         })
 
@@ -793,6 +725,7 @@ app.config(function ($mdThemingProvider) {
                     )
                         .success(function(d){
                         console.log(d)
+                            $rootScope.notificationToast("Submit application for resources.")
                     })
 
                     $mdDialog.cancel();
@@ -971,6 +904,7 @@ app.config(function ($mdThemingProvider) {
                         $window.location.reload();})
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
+                    $rootScope.notificationToast("Submitted application for workforce.")
 
                 };
                 $timeout(function () {
@@ -1057,7 +991,7 @@ app.config(function ($mdThemingProvider) {
                     })
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
-
+                    $rootScope.notificationToast("Submitted application.")
                 };
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
@@ -1212,36 +1146,49 @@ app.config(function ($mdThemingProvider) {
                     })
                     $mdDialog.cancel();
                     $mdSidenav('left').close()
-
+                    $rootScope.notificationToast("Submitted application.")
                 };
                 //$http.get('/server/querywithdata?keyword=allnegotiationhr')
-                $http({
-                        method:'GET',
-                        url:"/api/dtools/negotiate1",
-                        params:{
+
+                var getInitData = function () {
+                    $http({
+                        method: 'GET',
+                        url: "/api/dtools/negotiate1",
+                        params: {
                             username: $rootScope.current_user.username,
-                            taskID:task.taskID,
-                            companyName :task.companyName,
-                            teamName : task.teamName,
-                            period:task.period
+                            taskID: task.taskID,
+                            companyName: task.companyName,
+                            teamName: task.teamName,
+                            period: task.period
                         }
-                    }
-                )
-                    .success(function(data){
-                    console.log(data)
-                    $scope.negotiationhr_sales = []
-                    $scope.negotiationhr_pd = []
-                    $scope.negotiationhr_te =[]
-                    data.data.forEach(function(d){
-                        d.src = '/photo/'+d.employeeName+'.GIF'
-                        if (d.title=="Top Salespeople") {$scope.negotiationhr_sales.push(d)}
-                        else if (d.title=="Technical Experts"){$scope.negotiationhr_te.push(d)}
-                        else{$scope.negotiationhr_pd.push(d)}
+                        }
+                    )
+                        .success(function (data) {
+                            console.log(data)
+                            $scope.negotiationhr_sales = []
+                            $scope.negotiationhr_pd = []
+                            $scope.negotiationhr_te = []
+                            data.data.forEach(function (d) {
+                                //d.src = '/photo/'+d.employeeName+'.GIF'
+                                if (d.photo) {
+                                    d.url = "/files/download?filename=" + d.photo['filename'] +
+                                        "&id=" + d.photo['objectID'] + "&ctype=" + d.photo['content_type']
+                                }
 
-                    })
+                                if (d.title == "Top Salespeople") {
+                                    $scope.negotiationhr_sales.push(d)
+                                }
+                                else if (d.title == "Technical Experts") {
+                                    $scope.negotiationhr_te.push(d)
+                                }
+                                else {
+                                    $scope.negotiationhr_pd.push(d)
+                                }
 
-                        //task data
-                            if (data.taskdata.negotiation != null) {
+                            })
+
+                            //task data
+                            if (data.taskdata != null && data.taskdata.negotiation != null) {
                                 $scope.status = data.taskdata.status
                                 $scope.selectedEmployees = []
                                 data.taskdata.negotiation.selectedEmployees.forEach(function (d) {
@@ -1268,41 +1215,36 @@ app.config(function ($mdThemingProvider) {
                                 $scope.calculatedValues =data.taskdata.negotiation.calculatedValues
                                 $scope.applyStatus = data.taskdata.status
                             }
-                })
-                // $http.get('/server/querynewconegotiationwithconditions?teamname='+$rootScope.userAtCompany.teamName)
-                //     .success(function(data){
-                //     console.log(data)
-                //     if (data.negotiation != null) {
-                //         $scope.status = data.status
-                //         $scope.selectedEmployees = []
-                //         data.negotiation.selectedEmployees.forEach(function (d) {
-                //
-                //             if (d.title=="Top Salespeople") {
-                //                 $scope.negotiationhr_sales.forEach(function (e) {
-                //                     //console.log(e.employeeID, d.employeeID,e)
-                //                     if (e.employeeID == d.employeeID) {e.selected = true}
-                //                 })}
-                //             else if (d.title=="Technical Experts"){
-                //                 $scope.negotiationhr_te.forEach(function (e) {
-                //                     if (e.employeeID == d.employeeID) {e.selected = true}
-                //                 })}
-                //             else{$scope.negotiationhr_pd.forEach(function (e) {
-                //                 if (e.employeeID == d.employeeID) {e.selected = true}
-                //             })}
-                //
-                //             $scope.toggle(d,$scope.selectedEmployees)
-                //
-                //         })
-                //
-                //         $scope.funding =data.negotiation.funding
-                //         $scope.sumInfluenceSales =data.negotiation.sumInfluenceSales
-                //         $scope.calculatedValues =data.negotiation.calculatedValues
-                //         $scope.applyStatus = data.status
-                //     }  })
+                        })
+                }
+                getInitData()
 
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
                 },1000)
+
+                $scope.photoUpload = function (file, employeeid) {
+
+                    Upload.upload({
+                        url: '/files/upload',
+                        data: {files: file}
+                    }).then(function (response) {
+                        console.log(response)
+                        $http({
+                                method: 'POST',
+                                url: "/api/dtools/uploadnegotiationphoto",
+                                data: {
+                                    employeeid: employeeid,
+                                    photo: response.data[0]
+                                }
+                            }
+                        ).success(function () {
+                            getInitData()
+                            $rootScope.notificationToast('File uploaded.')
+                        })
+
+                    });
+                }
 
                 $scope.fileSelected=function(file) {
                     // var fileID =  fileUpload(file)
@@ -1395,6 +1337,7 @@ app.config(function ($mdThemingProvider) {
                             $mdDialog.cancel();
                             $mdSidenav('taskslist').close()
                             $window.location.reload();
+                                $rootScope.notificationToast("Submitted Actions application.")
                         })
                         //$mdDialog.hide();
                     },function(){
@@ -1683,6 +1626,7 @@ app.config(function ($mdThemingProvider) {
 
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
+                    $rootScope.notificationToast("Submitted application.")
 
                 };
                 $timeout(function () {
@@ -1803,6 +1747,7 @@ app.config(function ($mdThemingProvider) {
                         console.log(d)})
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
+                    $rootScope.notificationToast("Submitted application.")
                 };
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
@@ -1867,7 +1812,7 @@ app.config(function ($mdThemingProvider) {
 
                     $mdDialog.cancel();
                     $mdSidenav('left').close()
-
+                    $rootScope.notificationToast("Submitted application.")
 
                 };
                 $http.get('/server/querynichesbyusername?username='+$rootScope.current_user.username).success(function(d){
@@ -2007,7 +1952,7 @@ app.config(function ($mdThemingProvider) {
 
                     $mdDialog.cancel();
                     $mdSidenav('left').close()
-
+                    $rootScope.notificationToast("Submitted application.")
                 };
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
@@ -2116,7 +2061,7 @@ app.config(function ($mdThemingProvider) {
                         $window.location.reload();})
                         $mdDialog.cancel();
                         $mdSidenav('taskslist').close()
-
+                    $rootScope.notificationToast("Submitted application.")
                 };
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
@@ -2152,50 +2097,7 @@ app.config(function ($mdThemingProvider) {
                 }
             }
         }
-        function endperiodfn(task) {
-                // Show the dialog
-                $mdDialog.show({
-                    clickOutsideToClose: false,
-                    bindToController: true,
-                    controller: endperiodCtrl,
-                    controllerAs: 'dialog',
-                    templateUrl: '/server/endperiod'
-                });
 
-                function endperiodCtrl ($scope,$mdDialog,$http) {
-                    $scope.close = function () {
-                        $mdDialog.cancel();
-                    };
-                    var notCompleted= false
-                    $scope.submit = function (tasks) {
-
-//if (!notCompleted){
-                        $http.post('server/endperiod',data={username:$rootScope.current_user.username,tasks:tasks}).success(function(d){
-                            console.log(d)
-                            $window.location.reload();
-                        })
-                        $mdDialog.cancel();
-                        $mdSidenav('left').close()
-//}
-                        // else{
-                        //  notificationToast({message:"Not all tasks are completed."})
-//}
-                    };
-                    $http.get('/server/querywithdata?keyword=periodstatus&username='+$rootScope.current_user.username).success(function(d){
-                            $scope.tasks = d.data
-                            $scope.tasks.forEach(function(d){
-                                if (d.status =='completed'){
-                                    d.finished = true
-                                }
-                                else {
-                                    if (d.taskName != 'End Period'){notCompleted= true}
-                                    d.finished = false}
-                            })
-
-                        }
-                    )
-                }
-            }
         $rootScope.notificationToast = function (message) {
 
             var toast = $mdToast.simple()

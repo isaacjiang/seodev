@@ -283,8 +283,9 @@ class Negotiate1Model(TasksModel):
     def get_init(self):
         result = {}
         negotiationhr=[]
-        cursor = self.db.negotiation_def.find({},{"_id":0})
+        cursor = self.db.negotiation_def.find()
         for item in cursor:
+            item['_id'] = str(item['_id'])
             negotiationhr.append(item)
         result["data"]=negotiationhr
         return result
@@ -303,6 +304,17 @@ class Negotiate1Model(TasksModel):
     def update_status(self,status):
         self.db.negotiation1_com.update_one({"teamName":self.teamName,
                                              "currentPeriod":self.period},{"$set":{"status":status}})
+
+    def update_employees_photo(self, id, photo):
+        print id, photo
+        # offer['teamName']=self.teamName
+        # offer['companyName']=self.companyName
+        # offer['period'] =self.period
+        # s =  self.db.employees_def.find_one({"_id":ObjectId(id)})
+        # if 'offer' not in s.keys():
+        #     self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{"offer":[]}})
+        self.db.negotiation_def.update_one({"_id": ObjectId(id)}, {"$set": {'photo': photo}})
+        return id
 
 class Negotiate2Model(TasksModel):
 

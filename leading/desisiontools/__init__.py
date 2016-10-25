@@ -7,6 +7,9 @@ blueprint.add_url_rule('/taskslist', view_func=controller.TasksService().get_tas
 blueprint.add_url_rule('/updatetaskfile', view_func=controller.TasksService().update_task_files,methods = ['POST'])
 blueprint.add_url_rule('/uploademployeephoto', view_func=controller.TasksService().upload_employee_photo,
                        methods=['POST'])
+blueprint.add_url_rule('/uploadnegotiationphoto', view_func=controller.TasksService().upload_negotiation_photo,
+                       methods=['POST'])
+
 
 blueprint.add_url_rule('/getpage', view_func=controller.TasksService().get_page)
 

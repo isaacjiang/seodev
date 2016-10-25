@@ -190,6 +190,20 @@
 </div>
 
 {% block content %} {% endblock %}
+<div>
+    <md-toolbar class="md-accent" style="position:absolute;bottom: 0;" flex>
+        <div class="md-toolbar-tools " layout="row" layout-align="space-between end">
+            <div flex="50">
+                <p>{% raw %}{{user_info.companyInfo.companyName }}{% endraw %}
+                    - {% raw %}{{user_info.teamInfo.teamName }}{% endraw %}({% raw %}{{ user_info.teamInfo.users.length
+                    }}{% endraw %})
+                    - Period # {% raw %}{{user_info.companyInfo.currentPeriod}}{% endraw %}</p>
+            </div>
+            <div layout="row" flex="60">
 
+            </div>
+        </div>
+    </md-toolbar>
+</div>
 </body>
 </html>
