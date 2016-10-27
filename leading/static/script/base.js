@@ -77,7 +77,7 @@ app.config(function ($mdThemingProvider) {
             $rootScope.current_user.username = current_user.username()
             $rootScope.current_user.permission = current_user.permission()
             $rootScope.current_user.status = current_user.status()
-
+            //console.log($rootScope.current_user.permission==0 )
 
             if ($rootScope.current_user.status.is_anonymous) {
                 userLogin()
@@ -171,10 +171,10 @@ app.config(function ($mdThemingProvider) {
          //$rootScope.closeSidenav('left')
          $http.get('/api/users/logout').success(function (d) {
 
-         $scope.current_user = {}
-         $scope.current_user.username = d.userStatus.username
-         $scope.current_user.permission = d.userStatus.permission
-         $scope.current_user.status = d.userStatus.status
+             $rootScope.current_user = {}
+             $rootScope.current_user.username = d.userStatus.username
+             $rootScope.current_user.permission = d.userStatus.permission
+             $rootScope.current_user.status = d.userStatus.status
          window.location.href = "/";
          })
          }
@@ -203,9 +203,9 @@ app.config(function ($mdThemingProvider) {
                 else if (newUser.username.length < 6) {
                     $scope.message = "The entered username is too short. A minimum of 6 characters must be used."
                 }
-                else if (newUser.permission == "" || newUser.permission == undefined) {
-                    $scope.message = "You did not select a valid permissin for this user."
-                }
+                // else if (newUser.permission == "" || newUser.permission == undefined) {
+                //     $scope.message = "You did not select a valid permissin for this user."
+                // }
                 else if (newUser.password != newUser.confirmpassword) {
                     $scope.message = "The entered passwords do not match."
                 }
@@ -216,11 +216,11 @@ app.config(function ($mdThemingProvider) {
                             $scope.message = d.message
                         }
                         if (d.register_status == true) {
-                            $scope.current_user = {}
-                            $scope.current_user.username = d.userStatus.username
-                            $scope.current_user.permission = d.userStatus.permission
-                            $scope.current_user.status = d.userStatus.status
-                            $scope.current_user.settings = d.userStatus.settings
+                            $rootScope.current_user = {}
+                            $rootScope.current_user.username = d.userStatus.username
+                            $rootScope.current_user.permission = d.userStatus.permission
+                            $rootScope.current_user.status = d.userStatus.status
+                            $rootScope.current_user.settings = d.userStatus.settings
 
                             $mdDialog.cancel();
                             window.location.href = "";
@@ -262,11 +262,11 @@ app.config(function ($mdThemingProvider) {
                             $scope.message = d.message
                         }
                         if (d.login_status == true) {
-                            $scope.current_user = {}
-                            $scope.current_user.username = d.userStatus.username
-                            $scope.current_user.permission = d.userStatus.permission
-                            $scope.current_user.status = d.userStatus.status
-                            $scope.current_user.settings = d.userStatus.settings
+                            $rootScope.current_user = {}
+                            $rootScope.current_user.username = d.userStatus.username
+                            $rootScope.current_user.permission = d.userStatus.permission
+                            $rootScope.current_user.status = d.userStatus.status
+                            $rootScope.current_user.settings = d.userStatus.settings
                             $mdDialog.cancel();
                             window.location.href = "";
                         }
@@ -275,24 +275,24 @@ app.config(function ($mdThemingProvider) {
             }
         }
 
-        function instructionFn(task) {
+            function instructionFn(infoFile) {
             // Show the dialog
             $mdDialog.show({
                 clickOutsideToClose: false,
                 bindToController: true,
                 controller: showpdfCtrl,
                 templateUrl: '/api/dtools/getpage?pagename=showpdf',
-                locals:{task:task}
+                locals: {infoFile: infoFile}
             });
 
-            function showpdfCtrl ($scope,$mdDialog,task) {
+                function showpdfCtrl($scope, $mdDialog, infoFile) {
 
                 $scope.close = function () {
                     $mdDialog.cancel();
                 };
                 $scope.pdfName = task.taskName+ '  Introduction';
-                $scope.pdfUrl = "/files/download?filename="+task.infoFile['filename']+
-                "&id="+ task.infoFile['objectID']+ "&ctype="+ task.infoFile['content_type']
+                    $scope.pdfUrl = "/files/download?filename=" + infoFile['filename'] +
+                        "&id=" + infoFile['objectID'] + "&ctype=" + infoFile['content_type']
                 //'static/pdf/oea-big-data-guide-1522052.pdf';
 
                 $scope.scroll = 0;
@@ -303,18 +303,6 @@ app.config(function ($mdThemingProvider) {
                     else return 'pdf-controls';
                 }
 
-                $scope.onError = function(error) {
-                    console.log(error);
-                }
-
-                $scope.onLoad = function() {
-                    console.log()
-                    $scope.loading = '';
-                }
-
-                $scope.onProgress = function(progress) {
-                    console.log(progress);
-                }
 
 
             }
@@ -518,11 +506,20 @@ app.config(function ($mdThemingProvider) {
                // console.log($rootScope.current_user.permission=='0')
 
                 $scope.instruction = function () {
-                    func(task)
+                    console.log(task)
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
-                $scope.info = function () {
-                    $mdSidenav('info').toggle();
-                };
+
                 $scope.close = function () {
                     $mdDialog.cancel();
                 };
@@ -684,7 +681,18 @@ app.config(function ($mdThemingProvider) {
             function resourcesCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
 
                 $scope.instruction = function () {
-                    func(task)
+                    console.log(task)
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -805,7 +813,18 @@ app.config(function ($mdThemingProvider) {
 
             function workforceCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -955,9 +974,19 @@ app.config(function ($mdThemingProvider) {
             });
 
             function budgetCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 //console.log($rootScope.userAtCompany.companyName,$rootScope.userAtCompany.currentPeriod )
                 $scope.if_show = function(company){
@@ -1042,7 +1071,18 @@ app.config(function ($mdThemingProvider) {
             function negotiateCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
 
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -1290,7 +1330,18 @@ app.config(function ($mdThemingProvider) {
             function actionsCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
 
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -1428,7 +1479,18 @@ app.config(function ($mdThemingProvider) {
             function projectCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
 
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -1553,7 +1615,18 @@ app.config(function ($mdThemingProvider) {
             function visionarycompetitionCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
 
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -1674,9 +1747,19 @@ app.config(function ($mdThemingProvider) {
             });
 
             function negotiate2Ctrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -1797,7 +1880,18 @@ app.config(function ($mdThemingProvider) {
             function nichesCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
 
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -1891,7 +1985,18 @@ app.config(function ($mdThemingProvider) {
             function corporateacquisitionsCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload,$interval) {
 
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
 
@@ -2002,7 +2107,18 @@ app.config(function ($mdThemingProvider) {
             function forecastingCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
 
                 $scope.instruction = function () {
-                    func(task)
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d)
+                    })
+
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
@@ -2090,9 +2206,7 @@ app.config(function ($mdThemingProvider) {
                                 })
                                 $rootScope.notificationToast('File uploaded.')
                             }
-
                         )
-
                     });
                 }
             }

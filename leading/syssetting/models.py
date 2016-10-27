@@ -113,13 +113,14 @@ class SystemSetting():
 
     def get_system_current_period(self):
         systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
-        return systemInfo['content'][0]['value']
+        # if systemInfo != None:
+        return systemInfo['content'][0]['value'] if systemInfo else 0
 
     def upgrade_system_current_period(self):
-        systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
-        currentPeriod = systemInfo['content'][0]['value']
-        self.db.systeminfo.update_one({"group": "systemInfo"}, {"$set": {"content.0.value": currentPeriod + 1}})
-        return currentPeriod + 1
+        # systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
+        # currentPeriod = systemInfo['content'][0]['value']
+        self.db.systeminfo.update_one({"group": "systemInfo"}, {"$inc": {"content.0.value": 1}})
+        #return currentPeriod + 1
 
 class DataInitialization():
     def __init__(self):

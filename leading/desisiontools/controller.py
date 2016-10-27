@@ -33,6 +33,10 @@ class TasksService():
         result = models.Negotiate1Model().update_employees_photo(employeeid, photo=data["photo"])
         return json.dumps(result)
 
+    def get_task_files(self):
+        result = models.TasksModel().get_task_file(request.args['task_id'])
+        return json.dumps(result)
+
     def get_tasks_list(self):
         username = request.args["username"]
         if username != 'null':
@@ -43,6 +47,7 @@ class TasksService():
             if userinfo['status'] != 'Init':
                 companyinfo = eModel.get_company_by_username()
                 result = tModel.get_tasks(companyinfo)
+
         return json.dumps(result)
 
     def join_team(self):
@@ -224,6 +229,8 @@ class TasksService():
 
                     tModel.task_data_save(data)
                     tModel.task_complete()
+                    models.Negotiate1Model(taskID=taskID, companyName='NewCo', teamName=teamName,
+                                           period=period).task_complete()
                 else:
                     tModel.update_status('returned')
 

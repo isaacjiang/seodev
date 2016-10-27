@@ -2,6 +2,7 @@ from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
 from leading.config import leadingdb
 from bson import ObjectId
 from leading.entities.models import EntitiesModel
+from leading.syssetting.models import SystemSetting
 
 class TasksModel():
     def __init__(self, taskID=None,companyName=None,teamName=None,period=0):
@@ -33,6 +34,11 @@ class TasksModel():
                                           'period':task['period']}, {"$set":kwargs})
         return kwargs
 
+    def get_task_file(self, id):
+        task = self.dbtask.find_one({"_id": ObjectId(id)}, {"_id": 0})
+        result = self.db.task_list.find_one({'taskID': task['taskID'], 'companyName': task['companyName'],
+                                             'period': task['period']})
+        return result['infoFile'] if 'infoFile' in result.keys() else {}
 
     def task_data_save(self,data):
         result = self.dbtaskdata.update_one({"teamName":self.teamName,"companyName":self.companyName,
@@ -50,7 +56,11 @@ class TasksModel():
         result = self.dbtask.find({"teamName":self.teamName,"companyName":self.companyName,'period':self.period,'status':'Init'},{"_id":0})
         if result.count() ==0:
             EntitiesModel(teamName=self.teamName,companyName=self.companyName).update_company_info(currentPeriod = self.period+1,status='Active')
-
+        systemCurrentPeriod = SystemSetting().get_system_current_period()
+        checkperiod = self.db.companies.find(
+            {"currentPeriod": systemCurrentPeriod, "status": {"$in": ["Active", "Init"]}})
+        if checkperiod.count() == 0:
+            SystemSetting().upgrade_system_current_period()
 
     def task_complete(self):
         # t = sdb.teamtasks.find_one({"teamName":team,"companyName":companyName,"taskID":taskID})

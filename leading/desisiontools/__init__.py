@@ -5,6 +5,7 @@ blueprint = Blueprint(__name__, __name__, url_prefix='/api/dtools')
 
 blueprint.add_url_rule('/taskslist', view_func=controller.TasksService().get_tasks_list)
 blueprint.add_url_rule('/updatetaskfile', view_func=controller.TasksService().update_task_files,methods = ['POST'])
+blueprint.add_url_rule('/gettaskfile', view_func=controller.TasksService().get_task_files)
 blueprint.add_url_rule('/uploademployeephoto', view_func=controller.TasksService().upload_employee_photo,
                        methods=['POST'])
 blueprint.add_url_rule('/uploadnegotiationphoto', view_func=controller.TasksService().upload_negotiation_photo,
