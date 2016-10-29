@@ -4,16 +4,14 @@
 
 app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', 'Upload',
         function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, Upload) {
-        $scope.setHeight = function () {
-            var style = {height: windowsize.height - 80 + 'px'}
-            return style
-        }
+
         $scope.setTableHeight = function () {
-            var style = {height: windowsize.height - 160 + 'px'}
+            var style = {width: windowsize.width - 160 + 'px', height: windowsize.height - 160 + 'px'}
             return style
         }
 
-        current_user.getData().then(function () {
+
+            current_user.getData().then(function () {
             $rootScope.current_user = {}
             $rootScope.current_user.username = current_user.username()
             $rootScope.current_user.permission = current_user.permission()
@@ -27,16 +25,15 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                 .success(function (res) {
                // console.log(res)
                 $scope.tasks = res
-                $scope.functions = []
+                    //$scope.functions = []
                 $scope.tasks.forEach(function (t) {
-                    t.colspan = 1
-                    t.rowspan = 1
-                    $scope.functions.push(t)
+
+                    //t.rowspan = 1
+                    // $scope.functions.push(t)
                     if (t.taskKey == "systemsettings") {
                         t.icon = 'ic_beenhere_black_48px.svg'
-                        t.colspan = 5
-                        t.rowspan = 5
-                        $rootScope.toggleFunction("systemsettings")
+                        //$scope.selectedFunc = t
+                        $rootScope.toggleFunction(t)
                     }
                     else if (t.taskKey == "userpermission") {
                         t.icon = 'ic_person_black_48px.svg'
@@ -64,15 +61,16 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                 limit: 10,
                 page: 1
             };
-
-            if (func == 'systemsettings') {
+            $scope.selectedFunc = func
+            console.log($scope.selectedFunc)
+            if (func.taskKey == 'systemsettings') {
                 $http.get('/api/syssetting/getsettings', {
                     params: {
                         params: 'all' //also the params could be 'all'
                     }
                 }).success(function (res) {
                     $scope.settings = res
-                    //console.log($scope.settings)
+                    console.log($scope.settings)
                     //$scope.columns = Object.keys($scope.data[0])
 
                     $scope.editSetting = function (d) {
@@ -111,7 +109,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                 })
 
             }
-            else if (func == 'databackup') {
+            else if (func.taskKey == 'databackup') {
             //console.log(func, func == 'databackup')
             $http.get('/api/syssetting/listbackup', {
                 params: {
@@ -166,7 +164,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
 
                         }).success(function (res) {
                             $scope.backupRecords = res
-                            $rootScope.toggleFunction('databackup')
+                            // $rootScope.toggleFunction($scope.selectedFunc)
                             $timeout(function () {
                                 $mdDialog.cancel()
                             }, 500)
@@ -239,7 +237,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
 
             })
         }
-            else if (func == 'userpermission') {
+            else if (func.taskKey == 'userpermission') {
                 $http({
                     method: 'GET',
                     url: '/api/entities/getuserslist'
@@ -354,7 +352,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                     }
                 })
             }
-            else if (func== 'datainitialization'){
+            else if (func.taskKey == 'datainitialization') {
                 $http({
                         method:'GET',
                         url:"/api/syssetting/getdataconfig"
@@ -408,7 +406,6 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                         })
 
                 }
-
                 $scope.addDataConf = function () {
                     $mdDialog.show({
                         controller: addDataConfCtrl,
@@ -430,30 +427,31 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                             ).success(function (d) {
                                     console.log(d)
                                     $mdDialog.cancel();
-                                    $rootScope.toggleFunction('datainitialization')
+                                //$rootScope.toggleFunction('datainitialization')
                             })
                         }
                     }
                 }
             }
             else {
+                // $scope.selectedFunc={}
             $scope.data = []
             $scope.columns = []
         }
 
-            $scope.functions.forEach(function (f) {
-                if (f.taskKey == func) {
-                    $timeout(function () {
-                        $scope.functions.splice(0, 0, $scope.functions.splice($scope.functions.indexOf(f), 1)[0]);
-                        f.colspan = 5;
-                        f.rowspan = 5;
-                    }, 10)
-                }
-                else {
-                    f.colspan = 1;
-                    f.rowspan = 1;
-                }
-            })
+            // $scope.functions.forEach(function (f) {
+            //     if (f.taskKey == func) {
+            //         $timeout(function () {
+            //             $scope.functions.splice(0, 0, $scope.functions.splice($scope.functions.indexOf(f), 1)[0]);
+            //             f.colspan = 5;
+            //             f.rowspan = 5;
+            //         }, 10)
+            //     }
+            //     else {
+            //         f.colspan = 1;
+            //         f.rowspan = 1;
+            //     }
+            // })
         }
 
 

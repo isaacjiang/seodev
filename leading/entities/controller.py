@@ -32,7 +32,7 @@ class EntitiesService():
 
     def get_users_list(self):
         result = EntitiesModel().get_users_list()
-        for res in result:
-            res['teamName']=EntitiesModel(username=res['username']).get_team_by_username()['teamName']
-            res['companyName'] = EntitiesModel(username=res['username']).get_company_by_username()['companyName']
+        # for res in result:
+        #     res['teamName']=EntitiesModel(username=res['username']).get_team_by_username()['teamName']
+        #     res['companyName'] = EntitiesModel(username=res['username']).get_company_by_username()['companyName']
         return json.dumps(result)

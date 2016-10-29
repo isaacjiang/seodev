@@ -11,49 +11,41 @@
 
 {% block content %}
     <div ng-controller="settingsCtrl" layout="row" ng-cloak>
-        <md-sidenav class="md-sidenav-left" md-component-id="settings" md-is-locked-open="true" flex style="z-index: 0"
-                    ng-if="true">
-            <md-toolbar class="md-accent">
-                <h1 class="md-toolbar-tools">Settings</h1>
-            </md-toolbar>
-            <md-content layout-padding>
+        <md-card flex="25" flex-gt-lg="20">
                 <md-list class="md-dense" flex>
-                    <md-list-item class="md-2-line" ng-click="toggleFunction(func.taskKey)"
+                    <md-list-item class="md-2-line" ng-click="toggleFunction(func)"
                                   aria-label="settings" ng-repeat=" func in tasks">
                         <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
                              class="md-avatar" alt="Photo"/>
                         <div class="md-list-item-text">
                             <h3>{% raw %}{{func.taskName }} {% endraw %}</h3>
-                            <p>{% raw %}{{ func.description }} {% endraw %}</p>
+                            {#                            <p>{% raw %}{{ func.description }} {% endraw %}</p>#}
                         </div>
                         <md-divider></md-divider>
                     </md-list-item>
-
-
                 </md-list>
-                <md-divider></md-divider>
-            </md-content>
-        </md-sidenav>
+        </md-card>
 
-        <md-content style="width: 100%;">
-            <md-grid-list ng-style="setHeight()" style="z-index: 0"
-                          md-row-height="fit"
-                          md-cols-xs="1" md-cols-sm="2" md-cols-md="6" md-cols-gt-md="6"
-                          md-row-height-gt-md="fit"
-                          md-gutter="6px" md-gutter-gt-sm="4px">
-                <md-grid-tile class="gray" md-colspan="{% raw %}{{ func.colspan }}{% endraw %}"
-                              md-rowspan="{% raw %}{{ func.rowspan }}{% endraw %}" md-colspan-sm="1" md-colspan-xs="1"
-                              md-whiteframe ng-repeat="func in functions" ng-click="toggleFunction(func.taskKey)"
-                              ng-click="toggleFunction(func.taskKey)">
+        {#        <md-content style="width: 100%;">#}
 
-                    <md-grid-tile-header>
-                        <h3 ng-bind="func.taskName"></h3>
-                    </md-grid-tile-header>
 
-                    <div style="width:100%;" ng-style="setTableHeight()"
-                         ng-if="func.taskKey=='userpermission'&&func.rowspan!=1">
+        {#            <md-grid-list ng-style="setHeight()" style="z-index: 0"#}
+        {#                          md-row-height="fit"#}
+        {#                          md-cols-xs="1" md-cols-sm="2" md-cols-md="6" md-cols-gt-md="6"#}
+        {#                          md-row-height-gt-md="fit"#}
+        {#                          md-gutter="6px" md-gutter-gt-sm="4px">#}
+        {#                <md-grid-tile class="gray" md-colspan="{% raw %}{{ func.colspan }}{% endraw %}"#}
+        {#                              md-rowspan="{% raw %}{{ func.rowspan }}{% endraw %}" md-colspan-sm="1" md-colspan-xs="1"#}
+        {#                              md-whiteframe ng-repeat="func in functions" ng-click="toggleFunction(func.taskKey)"#}
+        {#                              ng-click="toggleFunction(func.taskKey)">#}
+        {##}
+        {#                    <md-grid-tile-header>#}
+        {#                        <h3 ng-bind="func.taskName"></h3>#}
+        {#                    </md-grid-tile-header>#}
 
-                        <md-table-container>
+        <md-card flex ng-style="setTableHeight()" ng-if="selectedFunc.taskKey=='userpermission'">
+
+            <md-table-container>
                             <table md-table>
                                 <thead md-head md-order="myOrder">
                                 <tr md-row>
@@ -104,10 +96,9 @@
                                              md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>
 
-                    </div>
+        </md-card>
 
-                    <div style="width:100%;" ng-style="setTableHeight()"
-                         ng-if="func.taskKey =='databackup'&&func.rowspan!=1">
+        <md-card ng-style="setTableHeight()" flex ng-if="selectedFunc.taskKey =='databackup'">
                         <md-table-container>
                             <table md-table>
                                 <thead md-head md-order="myOrder">
@@ -162,10 +153,10 @@
                                              md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>
 
-                    </div>
+        </md-card>
 
-                    <div style="width:100%;" ng-style="setTableHeight()"
-                         ng-if="func.taskKey=='systemsettings'&&func.rowspan!=1">
+        <md-card ng-style="setTableHeight()" flex
+                 ng-if="selectedFunc.taskKey=='systemsettings'">
                         <md-table-container>
                             <table md-table>
                                 <thead md-head md-order="myOrder">
@@ -202,10 +193,10 @@
                                              md-total="{% raw %}{{settings.length}}{% endraw %}" md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>
 
-                    </div>
+        </md-card>
 
-                    <div style="width:100%;" ng-style="setTableHeight()"
-                         ng-if="func.taskKey=='datainitialization'&&func.rowspan!=1">
+        <md-card ng-style="setTableHeight()" flex
+                 ng-if="selectedFunc.taskKey=='datainitialization'">
                         <md-table-container>
                             <table md-table>
                                 <thead md-head md-order="myOrder">
@@ -265,26 +256,25 @@
                                              md-total="{% raw %}{{dataConf.length}}{% endraw %}" md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>
 
-                    </div>
+        </md-card>
 
-                    <div style="width:100%;" ng-if="func.taskKey=='userpermission'&&func.rowspan==1">
-                        Total users: {% raw %} {{ users.length }} {% endraw %}
-                        </div>
-
-                    <div style="width:100%;" ng-if="func.taskKey=='databackup'&&func.rowspan==1">
-                        Total backups: {% raw %} {{ backupRecords.length }} {% endraw %}
-                        </div>
-
-                    <div style="width:100%;" ng-if="func.taskKey=='systemsettings'&&func.rowspan==1">
-                        Total settings: {% raw %} {{ settings.length }} {% endraw %}
-                        </div>
-
-
+        {#                    <div style="width:100%;" ng-if="func.taskKey=='userpermission'&&func.rowspan==1">#}
+        {#                        Total users: {% raw %} {{ users.length }} {% endraw %}#}
+        {#                        </div>#}
+        {##}
+        {#                    <div style="width:100%;" ng-if="func.taskKey=='databackup'&&func.rowspan==1">#}
+        {#                        Total backups: {% raw %} {{ backupRecords.length }} {% endraw %}#}
+        {#                        </div>#}
+        {##}
+        {#                    <div style="width:100%;" ng-if="func.taskKey=='systemsettings'&&func.rowspan==1">#}
+        {#                        Total settings: {% raw %} {{ settings.length }} {% endraw %}#}
+        {#                        </div>#}
 
 
-                </md-grid-tile>
-            </md-grid-list>
-        </md-content>
+        {##}
+        {#                </md-grid-tile>#}
+        {#            </md-grid-list>#}
+        {#        </md-content>#}
 
     </div>
 

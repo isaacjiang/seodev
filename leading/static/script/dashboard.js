@@ -4,12 +4,9 @@
 
 app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', 'Upload',
     function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, Upload) {
-        $scope.setHeight = function () {
-            var style = {height: windowsize.height - 80 + 'px'}
-            return style
-        }
+
         $scope.setTableHeight = function () {
-            var style = {height: windowsize.height - 160 + 'px'}
+            var style = {width: windowsize.width - 160 + 'px', height: windowsize.height - 160 + 'px'}
             return style
         }
         format =function (num){
@@ -31,17 +28,15 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                 .success(function (res) {
                     //console.log(res)
                     $scope.tasks = res
-                    $scope.functions = []
+                    // $scope.functions = []
                     $scope.tasks.forEach(function (t) {
-                        console.log(t)
-                        t.colspan = 1
-                        t.rowspan = 1
-                        $scope.functions.push(t)
+
+                        //$scope.functions.push(t)
                         if (t.taskKey == "value") {
                             t.icon = 'ic_flag_black_48px.svg'
-                            t.colspan = 5
-                            t.rowspan = 5
-                            $rootScope.toggleFunction("value")
+                            // t.colspan = 5
+                            // t.rowspan = 5
+                            $rootScope.toggleFunction(t)
                         }
                         else if (t.taskKey == "market") {
                             t.icon = 'ic_local_shipping_black_48px.svg'
@@ -65,7 +60,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                 limit: 5,
                 page: 1
             };
-
+            $scope.selectedFunc = func
             if (func == 'value') {
                 $http.get('/api/general/querydashboarddata', {
                     params:{username:$rootScope.current_user.username}
@@ -514,19 +509,19 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                 $scope.columns = []
             }
 
-            $scope.functions.forEach(function (f) {
-                if (f.taskKey == func) {
-                    $timeout(function () {
-                        $scope.functions.splice(0, 0, $scope.functions.splice($scope.functions.indexOf(f), 1)[0]);
-                        f.colspan = 5;
-                        f.rowspan = 5;
-                    }, 10)
-                }
-                else {
-                    f.colspan = 1;
-                    f.rowspan = 1;
-                }
-            })
+            // $scope.functions.forEach(function (f) {
+            //     if (f.taskKey == func) {
+            //         $timeout(function () {
+            //             $scope.functions.splice(0, 0, $scope.functions.splice($scope.functions.indexOf(f), 1)[0]);
+            //             f.colspan = 5;
+            //             f.rowspan = 5;
+            //         }, 10)
+            //     }
+            //     else {
+            //         f.colspan = 1;
+            //         f.rowspan = 1;
+            //     }
+            // })
         }
 
 

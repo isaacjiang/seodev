@@ -2159,7 +2159,6 @@ app.config(function ($mdThemingProvider) {
 
                 $scope.submit = function (forecast) {
 
-
                     $http({
                             method:'POST',
                             url:"/api/dtools/forecast",
