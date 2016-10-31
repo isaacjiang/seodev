@@ -38,97 +38,81 @@
 
         <md-card flex ng-style="setTableHeight()"
                  ng-if="selectedFunc.taskKey=='value'">
-                        <md-table-container>
-                            <table md-table>
-                                <thead md-head md-order="myOrder">
-                                <tr md-row>
-                                    <th md-column md-order-by="accountDescID"><span>Desc ID</span></th>
-                                    <th md-column md-order-by="accountDescription"><span>Account Description</span></th>
-                                    <th md-column md-order-by="Period1"><span>Period 1</span></th>
-                                    <th md-column md-order-by="Period2"><span>Period 2</span></th>
-                                    <th md-column md-order-by="Period3"><span>Period 3</span></th>
-                                    <th md-column md-order-by="Period4"><span>Period 4</span></th>
-                                    <th md-column md-order-by="Period5"><span>Period 5</span></th>
-                                    <th md-column md-order-by="Period6"><span>Period 6</span></th>
-                                    <th md-column md-order-by="Period7"><span>Period 7</span></th>
+            <md-data-table-container>
+                <table md-table>
+                    <thead md-head md-order="myOrder">
+                    <tr md-row>
+                        <th md-column md-order-by="query.order"><span>Item</span></th>
+                        <th md-column><span>Previous</span></th>
+                        <th md-column><span>Current</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-                                </tr>
-                                </thead>
-                                <tbody md-body>
-                                <tr md-row
-                                    ng-repeat="rec in data_total | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
-                                    <td md-cell>{% raw %}{{rec['Desc ID']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['Account Description']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['Period1']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['Period2']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['Period3']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['Period4']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['Period5']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['Period6']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['Period7']}}{% endraw %}</td>
-                                </tr>
+                    <tr md-row
+                        ng-repeat="pandl in great_value | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                        <!--  md-auto-select md-disable-select="dessert.calories.value > 300" -->
 
-                                </tbody>
-                            </table>
+                        <td md-cell>{% raw %}{{pandl.key}}{% endraw %}</td>
+                        <!--  <td>
+                            <md-select ng-model="dessert.type" placeholder="Other">
+                              <md-option ng-value="type" ng-repeat="type in getTypes()">{\% raw %}{\{type}}{\% endraw %}</md-option>
+                            </md-select>
+                          </td>-->
 
-                        </md-table-container>
+                        <td md-cell>{% raw %}{{pandl.Previus}}{% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.Current}}{% endraw %}</td>
+
+
+                    </tr>
+
+                    </tbody>
+                </table>
+            </md-data-table-container>
                         <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
                                              md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>
 
         </md-card>
 
-        <md-card flex ng-style="setTableHeight()"
-                 ng-if="selectedFunc.taskKey =='databackup'">
-                        <md-table-container>
-                            <table md-table>
-                                <thead md-head md-order="myOrder">
-                                <tr md-row>
-                                    <th md-column><span></span></th>
-                                    <th md-column md-order-by="backupName"><span>Backup Name</span></th>
-                                    <th md-column md-order-by="database"><span>Database #</span></th>
-                                    <th md-column md-order-by="username"><span>Created By</span></th>
-                                    <th md-column md-order-by="backupDate"><span>Created Date</span></th>
-                                    <th md-column md-order-by=""><span>Delete / Restore / Download</span></th>
-                                </tr>
-                                </thead>
-                                <tbody md-body>
-                                <tr md-row ng-repeat="rec in backupRecords | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
-                                    <td md-cell>{% raw %}{{ $index+(query.limit*(query.page-1))+1 }}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['backupName']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['database'].length}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['username']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['backupDate']}}{% endraw %}</td>
-                                    <td md-cell>
-                                        <div layout flex="65">
-                                            <md-button ng-click="deleteBackup(rec)"
-                                                       class="md-icon-button">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_delete_black_48px.svg') }}"></md-icon>
-                                            </md-button>
-                                            <md-button ng-click="restore(rec)"
-                                                       class="md-icon-button" style="">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_restore_black_48px.svg') }}"></md-icon>
-                                            </md-button>
-                                            <md-button ng-click="downloadbackup(rec)"
-                                                       class="md-icon-button" style="">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_file_download_black_48px.svg') }}"></md-icon>
-                                            </md-button>
-                                        </div>
-                                    </td>
-                                </tr>
+        <md-card flex ng-style="setTableHeight()" ng-if="selectedFunc.taskKey =='market'">
+            <md-data-table-container>
+                <table md-table>
+                    <thead md-head md-order="myOrder">
+                    <tr md-row>
+                        <th md-column md-order-by="query.order" name="Niche"><span></span></th>
+                        <th md-column><span>Previous</span></th>
+                        <th md-column><span>Previous Rank #</span></th>
+                        <th md-column><span>Current</span></th>
+                        <th md-column><span>Current Rank #</span></th>
+                    </tr>
 
-                                </tbody>
-                            </table>
-                            <div>
-                                <md-button class="md-accent md-fab md-fab-bottom-right" ng-click="backupsetting()">
-                                    <md-icon aria-label="Menu"
-                                             md-svg-icon="{{ url_for('static', filename='icon/ic_cloud_upload_white_48px.svg') }}"></md-icon>
-                                </md-button>
-                            </div>
-                        </md-table-container>
+                    </thead>
+                    <tbody md-body>
+
+                    <tr md-row
+                        ng-repeat="pandl in marketPerformance_value | orderBy: query.order | limitTo: limit_marketPerformance_value.limit : (query.page -1) * limit_marketPerformance_value.limit">
+                        <!--  md-auto-select md-disable-select="dessert.calories.value > 300" -->
+
+                        <td md-cell> {% raw %}{{pandl.niche}}{% endraw %}</td>
+                        <!--  <td>
+                            <md-select ng-model="dessert.type" placeholder="Other">
+                              <md-option ng-value="type" ng-repeat="type in getTypes()">{\% raw %}{\{type}}{\% endraw %}</md-option>
+                            </md-select>
+                          </td>-->
+
+
+                        <td md-cell>  {% raw %}{{pandl.values.Previous}} {% endraw %}</td>
+                        <td md-cell> {% raw %}{{pandl.values.rankPrevious}} {% endraw %}</td>
+                        <td md-cell> {% raw %}{{pandl.values.Current}} {% endraw %}</td>
+                        <td md-cell> {% raw %}{{pandl.values.rankCurrent}} {% endraw %}</td>
+
+
+                    </tr>
+
+                    </tbody>
+                </table>
+            </md-data-table-container>
                         <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
                                              md-total="{% raw %}{{backupRecords.length}}{% endraw %}"
                                              md-page-select="false"
@@ -137,39 +121,60 @@
         </md-card>
 
         <md-card flex ng-style="setTableHeight()"
-                 ng-if="selectedFunc.taskKey=='systemsettings'">
-                        <md-table-container>
-                            <table md-table>
-                                <thead md-head md-order="myOrder">
-                                <tr md-row>
-                                    <th md-column><span></span></th>
-                                    <th md-column md-order-by="group"><span>Setting Name</span></th>
-                                    <th md-column md-order-by=""><span>Edit</span></th>
+                 ng-if="selectedFunc.taskKey=='management'">
+            <md-subheader style="background-color: dodgerblue;color: white;">Management Performance
+            </md-subheader>
+            <md-data-table-container>
+                <table md-data-table md-progress="deferred">
+                    <thead md-order="query.query_mp" md-trigger="onorderchange">
+                    <tr>
+                        <th class="custom" order-by="query.query_mp" name="Function"></th>
+                        <th numeric name="P: Competence"></th>
+                        <th numeric name="P:Rank"></th>
+                        <th numeric name="C:Competence"></th>
+                        <th numeric name="C: Rank"></th>
+                        <th numeric name="P: Stress"></th>
+                        <th numeric name="P:Rank"></th>
+                        <th numeric name="C:Stress"></th>
+                        <th numeric name="C: Rank"></th>
+                        <th numeric name="P: Adaptability"></th>
+                        <th numeric name="P:Rank"></th>
+                        <th numeric name="C:Adaptability"></th>
+                        <th numeric name="C: Rank"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <div flex>
+                        <tr data-ng-repeat="pandl in managementPerformance_value | orderBy: query_mp.order | limitTo: limit_managementPerformance_value.limit : (query_mp.page -1) * limit_managementPerformance_value.limit">
+                            <!--  md-auto-select md-disable-select="dessert.calories.value > 300" -->
+                            {% raw %}
+                            <td>{{pandl.function}}</td>
+                            <!--  <td>
+                                <md-select ng-model="dessert.type" placeholder="Other">
+                                  <md-option ng-value="type" ng-repeat="type in getTypes()">{\% raw %}{\{type}}{\% endraw %}</md-option>
+                                </md-select>
+                              </td>-->
 
-                                </tr>
-                                </thead>
-                                <tbody md-body>
-                                <tr md-row
-                                    ng-repeat="rec in settings | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
-                                    <td md-cell>{% raw %}{{  $index+(query.limit*(query.page-1))+1  }}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{rec['group']}}{% endraw %}</td>
+                            <td>{{pandl.values.competenceIndexPrevious}}</td>
+                            <td>{{pandl.values.competenceIndexRankPrevious}}</td>
+                            <td>{{pandl.values.competenceIndexCurrent}}</td>
+                            <td>{{pandl.values.competenceIndexRankCurrent}}</td>
 
-                                    <td md-cell>
-                                        <div layout flex="45">
-                                            <md-button ng-click="editSetting(rec)" style="margin-left: -10px"
-                                                       class="md-icon-button">
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_edit_black_48px.svg') }}"></md-icon>
-                                            </md-button>
-                                        </div>
-                                    </td>
+                            <td>{{pandl.values.stressIndexPrevious}}</td>
+                            <td>{{pandl.values.stressIndexRankPrevious}}</td>
+                            <td>{{pandl.values.stressIndexCurrent}}</td>
+                            <td>{{pandl.values.stressIndexRankCurrent}}</td>
 
-                                </tr>
-
-                                </tbody>
-                            </table>
-
-                        </md-table-container>
+                            <td>{{pandl.values.adaptabilityIndexPrevious}}</td>
+                            <td>{{pandl.values.adaptabilityIndexRankPrevious}}</td>
+                            <td>{{pandl.values.adaptabilityIndexCurrent}}</td>
+                            <td>{{pandl.values.adaptabilityIndexRankCurrent}}</td>
+                            {% endraw %}
+                        </tr>
+                    </div>
+                    </tbody>
+                </table>
+            </md-data-table-container>
                         <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
                                              md-total="{% raw %}{{settings.length}}{% endraw %}" md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>
@@ -177,62 +182,45 @@
         </md-card>
 
         <md-card flex ng-style="setTableHeight()"
-                 ng-if="selectedFunc.taskKey=='datainitialization'">
-                        <md-table-container>
-                            <table md-table>
-                                <thead md-head md-order="myOrder">
-                                <tr md-row>
-                                    <th md-column><span></span></th>
-                                    <th md-column md-order-by="item"><span>Item</span></th>
-                                    <th md-column md-order-by="sheetname"><span>Sheet Name</span></th>
-                                    <th md-column md-order-by="orderlist"><span>Order</span></th>
-                                    <th md-column md-order-by="upload_date"><span>Upload Date</span></th>
-                                    <th md-column md-order-by=""><span>Upload / Download</span></th>
-                                </tr>
-                                </thead>
-                                <tbody md-body>
-                                <tr md-row
-                                    ng-repeat="dc in dataConf | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
-                                    <td md-cell>{% raw %}{{  $index+(query.limit*(query.page-1))+1  }}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{ dc['item']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{ dc['sheetname']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{ dc['orderlist']}}{% endraw %}</td>
-                                    <td md-cell>{% raw %}{{ dc['upload_date']}}{% endraw %}</td>
-                                    <td md-cell>
-                                        <div layout flex="80">
-                                            <md-button class="md-icon-button" aria-label="fileupload">
-                                                <div ngf-select="fileSelected($files,dc)" accept=".xlsx">
-                                                    <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_cloud_upload_black_48px.svg') }}"
-                                                             aria-label="Files upload"></md-icon>
-                                                </div>
-                                            </md-button>
+                 ng-if="selectedFunc.taskKey=='financial'">
 
-                                            <md-button ng-click="downloadfile(dc)"
-                                                       class="md-icon-button">
-
-                                                <md-icon aria-label="Menu"
-                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_file_download_black_48px.svg') }}"></md-icon>
-                                            </md-button>
+            <md-data-table-container>
+                <table md-table>
+                    <thead md-head md-order="myOrder">
+                    <tr md-row>
+                        <th md-column md-order-by="query.order"></th>
 
 
-                                            {#                                            <md-button ng-click="uploadfile(dc)"#}
-{#                                                       class="md-icon-button">#}
-{#                                                <md-icon aria-label="Menu"#}
-{#                                                         md-svg-icon="{{ url_for('static', filename='icon/ic_cloud_upload_black_48px.svg') }}"></md-icon>#}
-{#                                            </md-button>#}
-                                        </div>
-                                    </td>
-                                </tr>
+                        <th md-column><span>Previus</span></th>
+                        <th md-column><span>Rank</span></th>
+                        <th md-column><span>Current</span></th>
+                        <th md-column><span>Rank</span></th>
 
-                                </tbody>
-                            </table>
-                            <div>
-                                <md-button class="md-accent md-fab md-fab-bottom-right" ng-click="addDataConf()">
-                                    <md-icon aria-label="Menu"
-                                             md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
-                                </md-button>
-                            </div>
-                        </md-table-container>
+                    </tr>
+                    </thead>
+                    <tbody md-body>
+
+                    <tr md-row
+                        ng-repeat="pandl in financialPerformance_value | orderBy: query.order | limitTo: limit_financialPerformance_value.limit : (query.page -1) * limit_financialPerformance_value.limit">
+                        <!--  md-auto-select md-disable-select="dessert.calories.value > 300" -->
+
+                        <td md-cell> {% raw %}{{pandl.financialItem}} {% endraw %}</td>
+                        <!--  <td>
+                            <md-select ng-model="dessert.type" placeholder="Other">
+                              <md-option ng-value="type" ng-repeat="type in getTypes()">{\% raw %}{\{type}}{\% endraw %}</md-option>
+                            </md-select>
+                          </td>-->
+
+                        <td md-cell> {% raw %}{{pandl.values.Previous}} {% endraw %}</td>
+                        <td md-cell> {% raw %}{{pandl.values.rankPrevious}} {% endraw %}</td>
+                        <td md-cell> {% raw %}{{pandl.values.Current}} {% endraw %}</td>
+                        <td md-cell> {% raw %}{{pandl.values.rankCurrent}} {% endraw %}</td>
+
+                    </tr>
+
+                    </tbody>
+                </table>
+            </md-data-table-container>
                         <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
                                              md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
                                              md-boundary-links="true"></md-table-pagination>

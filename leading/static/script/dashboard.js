@@ -60,8 +60,9 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                 limit: 5,
                 page: 1
             };
+            console.log(func)
             $scope.selectedFunc = func
-            if (func == 'value') {
+            if (func.taskKey == 'value') {
                 $http.get('/api/general/querydashboarddata', {
                     params:{username:$rootScope.current_user.username}
                 }).success(function (res) {
@@ -178,7 +179,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                 })
 
             }
-            else if (func == 'market') {
+            else if (func.taskKey == 'market') {
                 //console.log(func, func == 'databackup')
                 $http.get('/api/syssetting/listbackup', {
                     params: {
@@ -306,7 +307,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
 
                 })
             }
-            else if (func == 'financial') {
+            else if (func.taskKey == 'financial') {
                 $http({
                     method: 'GET',
                     url: '/rest/users/listallusers',
@@ -422,7 +423,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     }
                 })
             }
-            else if (func== 'management'){
+            else if (func.taskKey == 'management') {
                 $http({
                         method:'GET',
                         url:"/api/syssetting/getdataconfig"

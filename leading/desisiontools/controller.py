@@ -325,8 +325,8 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
+            result = models.VisionaryCompetitionModel(taskID=taskID, companyName=companyName, teamName=teamName,
+                                                      period=period).get_init()
             return json.dumps(result)
 
         if request.method == 'POST':
@@ -336,10 +336,10 @@ class TasksService():
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
 
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
-
+            tModel = models.VisionaryCompetitionModel(taskID=taskID, companyName=companyName, teamName=teamName,
+                                                      period=period)
+            tModel.task_data_save(data)
+            tModel.save(data)
             tModel.task_complete()
             return json.dumps({"status":"success"})
 

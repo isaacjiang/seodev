@@ -352,6 +352,29 @@ class Negotiate2Model(TasksModel):
         self.db.negotiation2_com.update_one({"teamName":self.teamName,
                                              "currentPeriod":self.period},{"$set":{"status":status}})
 
+
+class VisionaryCompetitionModel(TasksModel):
+    def get_init(self):
+        conditions = {"teamName": self.teamName}
+        result = {}
+        print self.teamName
+        negotiation = self.db.negotiation1_com.find_one(conditions, {"_id": 0})
+        if negotiation is not None:
+            result = negotiation
+        result["keyword"] = "newCoNegotiation"
+
+        return result
+
+    def save(self, data):
+        # print selectniches
+        for niches in data['selectedNiches']:
+            self.db.visionarycompetition.update_one({"teamName": self.teamName, "companyName": self.companyName,
+                                                     "currentPeriod": self.period,}, {"$set": {"selectniches": niches}},
+                                                    upsert=True)
+        return data
+
+
+
 class PeriodModel():
     def __init__(self, teamName=None,companyName=None):
         self.db = leadingdb

@@ -1645,31 +1645,69 @@ app.config(function ($mdThemingProvider) {
                     return list.indexOf(item) > -1;
                 };
 
-                $http.get('/server/querynewconegotiationwithconditions?teamname='+$rootScope.userAtCompany.teamName).success(function(data){
-                    console.log(data)
-
-                    var visionaries =[{name:'VRKidEd',infuenceUnits:data.negotiation.sumInfluenceSales.VRKidEd,pitchCost:40000},
-                        {name:'GovVR',infuenceUnits:data.negotiation.sumInfluenceSales.GovVR,pitchCost:30000},
-                        {name:'VRGames',infuenceUnits:data.negotiation.sumInfluenceSales.VRGames,pitchCost:50000},
-                        {name:'MilitaryVR',infuenceUnits:data.negotiation.sumInfluenceSales.MilitaryVR,pitchCost:40000},
-                        {name:'AdEdVR',infuenceUnits:data.negotiation.sumInfluenceSales.AdEdVR,pitchCost:35000},
-                        {name:'VRCinema',infuenceUnits:data.negotiation.sumInfluenceSales.VRCinema,pitchCost:25000}
-                    ].sort(function(){return Math.random()*3-1})
-                    $scope.uncommittedTime = data.negotiation.funding.additinalProductDeveloperNumber*120
-                    $scope.uncommittedSales = data.negotiation.funding.additinalSalesNumber *40000
-
-                    $scope.visionary= visionaries[0]
-                    $scope.progress= 0
-                    setInterval(function (){
-                        //console.log($scope.progress)
-                        $scope.progress += 1
-                        if ($scope.progress >= 100){
-                            $scope.progress= 0
-                            $scope.visionary = visionaries[Math.floor((Math.random() * 6))]
-                            notificationToast('Visionary changed to '+ $scope.visionary.name+'. Please wait two minutes.' )
+                $http({
+                        method: 'GET',
+                        url: "/api/dtools/visionarycompetition",
+                        params: {
+                            username: $rootScope.current_user.username,
+                            taskID: task.taskID,
+                            companyName: task.companyName,
+                            teamName: task.teamName,
+                            period: task.period
                         }
-                    },100)
+                    }
+                )
+                    .success(function (data) {
+                    console.log(data)
+                        if (data) {
+                            var visionaries = [{
+                                name: 'VRKidEd',
+                                infuenceUnits: data.negotiation.sumInfluenceSales.VRKidEd,
+                                pitchCost: 40000
+                            },
+                                {
+                                    name: 'GovVR',
+                                    infuenceUnits: data.negotiation.sumInfluenceSales.GovVR,
+                                    pitchCost: 30000
+                                },
+                                {
+                                    name: 'VRGames',
+                                    infuenceUnits: data.negotiation.sumInfluenceSales.VRGames,
+                                    pitchCost: 50000
+                                },
+                                {
+                                    name: 'MilitaryVR',
+                                    infuenceUnits: data.negotiation.sumInfluenceSales.MilitaryVR,
+                                    pitchCost: 40000
+                                },
+                                {
+                                    name: 'AdEdVR',
+                                    infuenceUnits: data.negotiation.sumInfluenceSales.AdEdVR,
+                                    pitchCost: 35000
+                                },
+                                {
+                                    name: 'VRCinema',
+                                    infuenceUnits: data.negotiation.sumInfluenceSales.VRCinema,
+                                    pitchCost: 25000
+                                }
+                            ].sort(function () {
+                                return Math.random() * 3 - 1
+                            })
+                            $scope.uncommittedTime = data.negotiation.funding.additinalProductDeveloperNumber * 120
+                            $scope.uncommittedSales = data.negotiation.funding.additinalSalesNumber * 40000
 
+                            $scope.visionary = visionaries[0]
+                            $scope.progress = 0
+                            setInterval(function () {
+                                //console.log($scope.progress)
+                                $scope.progress += 1
+                                if ($scope.progress >= 100) {
+                                    $scope.progress = 0
+                                    $scope.visionary = visionaries[Math.floor((Math.random() * 6))]
+                                    $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
+                                }
+                            }, 100)
+                        }
                 })
 
 
