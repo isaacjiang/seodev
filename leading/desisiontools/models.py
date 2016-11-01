@@ -159,8 +159,7 @@ class WorkforceModel(TasksModel):
         valueatstart= self.db.workforce_com.find_one({"teamName":self.teamName,"companyName":self.companyName,
                                                             "period":self.period-1},{'_id':0})
         if valueatstart:
-            result["valueatstart"] =  valueatstart['workforce']
-
+            result["valueatstart"] = valueatstart
         forecast = self.db.forecast_com.find_one({"teamName":self.teamName,"companyName":self.companyName,
                                                   "period":self.period},{"_id":0})
         if forecast != None:
@@ -183,7 +182,8 @@ class WorkforceModel(TasksModel):
         # if 'offer' not in s.keys():
         #     self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{"offer":[]}})
         for wf in workforce:
-            self.db.workforce_com.update_one({"teamName": self.teamName, "companyName": self.companyName,
+            if 'adjustment_total' in wf.keys():
+                self.db.workforce_com.update_one({"teamName": self.teamName, "companyName": self.companyName,
                                               "period": self.period, 'functions': wf['functions']}, {"$set": wf},
                                              upsert=True)
         return workforce

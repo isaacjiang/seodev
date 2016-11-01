@@ -125,53 +125,54 @@
             <md-subheader style="background-color: dodgerblue;color: white;">Management Performance
             </md-subheader>
             <md-data-table-container>
-                <table md-data-table md-progress="deferred">
-                    <thead md-order="query.query_mp" md-trigger="onorderchange">
-                    <tr>
-                        <th class="custom" order-by="query.query_mp" name="Function"></th>
-                        <th numeric name="P: Competence"></th>
-                        <th numeric name="P:Rank"></th>
-                        <th numeric name="C:Competence"></th>
-                        <th numeric name="C: Rank"></th>
-                        <th numeric name="P: Stress"></th>
-                        <th numeric name="P:Rank"></th>
-                        <th numeric name="C:Stress"></th>
-                        <th numeric name="C: Rank"></th>
-                        <th numeric name="P: Adaptability"></th>
-                        <th numeric name="P:Rank"></th>
-                        <th numeric name="C:Adaptability"></th>
-                        <th numeric name="C: Rank"></th>
+                <table md-table>
+                    <thead md-head md-order="myOrder">
+                    <tr md-row>
+                        <th md-column md-order-by="query.query_mp" name=""><span>Function</span></th>
+                        <th md-column><span>P: Competence</span></th>
+                        <th md-column><span>P:Rank</span></th>
+                        <th md-column><span>C:Competence</span></th>
+                        <th md-column><span>C: Rank</span></th>
+                        <th md-column><span>P: Stress</span></th>
+                        <th md-column><span>P:Rank</span></th>
+                        <th md-column><span>C:Stress</span></th>
+                        <th md-column><span>C: Rank</span></th>
+                        <th md-column><span>P: Adaptability</span></th>
+                        <th md-column><span>P:Rank</span></th>
+                        <th md-column><span>C:Adaptability</span></th>
+                        <th md-column><span>C: Rank</span></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <div flex>
-                        <tr data-ng-repeat="pandl in managementPerformance_value | orderBy: query_mp.order | limitTo: limit_managementPerformance_value.limit : (query_mp.page -1) * limit_managementPerformance_value.limit">
+                    <tbody md-body>
+
+                    <tr md-row
+                        ng-repeat="pandl in managementPerformance_value | orderBy: query_mp.order | limitTo: limit_managementPerformance_value.limit : (query_mp.page -1) * limit_managementPerformance_value.limit">
                             <!--  md-auto-select md-disable-select="dessert.calories.value > 300" -->
-                            {% raw %}
-                            <td>{{pandl.function}}</td>
+
+                        <td md-cell>{% raw %}{{pandl.function}} {% endraw %}</td>
                             <!--  <td>
                                 <md-select ng-model="dessert.type" placeholder="Other">
                                   <md-option ng-value="type" ng-repeat="type in getTypes()">{\% raw %}{\{type}}{\% endraw %}</md-option>
                                 </md-select>
                               </td>-->
 
-                            <td>{{pandl.values.competenceIndexPrevious}}</td>
-                            <td>{{pandl.values.competenceIndexRankPrevious}}</td>
-                            <td>{{pandl.values.competenceIndexCurrent}}</td>
-                            <td>{{pandl.values.competenceIndexRankCurrent}}</td>
+                        <td md-cell>{% raw %}{{pandl.values.competenceIndexPrevious}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.competenceIndexRankPrevious}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.competenceIndexCurrent}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.competenceIndexRankCurrent}} {% endraw %}</td>
 
-                            <td>{{pandl.values.stressIndexPrevious}}</td>
-                            <td>{{pandl.values.stressIndexRankPrevious}}</td>
-                            <td>{{pandl.values.stressIndexCurrent}}</td>
-                            <td>{{pandl.values.stressIndexRankCurrent}}</td>
+                        <td md-cell>{% raw %}{{pandl.values.stressIndexPrevious}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.stressIndexRankPrevious}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.stressIndexCurrent}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.stressIndexRankCurrent}} {% endraw %}</td>
 
-                            <td>{{pandl.values.adaptabilityIndexPrevious}}</td>
-                            <td>{{pandl.values.adaptabilityIndexRankPrevious}}</td>
-                            <td>{{pandl.values.adaptabilityIndexCurrent}}</td>
-                            <td>{{pandl.values.adaptabilityIndexRankCurrent}}</td>
-                            {% endraw %}
-                        </tr>
-                    </div>
+                        <td md-cell>{% raw %}{{pandl.values.adaptabilityIndexPrevious}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.adaptabilityIndexRankPrevious}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.adaptabilityIndexCurrent}} {% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.values.adaptabilityIndexRankCurrent}} {% endraw %}</td>
+
+                    </tr>
+
                     </tbody>
                 </table>
             </md-data-table-container>
