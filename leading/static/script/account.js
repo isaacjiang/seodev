@@ -44,46 +44,49 @@ app.controller("accountCtrl", ["$scope", "$http", "windowsize", "current_user", 
                         }
                     })
                 })
-        })
 
-
-        $rootScope.toggleFunction = function (func) {
-            $scope.query = {
-                order: 'accountDescID',
-                limit: 10,
-                page: 1
-            };
-            $scope.selectedFunc = func
             $http.get('/api/account/getaccountinfo', {
                 params: {username: $rootScope.current_user.username}
-            }).success(function (res) {
-                console.log(res)
-                $scope.data_profitAndLoss = res.filter(function (d) {
-                    return d.accountDescType == "PL"
-                })
-                $scope.data_balance = res.filter(function (d) {
-                    return d.accountDescType == "BALANCE"
-                })
-                $scope.data_cashflow = res.filter(function (d) {
-                    return d.accountDescType == "CF"
-                })
-                $scope.data_total = res.filter(function (d) {
-                    return d.summaryFLag == true
-                })
-
-                // console.log(d3.select(".accountcard"))
-                // d3.select(".accountcard").style('width',(windowsize.width-320)+"px").style('height',"100px")
-                // $scope.query = {order: 'accountDescID', page: 1};
-                //
-                // $scope.limit_profitAndLoss = {limit: $scope.data_profitAndLoss.length};
-                // $scope.limit_balance = {limit: $scope.data_balance.length};
-                // $scope.limit_cashflow = {limit: $scope.data_cashflow.length};
-                // $scope.limit_total = {limit: $scope.data_total.length};
-                //console.log($scope.settings)
-                //$scope.columns = Object.keys($scope.data[0])
-
-
             })
+                .success(function (res) {
+                    console.log(res)
+                    $scope.data_profitAndLoss = res.filter(function (d) {
+                        return d.accountDescType == "PL"
+                    })
+                    $scope.data_balance = res.filter(function (d) {
+                        return d.accountDescType == "BALANCE"
+                    })
+                    $scope.data_cashflow = res.filter(function (d) {
+                        return d.accountDescType == "CF"
+                    })
+                    $scope.data_total = res.filter(function (d) {
+                        return d.summaryFLag == true
+                    })
+
+                    // console.log(d3.select(".accountcard"))
+                    // d3.select(".accountcard").style('width',(windowsize.width-320)+"px").style('height',"100px")
+                    // $scope.query = {order: 'accountDescID', page: 1};
+                    //
+                    // $scope.limit_profitAndLoss = {limit: $scope.data_profitAndLoss.length};
+                    // $scope.limit_balance = {limit: $scope.data_balance.length};
+                    // $scope.limit_cashflow = {limit: $scope.data_cashflow.length};
+                    // $scope.limit_total = {limit: $scope.data_total.length};
+                    //console.log($scope.settings)
+                    //$scope.columns = Object.keys($scope.data[0])
+
+
+                })
+        })
+
+        $scope.query = {
+            order: 'accountDescID',
+            limit: 10,
+            page: 1
+        };
+        $rootScope.toggleFunction = function (func) {
+
+            $scope.selectedFunc = func
+
 
             //
             // if (func == 'summary') {

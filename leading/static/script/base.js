@@ -275,38 +275,40 @@ app.config(function ($mdThemingProvider) {
             }
         }
 
-            function instructionFn(infoFile) {
-            // Show the dialog
-            $mdDialog.show({
-                clickOutsideToClose: false,
-                bindToController: true,
-                controller: showpdfCtrl,
-                templateUrl: '/api/dtools/getpage?pagename=showpdf',
-                locals: {infoFile: infoFile}
-            });
 
-                function showpdfCtrl($scope, $mdDialog, infoFile) {
+            function instructionFn(infoFile, func, task) {
+                // console.log(func)
+                // Show the dialog
+                $mdDialog.show({
+                    clickOutsideToClose: false,
+                    bindToController: true,
+                    controller: showpdfCtrl,
+                    templateUrl: '/api/dtools/getpage?pagename=showpdf',
+                    locals: {infoFile: infoFile, func: func}
+                });
 
-                $scope.close = function () {
-                    $mdDialog.cancel();
-                };
-                $scope.pdfName = task.taskName+ '  Introduction';
+                function showpdfCtrl($scope, $mdDialog, infoFile, func) {
+
+                    $scope.close = function () {
+                        //$mdDialog.cancel();
+                        func(task)
+                    };
+                    //$scope.pdfName = task.taskName+ '  Introduction';
                     $scope.pdfUrl = "/files/download?filename=" + infoFile['filename'] +
                         "&id=" + infoFile['objectID'] + "&ctype=" + infoFile['content_type']
-                //'static/pdf/oea-big-data-guide-1522052.pdf';
+                    //'static/pdf/oea-big-data-guide-1522052.pdf';
 
-                $scope.scroll = 0;
-                $scope.loading = 'loading';
+                    $scope.scroll = 1;
+                    $scope.loading = '';
 
-                $scope.getNavStyle = function(scroll) {
-                    if(scroll > 10) return 'pdf-controls fixed';
-                    else return 'pdf-controls';
+                    $scope.getNavStyle = function (scroll) {
+                        if (scroll > 10) return 'pdf-controls fixed';
+                        else return 'pdf-controls';
+                    }
+
+
                 }
-
-
-
             }
-        }
 
         function timerFn(endtime) {
 
@@ -515,7 +517,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, hiringfn, task)
                     })
 
                 }
@@ -690,7 +692,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, resourcesfn, task)
                     })
 
                 }
@@ -812,6 +814,7 @@ app.config(function ($mdThemingProvider) {
             });
 
             function workforceCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
+
                 $scope.instruction = function () {
 
                     $http({
@@ -822,7 +825,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, workforcefn, task)
                     })
 
                 }
@@ -984,7 +987,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, budgetfn, task)
                     })
 
                 }
@@ -1080,7 +1083,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, negotiatefn, task)
                     })
 
                 }
@@ -1339,7 +1342,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, actionsfn, task)
                     })
 
                 }
@@ -1488,7 +1491,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, projectfn, task)
                     })
 
                 }
@@ -1624,7 +1627,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, visionarycompetitionfn, task)
                     })
 
                 }
@@ -1795,7 +1798,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, negotiate2fn, task)
                     })
 
                 }
@@ -1927,7 +1930,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, nichesfn, task)
                     })
 
                 }
@@ -2032,7 +2035,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, corporateacquisitionsfn, task)
                     })
 
                 }
@@ -2154,7 +2157,7 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     ).success(function (d) {
-                        func(d)
+                        func(d, forecastfn, task)
                     })
 
                 }
