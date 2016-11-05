@@ -9,7 +9,7 @@
                              aria-label="info"></md-icon>
                 </md-button>
 
-                <md-button class="md-icon-button" aria-label="fileupload" ng-if="current_user.permission != '0' ">
+                <md-button class="md-icon-button" aria-label="fileupload" ng-if="superuser">
                     <div ngf-select="fileSelected($files)" accept=".pdf">
                         <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_description_white_48px.svg') }}"
                                  aria-label="Files upload"></md-icon>
@@ -100,12 +100,22 @@
                         <div flex="45" layout layout-align="center center">
                             <md-list-item class="md-3-line">
                                 <img ng-src="{% raw %}{{ employee.url}}{% endraw %}" class="md-avatar"
-                                     alt="Name" ngf-select="photoUpload($files,employee._id)" accept="image/*"/>
+                                     alt="Name"
+                                     ngf-select="superuser?photoUpload($files,employee._id,'photo'):notpemission()"
+                                     accept="image/*"/>
+
                                 <div flex class="md-list-item-text" layout="column">
                                     <h3 ng-bind="employee.employeeName"></h3>
                                     <p ng-bind="employee.title"></p>
                                     <p>Minimum Salary : {% raw %}{{employee.minimumSalary}}{% endraw %} </p>
                                 </div>
+                                <img ng-src="{{ url_for('static', filename='icon/ic_description_gray_48px.svg') }}"
+                                     class="md-avatar"
+                                     alt="Name" ng-click="openResume(employee.resume)" ng-if="employee.resume">
+                                <img ng-src="{{ url_for('static', filename='icon/ic_add_black_48px.svg') }}"
+                                     class="md-avatar"
+                                     alt="Name" ngf-select="photoUpload($files,employee._id,'resume')" accept=".pdf"
+                                     ng-if="superuser"/>
                             </md-list-item>
                         </div>
                         <div flex="20" layout layout-align="center center">

@@ -23,8 +23,9 @@ class TasksService():
 
     def upload_employee_photo(self):
         data = json.loads(request.data)
+        print data
         employeeid = data['employeeid']
-        result = models.EmployeeModel().update_employees_photo(employeeid, photo=data["photo"])
+        result = models.EmployeeModel().update_employees_photo(employeeid, photo=data["photo"], type=data['type'])
         return json.dumps(result)
 
     def upload_negotiation_photo(self):

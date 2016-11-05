@@ -90,7 +90,7 @@
                     </md-button>
 
                     <md-button class="md-icon-button" ng-click="register()"
-                               ng-if="current_user.status.is_anonymous || current_user.permission=='0'">
+                               ng-if="current_user.status.is_anonymous || superuser">
                         <md-icon aria-label="menu"
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_person_add_white_48px.svg') }}"
                                  md-menu-align-target></md-icon>

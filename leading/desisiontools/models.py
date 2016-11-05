@@ -141,7 +141,7 @@ class EmployeeModel(TasksModel):
         self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{'status':"Hiring"},"$addToSet":{"offer":offer}})
         return id
 
-    def update_employees_photo(self, id, photo):
+    def update_employees_photo(self, id, photo, type):
         print id, photo
         # offer['teamName']=self.teamName
         # offer['companyName']=self.companyName
@@ -149,7 +149,7 @@ class EmployeeModel(TasksModel):
         # s =  self.db.employees_def.find_one({"_id":ObjectId(id)})
         # if 'offer' not in s.keys():
         #     self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{"offer":[]}})
-        self.db.employees_def.update_one({"_id": ObjectId(id)}, {"$set": {'photo': photo}})
+        self.db.employees_def.update_one({"_id": ObjectId(id)}, {"$set": {type: photo}})
         return id
 
 class WorkforceModel(TasksModel):

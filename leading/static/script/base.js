@@ -78,7 +78,7 @@ app.config(function ($mdThemingProvider) {
             $rootScope.current_user.permission = current_user.permission()
             $rootScope.current_user.status = current_user.status()
             //console.log($rootScope.current_user.permission==0 )
-
+            $scope.superuser = $rootScope.current_user.permission == '0'
             if ($rootScope.current_user.status.is_anonymous) {
                 userLogin()
             }
@@ -505,10 +505,12 @@ app.config(function ($mdThemingProvider) {
             });
 
             function hiringCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-               // console.log($rootScope.current_user.permission=='0')
-
+                // console.log($rootScope.current_user.permission=='0')
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
-                    console.log(task)
                     $http({
                             method: 'GET',
                             url: "/api/dtools/gettaskfile",
@@ -519,6 +521,14 @@ app.config(function ($mdThemingProvider) {
                     ).success(function (d) {
                         func(d, hiringfn, task)
                     })
+
+                }
+
+
+                $scope.openResume = function (resumefile) {
+                    if (resumefile) {
+                        func(resumefile, hiringfn, task)
+                    }
 
                 }
 
@@ -616,8 +626,7 @@ app.config(function ($mdThemingProvider) {
                     timer('2016-09-22 01:01:38')
                 }, 1000)
 
-                $scope.photoUpload = function (file, employeeid) {
-
+                $scope.photoUpload = function (file, employeeid, type) {
                     Upload.upload({
                         url: '/files/upload',
                         data: {files: file}
@@ -628,6 +637,7 @@ app.config(function ($mdThemingProvider) {
                                 url: "/api/dtools/uploademployeephoto",
                                 data: {
                                     employeeid: employeeid,
+                                    type: type,
                                     photo: response.data[0]
                                 }
                             }
@@ -638,6 +648,7 @@ app.config(function ($mdThemingProvider) {
 
                     });
                 }
+
 
                 $scope.fileSelected=function(file) {
                   // var fileID =  fileUpload(file)
