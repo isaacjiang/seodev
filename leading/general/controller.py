@@ -14,9 +14,9 @@ class PerformanceService():
 
     def queryDashboardData(self):
         username = request.args["username"]
-        print username
+        # print username
         userInfo = EntitiesService().get_user_info(username)
-        pprint(userInfo)
+
         self.teamName = userInfo['teamInfo']['teamName']
         self.companyName = userInfo['companyInfo']['companyName']
         self.currentPeriod = userInfo['companyInfo']['currentPeriod']

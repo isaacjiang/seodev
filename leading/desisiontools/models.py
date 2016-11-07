@@ -288,6 +288,21 @@ class ProjectsModel(TasksModel):
         return projects
 
 
+class NichesModel(TasksModel):
+    def get_init(self):
+        niches = []
+        cursor = self.db.niches_def.find({'company': self.companyName}, {"_id": 0})
+        for item in cursor:
+            niches.append(item)
+        return niches
+
+    def save(self, niches):
+        for niche in niches:
+            self.db.niches_com.update_one({"teamName": self.teamName, "companyName": self.companyName,
+                                           "currentPeriod": self.period, "niche": niche['niche']}, {"$set": niche},
+                                          upsert=True)
+        return niches
+
 class Negotiate1Model(TasksModel):
 
     def get_init(self):

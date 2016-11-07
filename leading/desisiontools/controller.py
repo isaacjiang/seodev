@@ -23,7 +23,7 @@ class TasksService():
 
     def upload_employee_photo(self):
         data = json.loads(request.data)
-        print data
+        # print data
         employeeid = data['employeeid']
         result = models.EmployeeModel().update_employees_photo(employeeid, photo=data["photo"], type=data['type'])
         return json.dumps(result)
@@ -89,7 +89,7 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             result = models.EmployeeModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_employees_list()
             return json.dumps(result)
 
@@ -113,7 +113,7 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             result = models.WorkforceModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_init_value()
             return json.dumps(result)
 
@@ -136,7 +136,7 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
             return json.dumps(result)
 
@@ -160,13 +160,13 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             result = models.ResourceModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_init()
             return json.dumps(result)
 
         if request.method == 'POST':
             data= json.loads(request.data)
-            print data
+            #print data
             taskID = data["taskID"]
             companyName =  data["companyName"] if 'companyName' in data.keys() else None
             teamName = data["teamName"] if 'teamName' in data.keys() else None
@@ -207,7 +207,7 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             tModel = models.Negotiate1Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
             result = tModel.get_init()
             result['taskdata']=tModel.get_saved_data()
@@ -221,7 +221,7 @@ class TasksService():
             period = data["period"] if 'period' in data.keys() else 0
 
             tModel = models.Negotiate1Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            print companyName
+            #print companyName
             if companyName== "NewCo":
                tModel.save(data)
             else:
@@ -243,7 +243,7 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
             result = tModel.get_init()
 
@@ -258,7 +258,7 @@ class TasksService():
             period = data["period"] if 'period' in data.keys() else 0
 
             tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            print companyName
+            #print companyName
             if companyName== "NewCo":
                 tModel.save(data)
             else:
@@ -278,7 +278,7 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             result = models.ActionsModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_init()
             return json.dumps(result)
 
@@ -302,7 +302,7 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             result = models.ProjectsModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_init()
             return json.dumps(result)
 
@@ -316,6 +316,31 @@ class TasksService():
             tModel = models.ProjectsModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
             tModel.task_data_save(data['projects'])
             tModel.save(data['projects'])
+
+            tModel.task_complete()
+            return json.dumps({"status":"success"})
+
+    def niches(self):
+        if request.method =='GET':
+            taskID = request.args["taskID"]
+            companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
+            teamName = request.args["teamName"] if 'teamName' in request.args.keys() else None
+            period = request.args["period"] if 'period' in request.args.keys() else 0
+            # print taskID
+            result = models.NichesModel(taskID=taskID, companyName=companyName, teamName=teamName,
+                                        period=period).get_init()
+            return json.dumps(result)
+
+        if request.method == 'POST':
+            data= json.loads(request.data)
+            taskID = data["taskID"]
+            companyName =  data["companyName"] if 'companyName' in data.keys() else None
+            teamName = data["teamName"] if 'teamName' in data.keys() else None
+            period = data["period"] if 'period' in data.keys() else 0
+
+            tModel = models.NichesModel(taskID=taskID, companyName=companyName, teamName=teamName, period=period)
+            tModel.task_data_save(data['niches'])
+            tModel.save(data['niches'])
 
             tModel.task_complete()
             return json.dumps({"status":"success"})
@@ -344,29 +369,6 @@ class TasksService():
             tModel.task_complete()
             return json.dumps({"status":"success"})
 
-    def niches(self):
-        if request.method =='GET':
-            taskID = request.args["taskID"]
-            companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
-            teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
-            period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
-            return json.dumps(result)
-
-        if request.method == 'POST':
-            data= json.loads(request.data)
-            taskID = data["taskID"]
-            companyName =  data["companyName"] if 'companyName' in data.keys() else None
-            teamName = data["teamName"] if 'teamName' in data.keys() else None
-            period = data["period"] if 'period' in data.keys() else 0
-
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
-
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
 
     def corporateacquisitions(self):
         if request.method =='GET':
@@ -374,7 +376,7 @@ class TasksService():
             companyName =  request.args["companyName"] if 'companyName' in request.args.keys() else None
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
-            print taskID
+            #print taskID
             result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
             return json.dumps(result)
 
@@ -565,35 +567,40 @@ class PeriodicTasksService():
                     .bookkeeping(objectID=action['_id'], indexName='competenceIndex', value=a["competenceIndex"],
                                  comments=a['actionID'])
 
-    def nichesComplete(teamName, companyName, taskID):
-        currentPeriod = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-        niches = sdb.niches_com.find({"teamName": teamName, "companyName": companyName}, {"_id": 0})
-        selectedNiches = []
-        for niche in niches:
+    def nichesCalculation(self):
 
-            if niche['niche']['p4'] != '' and 'selected' in niche['niche']['p4'].keys() and niche['niche']['p4'][
-                'selected'] == True:
-                niche['niche']['p4']['teamName'] = niche['teamName']
-                selectedNiches.append(niche['niche']['p4'])
-            if niche['niche']['p5'] != '' and ('selected' in niche['niche']['p5'].keys()) and niche['niche']['p5'][
-                'selected'] == True:
-                niche['niche']['p5']['teamName'] = niche['teamName']
-                selectedNiches.append(niche['niche']['p5'])
-            if niche['niche']['p6'] != '' and ('selected' in niche['niche']['p6'].keys()) and niche['niche']['p6'][
-                'selected'] == True:
-                niche['niche']['p6']['teamName'] = niche['teamName']
-                selectedNiches.append(niche['niche']['p6'])
-            if niche['niche']['p7'] != '' and ('selected' in niche['niche']['p7'].keys()) and niche['niche']['p7'][
-                'selected'] == True:
-                niche['niche']['p7']['teamName'] = niche['teamName']
-                selectedNiches.append(niche['niche']['p7'])
-        for ni in selectedNiches:
-            print ni
-            sdb.niches_calculation.update_one(
-                {"teamName": ni['teamName'], "companyName": ni['company'], "period": ni['period'],
-                 "niche": ni['niche']},
-                {"$set": ni}, upsert=True)
-            # print selectedNiches
+        def get_teams():
+            companies = self.db.companies.find({"status": "Active"}, {"_id": 0})
+            teams = []
+            for com in companies:
+                if com['teamName'] not in teams:
+                    teams.append(com['teamName'])
+            return teams
+
+        niche_ini = self.db.niches_def.find({"period": self.systemCurrentPeriod, "niche": {"$in": ['B2B', 'B2C']}},
+                                            {"_id": 0})
+        teams = get_teams()
+        for niche in niche_ini:
+            self.db.niches_def.update_one(
+                {"company": niche['company'], "niche": niche['niche'], 'period': niche['period']},
+                {"$set": {"selectedByCompany": teams}}, upsert=True)
+
+        niches = self.db.niches_com.find({}, {"_id": 0})
+        periods = ['p4', 'p5', 'p6', 'p7', 'p8']
+        #selectedNiches = []
+        for niche in niches:
+            for period in periods:
+                if niche[period] != '' and 'selected' in niche[period].keys() and niche[period]['selected'] == True:
+                    niche[period]['selectedCompany'] = [] if 'selectedCompany' not in niche[period].keys() else \
+                    niche[period]['selectedCompany']
+                    self.db.niches_def.update_one(
+                        {"company": niche[period]['company'], "period": niche[period]['period'],
+                         "niche": niche[period]['niche']},
+                        {"$addToSet": {
+                            "selectedByCompany": {"teamName": niche['teamName'], "companyName": niche['companyName']}}},
+                        upsert=True)
+
+
 
     def resourcesComplete(teamName, companyName, taskID):
         allteam = sdb.sys_tasks_team.find({"taskID": taskID, "status": "init"}).count()
@@ -707,5 +714,5 @@ class PeriodicTasksService():
         # accountBookkeeping(teamName, 'NewCo', 5, 'BB142', 'Credit', expenditure1, 'Transfer from LegacyCo.')
 
 
-PeriodicTasksService().actionsAccountBookkeeping()
+PeriodicTasksService().nichesCalculation()
 #Account(teamName="Team B", companyName='LegacyCo', period=1).sum()

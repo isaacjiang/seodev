@@ -1948,23 +1948,46 @@ app.config(function ($mdThemingProvider) {
                 $scope.close = function () {
                     $mdDialog.cancel();
                 };
-                $scope.submit = function (niches,event) {
-                    console.log($rootScope.userAtCompany)
-
-                    $http.post('server/niches',data={"username":$rootScope.current_user.username,'userAtCompany':$rootScope.userAtCompany,'niches':niches}).success(function(d){
+                $scope.submit = function (niches) {
+                    console.log(niches)
+                    $http({
+                        method: 'POST',
+                        url: "/api/dtools/niches",
+                        data: {
+                            username: $rootScope.current_user.username,
+                            taskID: task.taskID,
+                            companyName: task.companyName,
+                            teamName: task.teamName,
+                            period: task.period,
+                            niches: niches
+                        }
+                    })
+                        .success(function (d) {
                         $window.location.reload();
                         console.log(d)})
 
 
                     $mdDialog.cancel();
-                    $mdSidenav('left').close()
+                    $mdSidenav('taskslist').close()
                     $rootScope.notificationToast("Submitted application.")
 
                 };
-                $http.get('/server/querynichesbyusername?username='+$rootScope.current_user.username).success(function(d){
+                $http({
+                        method: 'GET',
+                        url: "/api/dtools/niches",
+                        params: {
+                            username: $rootScope.current_user.username,
+                            taskID: task.taskID,
+                            companyName: task.companyName,
+                            teamName: task.teamName,
+                            period: task.period
+                        }
+                    }
+                )
+                    .success(function (d) {
                     console.log(d)
                     $scope.niches =[{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''},{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''},{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''}]
-                    d.data.forEach(function(n){
+                        d.forEach(function (n) {
                         if (n.niche == "Education"){
                             if(n.period == 4){ $scope.niches[0].niche= "Education",$scope.niches[0].p4 = n;}
                             if(n.period == 5){ $scope.niches[0].niche= "Education",$scope.niches[0].p5 = n;}

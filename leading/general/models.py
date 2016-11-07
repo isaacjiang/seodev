@@ -82,7 +82,7 @@ class PerformanceModel():
                                                     {"$inc": {"value": m['accValue'] * m['competenceIndex'] * m[
                                                         'weight']}}, upsert=True)
 
-        companies = self.db.niches_calculation.find(
+        companies = self.db.niches_def.find(
             {"period": period, "teamName": teamName, "company": companyName},
             {"_id": 0}).count()
         companies = 1 if companies == 0 else companies

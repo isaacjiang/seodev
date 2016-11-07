@@ -11,7 +11,7 @@ class AccountService():
     def query_account(self):
         username = request.args['username']
         userinfo = EntitiesService().get_user_info(username)
-        print userinfo
+        # print userinfo
         result = self.model.Account(teamName=userinfo['teamInfo']['teamName'],
                                     companyName=userinfo['companyInfo']['companyName'],
                                     period=userinfo['companyInfo']['currentPeriod']).query_all()
