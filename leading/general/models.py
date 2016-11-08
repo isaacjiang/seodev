@@ -1,5 +1,6 @@
 from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
 from leading.config import leadingdb
+from pprint import pprint
 
 
 class PerformanceModel():
@@ -10,6 +11,71 @@ class PerformanceModel():
         result = self.db.tasks_team.find_one({"teamName": teamName, "companyName": companyName, "taskID": taskid},
                                              {"companyName": 1, "teamName": 1, "period": 1, "_id": 0})
         return result
+
+    def calculateMarketShare(self, systemCurrentPeriod):
+        def get_com_acc_value(accountDescID, teamName, companyName, period):
+            accValue = 0
+            condition = {"$and": [{"period": {"$lte": period}},
+                                  {"period": {"$gt": period - 3}},
+                                  {"accountDescID": accountDescID}, {"teamName": teamName},
+                                  {"companyName": companyName}]}
+            res = self.db.account_bookkeeping.find(condition, {"_id": 0})
+            for r in res:
+                accValue += r['value']
+            return accValue
+
+        def get_com_inx(indexName, teamName, companyName, period):
+            condition = {"indexName": indexName, "companyName": companyName, "teamName": teamName, "period": period,}
+            index_value = self.db.index_bookkeeping.find(condition, {"_id": 0})
+            indexValue = 1
+            for c in index_value:
+                indexValue = indexValue * c['value']
+            return indexValue
+
+        print "calculate"
+        accountItem = ['AB010', 'AB011', 'AB012', 'AB013', 'AB014', 'AB015']
+        weight = [0.1, 0.2, 0.1, 0.2, 0.3, 0.1]
+        indexItem = ['competenceIndex', 'stressIndex', 'adaptabilityIndex', 'legitimacyIndex']
+        selectedNiches = self.db.niches_def.find({"period": systemCurrentPeriod})
+        for selectedNiche in selectedNiches:
+            # selectedNiche['_id'] = str(selectedNiche['_id'] )
+            selectedNiche['companyValue'] = {}
+            if selectedNiche['selectedByCompany']:
+                selected_com_total = 0
+                for selectedByCom in selectedNiche['selectedByCompany']:
+                    selectedNiche['companyValue'][selectedByCom] = {}
+                    print selectedNiche
+                    company_total = 0
+                    competenceIndex = get_com_inx('competenceIndex', selectedByCom, selectedNiche['company'],
+                                                  selectedNiche['period'])
+                    for i, accItem in enumerate(accountItem):
+                        nc = selectedNiche['companyValue'][selectedByCom][accItem] = \
+                            get_com_acc_value(accItem, selectedByCom, selectedNiche['company'], selectedNiche['period'])
+                        company_total += nc * competenceIndex * weight[i]
+                    for inxItem in indexItem:
+                        selectedNiche['companyValue'][selectedByCom][inxItem] = \
+                            get_com_inx(inxItem, selectedByCom, selectedNiche['company'], selectedNiche['period'])
+                    selectedNiche['companyValue'][selectedByCom]['company_total'] = company_total
+                    selected_com_total += company_total
+                selectedNiche['selected_com_total'] = selected_com_total
+
+                for selectedByCom in selectedNiche['selectedByCompany']:
+                    selectedNiche['companyValue'][selectedByCom]['shareRate'] = shareRate = \
+                        selectedNiche['companyValue'][selectedByCom]['company_total'] / selectedNiche[
+                            'selected_com_total']
+                    selectedNiche['companyValue'][selectedByCom]['customersTotal'] = \
+                        int(shareRate * selectedNiche['customersAvailable'])
+                    selectedNiche['companyValue'][selectedByCom]['averageRecenuePPPC'] = selectedNiche[
+                        'averageRecenuePPPC']
+                    selectedNiche['companyValue'][selectedByCom]['sharedMarketValue'] = \
+                        int(shareRate * selectedNiche['customersAvailable']) * selectedNiche['averageRecenuePPPC']
+                selectedNiche['rankedCompany'] = sorted(selectedNiche['selectedByCompany'],
+                                                        key=lambda x: selectedNiche['companyValue'][x]['shareRate']
+                                                        , reverse=True)
+                self.db.niches_def.update_one({"_id": selectedNiche['_id']}, {"$set": selectedNiche})
+            pprint(selectedNiche)
+
+
 
     def marketingShare(self, teamName, companyName, period):
 

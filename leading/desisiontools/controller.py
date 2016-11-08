@@ -422,10 +422,14 @@ class PeriodicTasksService():
         for com in companys:
             Account(companyName=com['companyName'],teamName=com['teamName'],period=com['currentPeriod']).sum()
 
+    def calculte_marketing_share(self):
+        PerformanceModel().calculateMarketShare(self.systemCurrentPeriod)
+
     def marketing_share(self):
         companys  = self.db.companies.find({"status":"Active"},{"_id":0})
         for com in companys:
             PerformanceModel().marketingShare(companyName=com['companyName'],teamName=com['teamName'],period=com['currentPeriod'])
+
 
     def hiringDecision(self):
         tasks = self.db.task_list.find({'taskName': 'Hires', 'period': self.systemCurrentPeriod}, {'_id': 0})
@@ -714,5 +718,5 @@ class PeriodicTasksService():
         # accountBookkeeping(teamName, 'NewCo', 5, 'BB142', 'Credit', expenditure1, 'Transfer from LegacyCo.')
 
 
-PeriodicTasksService().nichesCalculation()
+PeriodicTasksService().calculte_marketing_share()
 #Account(teamName="Team B", companyName='LegacyCo', period=1).sum()

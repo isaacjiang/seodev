@@ -26,5 +26,5 @@ def taskAccountSum(params):
 @capp.task(name='leading.queue.taskPerformance')
 def taskPerformance(params):
     from leading.desisiontools.controller import PeriodicTasksService
-    PeriodicTasksService().marketing_share()
+    PeriodicTasksService().calculte_marketing_share()
     print "Executed Task taskPerformance @ " + params
