@@ -1,5 +1,6 @@
 from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
 from leading.config import leadingdb
+
 from pprint import pprint
 
 

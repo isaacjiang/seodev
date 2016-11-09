@@ -2,7 +2,7 @@ import models
 from leading.entities.controller import EntitiesService
 from flask import json, request
 from leading.config import leadingdb
-from datetime import datetime
+from leading.syssetting.models import SystemSetting
 import pymongo
 from pprint import pprint
 
@@ -20,37 +20,44 @@ class PerformanceService():
         self.teamName = userInfo['teamInfo']['teamName']
         self.companyName = userInfo['companyInfo']['companyName']
         self.currentPeriod = userInfo['companyInfo']['currentPeriod']
-
+        self.systemCurrentPeriod = SystemSetting().get_system_current_period()
         #models.PerformanceModel().marketingShare(self.teamName, self.companyName, '0' + str(self.currentPeriod) + '100')
         result = {}
         if self.companyName is not None:
-            niches = ['B2B', 'B2C', 'Education', 'Government', 'Entertainment']
-
-            for period in [self.currentPeriod - 1, self.currentPeriod]:
-                #rank
-                for niche in niches:
-                    niche_marketingshare_ranking = self.db.marketingshare_niche.find(
-                        {"flag": "#nicheSum", "niche": niche, "companyName": self.companyName,
-                         "currentPeriod": period}).sort([("shareRate", pymongo.ASCENDING)])
-                    for index,niche_rank in enumerate(niche_marketingshare_ranking):
-                        self.db.marketingshare_niche.update_one(
-                            {"flag": "#nicheSum", "niche": niche, "teamName": self.teamName,
-                             "companyName": self.companyName,
-                             "currentPeriod": period},{"$set":{"ranking":index+1}})
-
-            niche_marketingshare = self.db.marketingshare_niche.find(
-                {"flag": "#nicheSum", "teamName": self.teamName, "companyName": self.companyName,
-                 "currentPeriod": {"$in": [self.currentPeriod - 1, self.currentPeriod]}})
+            # niches = ['B2B', 'B2C', 'Education', 'Government', 'Entertainment']
+            #
+            # for period in [self.currentPeriod - 1, self.currentPeriod]:
+            #     #rank
+            #     for niche in niches:
+            #         niche_marketingshare_ranking = self.db.marketingshare_niche.find(
+            #             {"flag": "#nicheSum", "niche": niche, "companyName": self.companyName,
+            #              "currentPeriod": period}).sort([("shareRate", pymongo.ASCENDING)])
+            #         for index,niche_rank in enumerate(niche_marketingshare_ranking):
+            #             self.db.marketingshare_niche.update_one(
+            #                 {"flag": "#nicheSum", "niche": niche, "teamName": self.teamName,
+            #                  "companyName": self.companyName,
+            #                  "currentPeriod": period},{"$set":{"ranking":index+1}})
+            #
+            # niche_marketingshare = self.db.marketingshare_niche.find(
+            #     {"flag": "#nicheSum", "teamName": self.teamName, "companyName": self.companyName,
+            #      "currentPeriod": {"$in": [self.currentPeriod - 1, self.currentPeriod]}})
+            selectedNiches = self.db.niches_def.find(
+                {"period": {"$in": [self.systemCurrentPeriod - 1, self.systemCurrentPeriod]}})
             marketPerformance = []
-            for niche_v in niche_marketingshare:
-                # sprint niche_v
-                if niche_v['currentPeriod '] == self.currentPeriod:
+            for selectedNiche in selectedNiches:
+                if selectedNiche['period'] == self.systemCurrentPeriod:
                     period = 'Current'
                 else:
                     period = 'Previous'
-                marketPerformance.append({"teamName": self.teamName, "companyName": self.companyName, "period": period,
-                                          "periodNumber": niche_v['currentPeriod'],
-                                          "niche":niche_v['niche'],"shareRate":niche_v['shareRate'],"ranking":niche_v['ranking'],"customerNum":niche_v['totalCustomers'],"sharedMarketValue":niche_v['sharedMarketValue']})
+                if 'rankedCompany' in selectedNiche.keys():
+                    for index, company in enumerate(selectedNiche['rankedCompany']):
+                        marketPerformance.append(
+                            {"teamName": company, "companyName": selectedNiche['company'], "period": period,
+                             "periodNumber": selectedNiche['period'], "niche": selectedNiche['niche'],
+                             "shareRate": selectedNiche['companyValue'][company]['shareRate'],
+                             "ranking": index + 1,
+                             "customerNum": selectedNiche['companyValue'][company]['customersTotal'],
+                             "sharedMarketValue": selectedNiche['companyValue'][company]['sharedMarketValue']})
 
             result["marketPerformance"] = marketPerformance
 
