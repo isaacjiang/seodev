@@ -16,6 +16,11 @@ CELERYBEAT_SCHEDULE = {
         'schedule': timedelta(seconds=10),
         'args': ('tasks-per-10s',)
     },
+    'tasks-per-10s-2': {
+        'task': 'leading.queue.taskTasksCompleted2',
+        'schedule': timedelta(seconds=10),
+        'args': ('tasks-per-10s-2',)
+    },
     'tasks-per-30s': {
         'task': 'leading.queue.taskAccountSum',
         'schedule': timedelta(seconds=30),

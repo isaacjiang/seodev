@@ -17,6 +17,16 @@ def taskTasksCompleted(params):
     tasks.workforceAccountBookkeeping()
     print "Executed Task taskTasksCompleted @ " + params
 
+
+@capp.task(name='leading.queue.taskTasksCompleted2')
+def taskTasksCompleted2(params):
+    from leading.desisiontools.controller import PeriodicTasksService
+    tasks = PeriodicTasksService()
+    tasks.budgetAccountBookkeeping()
+    tasks.actionsAccountBookkeeping()
+    tasks.nichesCalculation()
+    print "Executed Task taskTasksCompleted @ " + params
+
 @capp.task(name='leading.queue.taskAccountSum')
 def taskAccountSum(params):
     from leading.desisiontools.controller import PeriodicTasksService

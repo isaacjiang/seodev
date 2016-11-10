@@ -1,6 +1,6 @@
 from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
 from leading.config import leadingdb
-
+from bson import ObjectId
 from pprint import pprint
 
 
@@ -41,7 +41,7 @@ class PerformanceModel():
         for selectedNiche in selectedNiches:
             # selectedNiche['_id'] = str(selectedNiche['_id'] )
             selectedNiche['companyValue'] = {}
-            if selectedNiche['selectedByCompany']:
+            if 'selectedByCompany' in selectedNiche.keys():
                 selected_com_total = 0
                 for selectedByCom in selectedNiche['selectedByCompany']:
                     selectedNiche['companyValue'][selectedByCom] = {}
@@ -62,8 +62,8 @@ class PerformanceModel():
 
                 for selectedByCom in selectedNiche['selectedByCompany']:
                     selectedNiche['companyValue'][selectedByCom]['shareRate'] = shareRate = \
-                        selectedNiche['companyValue'][selectedByCom]['company_total'] / selectedNiche[
-                            'selected_com_total']
+                        selectedNiche['companyValue'][selectedByCom]['company_total'] / \
+                        selectedNiche['selected_com_total'] if selectedNiche['selected_com_total'] != 0 else 1
                     selectedNiche['companyValue'][selectedByCom]['customersTotal'] = \
                         int(shareRate * selectedNiche['customersAvailable'])
                     selectedNiche['companyValue'][selectedByCom]['averageRecenuePPPC'] = selectedNiche[
@@ -300,3 +300,16 @@ class PerformanceModel():
             result['financialValue'] = financialValue
 
         return json.dumps(result)
+
+
+class InstructionModel():
+    def __init__(self):
+        self.db = leadingdb
+
+    def get_list(self):
+        result = self.db.instruction_def.find({}, {"_id": 0})
+        return list(result)
+
+    def save(self, file):
+        self.db.instruction_def.update_one({"_id": ObjectId(file['objectID'])}, {"$set": file}, upsert=True)
+        return self.get_list()

@@ -191,3 +191,19 @@ class PerformanceService():
             result['financialPerformance'] = financialPerformance
             #print result
         return json.dumps(result)
+
+
+class InstructionService():
+    def __init__(self):
+        self.db = leadingdb
+
+    def instruction(self):
+        if request.method == 'POST':
+            f = json.loads(request.data)
+            pprint(f.keys())
+            result = models.InstructionModel().save(f[u'file'])
+
+        else:
+            result = models.InstructionModel().get_list()
+
+        return json.dumps(result)

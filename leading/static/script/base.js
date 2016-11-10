@@ -12,7 +12,7 @@ app.config(function ($mdThemingProvider) {
         '200': '3333FF',
         '300': '0000FF',
         '400': '0000CC',
-        '500': '000099',
+        '500': '4B0082',
         '600': '000033',
         '700': '00004D',
         '800': '00001A',
@@ -61,7 +61,7 @@ app.config(function ($mdThemingProvider) {
         return windowsize
     })
     .controller('menuCtrl', ['$scope', '$rootScope', '$mdToast', '$mdSidenav', '$mdDialog', '$window', 'current_user',
-        '$http','$timeout', function ($scope, $rootScope, $mdToast, $mdSidenav, $mdDialog, $window, current_user, $http,$timeout) {
+        '$http', 'Upload', function ($scope, $rootScope, $mdToast, $mdSidenav, $mdDialog, $window, current_user, $http, Upload) {
 
         // general functions
         function formatNum(num){
@@ -96,7 +96,6 @@ app.config(function ($mdThemingProvider) {
 
                     })
 
-
                 $scope.listTasks = function (menuid) {
                     $http({
                             method:'GET',
@@ -108,13 +107,7 @@ app.config(function ($mdThemingProvider) {
                         $mdSidenav(menuid).toggle();
                     })
                 }
-
-
             }
-
-
-
-
         })
 
         //tasks
@@ -290,7 +283,7 @@ app.config(function ($mdThemingProvider) {
                 function showpdfCtrl($scope, $mdDialog, infoFile, func) {
 
                     $scope.close = function () {
-                        //$mdDialog.cancel();
+                        $mdDialog.cancel();
                         func(task)
                     };
                     //$scope.pdfName = task.taskName+ '  Introduction';
@@ -396,6 +389,68 @@ app.config(function ($mdThemingProvider) {
             $mdSidenav('taskslist').close()
         }
         // }
+            $scope.info = function (menuid) {
+                $http.get('/api/general/instruction')
+                    .success(function (list) {
+                        $scope.instructionMeterial = list
+                    })
+                $mdSidenav(menuid).toggle();
+            };
+            $scope.infoClick = function (infoFile) {
+                instructionFn(infoFile, $scope.info, 'info')
+                $mdSidenav('info').close();
+            }
+
+            $scope.addContent = function (file) {
+                console.log('addContent')
+                Upload.upload({
+                    url: '/files/upload',
+                    data: {files: file}
+                }).then(function (response) {
+                    console.log(response)
+                    $http({
+                            method: 'POST',
+                            url: "/api/general/instruction",
+                            data: {
+                                file: response.data[0]
+                            }
+                        }
+                    ).success(function (list) {
+                        console.log(list)
+                        $scope.instructionMeterial = list
+                        $rootScope.notificationToast('Instruction material uploaded.')
+                    })
+
+                });
+            }
+            accountBudgetfn = function () {
+                console.log('budget')
+                // Show the dialog
+                $mdSidenav('budget').toggle();
+
+                $http.get("/server/accountbudget", {params: {username: $rootScope.current_user.username}}).success(function (res) {
+                    console.log(res)
+                    $scope.current_budget = res
+                })
+                $scope.current_index = -1
+                $scope.budget_input = function (index, budget) {
+                    console.log(index, budget)
+
+                    $scope.current_index = index
+                }
+                $scope.$watchCollection('current_index', function (newVal, oldVal) {
+                    if (oldVal != undefined && newVal != oldVal) {
+                        // console.log( oldVal)
+                        if (oldVal != -1) {
+                            $http.post('/server/accountbudget', $scope.current_budget[oldVal]).success(function (res) {
+                                //    console.log(res)
+                            })
+                        }
+
+                    }
+                })
+
+            }
 
         function joinTeam() {
             // Show the dialog

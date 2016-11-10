@@ -51,7 +51,7 @@
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_account_balance_white_48px.svg') }}"></md-icon>
                     </md-button>
                 </div>
-                <div>
+                <div ng-if="superuser">
                     <md-button ng-click="settings()" class="md-icon-button" layout-align="center end">
                         <md-icon aria-label="Menu"
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_settings_white_48px.svg') }}"></md-icon>
@@ -64,7 +64,7 @@
                     </md-button>
                 </div>
                 <div>
-                    <md-button ng-click="instruction()" class="md-icon-button" layout-align="center end">
+                    <md-button ng-click="info('info')" class="md-icon-button" layout-align="center end">
                         <md-icon aria-label="Help"
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_help_outline_white_48px.svg') }}"></md-icon>
                     </md-button>
@@ -148,18 +148,27 @@
             </md-content>
         </md-sidenav>
 
-        <md-sidenav class="md-sidenav-right" md-component-id="right">
+        <md-sidenav class="md-sidenav-right" md-component-id="info" style="min-width: 25%">
             <md-toolbar class="md-theme-light">
-                <h1 class="md-toolbar-tools">Story</h1>
+                <h1 class="md-toolbar-tools">Instruction</h1>
             </md-toolbar>
-            <md-subheader> {% raw %}{{stories[0].title }}{% endraw %} </md-subheader>
-            <md-subheader> Company: {% raw %}{{stories[0].companyName }}{% endraw %} </md-subheader>
-            <md-subheader> Period: {% raw %}{{stories[0].period }}{% endraw %}</md-subheader>
-            <md-content layout-padding layout-margin="10px" ng-bind="stories[0].content" flex>
+            <md-content layout-padding layout-margin="10px" flex>
+                <md-list>
+                    <md-list-item ng-repeat="material in instructionMeterial" ng-click="infoClick(material)">
+                        <div class="md-list-item-text">
+                            <h3>{% raw %}{{material.filename }}{% endraw %} </h3>
+                        </div>
+                        <md-divider></md-divider>
+                </md-list>
+                </md-list-item>
 
-                <md-divider></md-divider>
             </md-content>
-
+            <div ng-if="superuser">
+                <md-button class="md-accent md-fab md-fab-bottom-right" ngf-select="addContent($files)" accept='.pdf'>
+                    <md-icon aria-label="Menu"
+                             md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
+                </md-button>
+            </div>
         </md-sidenav>
 
         <md-sidenav class="md-sidenav-right" md-component-id="budget">
@@ -184,13 +193,11 @@
             </md-content>
         </md-sidenav>
 
-
-
     </section>
 </div>
 
 {% block content %} {% endblock %}
-<div>
+<div ng-if="current_user.status.is_authenticated">
     <md-toolbar class="md-accent" style="position:absolute;bottom: 0;" flex>
         <div class="md-toolbar-tools " layout="row" layout-align="space-between end">
             <div flex="50">

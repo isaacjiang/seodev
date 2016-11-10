@@ -27,13 +27,26 @@
     </style>
 
      <div ng-controller="contentCtrl" layout="column" ng-cloak>
-     <div class ="totalprogressline" layout-align="end end">
-         <md-progress-linear md-mode="determinate" class="md-accent md-hue-2" value="{% raw %}{{ userAtCompany.currentPeriod/0.125 }}{% endraw %}"></md-progress-linear>
-    </div>
-<div>
-    <video style="position: fixed; right: 0; bottom:100px;top:64px; min-width: 100%; min-height: 90%; width: auto; height: auto;" controls autoplay>
-        <source src="static/start.mp4" type="video/mp4">
+         <md-card
+                 style="position: absolute;top:90px;width:30%;font-size:32px;color:white;z-index: 100;background-color: transparent">
+             <md-card-title>
+                 <md-card-title-text>
+                     <span class="md-headline" style="font-size:48px;">Information</span>
+                 </md-card-title-text>
+                 <md-card-content>
+    <span>The titles of Washed Out's breakthrough song and the first single from Paracosm share the two most important
+        words in Ernest Greene's musical language: feel it. It's a simple request, as well...</span>
+                     <span>The titles of Washed Out's breakthrough song and the first single from Paracosm share the two most important
+        words in Ernest Greene's musical language: feel it. It's a simple request, as well...</span>
+                 </md-card-content>
+             </md-card-title>
+         </md-card>
 
+         <div>
+             <video style="position: fixed; right: 0; bottom:100px;top:64px; min-width: 100%; min-height: 90%; width: auto; height: auto;"
+                    controls loop autoplay>
+                 <source src="https://webassets.mongodb.com/_com_assets/media/mdb-video-hero-hp-mongodb-16-9.mp4"
+                         type="video/mp4">
     </video>
 </div>
     </div>
