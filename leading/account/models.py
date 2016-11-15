@@ -231,10 +231,10 @@ class Index():
         self.companyName = companyName
         self.period = period
 
-    def bookkeeping(self,indexName, value, objectID=None, type=None, comments=None):
+    def bookkeeping(self, indexName, value, objectID=None, accDescID=None, comments=None):
         result = self.data.update_one(
             {"originID": str(objectID), "indexName": indexName, "teamName": self.teamName,
-             "companyName": self.companyName,"period": self.period},
+             "companyName": self.companyName, "accDescID": accDescID, "period": self.period},
             {"$set": {"value": value, "comments": comments}}, upsert=True)
         return result
 

@@ -1,7 +1,7 @@
 from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
 from leading.config import leadingdb
 from bson import ObjectId
-from pprint import pprint
+from leading.account.models import Account
 
 
 class PerformanceModel():
@@ -13,6 +13,7 @@ class PerformanceModel():
                                              {"companyName": 1, "teamName": 1, "period": 1, "_id": 0})
         return result
 
+    # Does not use
     def calculateMarketShare(self, systemCurrentPeriod):
         def get_com_acc_value(accountDescID, teamName, companyName, period):
             accValue = 0
@@ -25,19 +26,20 @@ class PerformanceModel():
                 accValue += r['value']
             return accValue
 
-        def get_com_inx(indexName, teamName, companyName, period):
-            condition = {"indexName": indexName, "companyName": companyName, "teamName": teamName, "period": period,}
+        def get_com_inx(indexName, teamName, companyName, period, accDescID):
+            condition = {"indexName": indexName, "companyName": companyName, "teamName": teamName, "period": period,
+                         "accDescID": accDescID}
             index_value = self.db.index_bookkeeping.find(condition, {"_id": 0})
             indexValue = 1
             for c in index_value:
                 indexValue = indexValue * c['value']
             return indexValue
 
-        print "calculate"
+        #print "calculate"
         accountItem = ['AB010', 'AB011', 'AB012', 'AB013', 'AB014', 'AB015']
         weight = [0.1, 0.2, 0.1, 0.2, 0.3, 0.1]
         indexItem = ['competenceIndex', 'stressIndex', 'adaptabilityIndex', 'legitimacyIndex']
-        selectedNiches = self.db.niches_def.find({"period": systemCurrentPeriod})
+        selectedNiches = self.db.niches_cal.find({"period": systemCurrentPeriod})
         for selectedNiche in selectedNiches:
             # selectedNiche['_id'] = str(selectedNiche['_id'] )
             selectedNiche['companyValue'] = {}
@@ -45,17 +47,27 @@ class PerformanceModel():
                 selected_com_total = 0
                 for selectedByCom in selectedNiche['selectedByCompany']:
                     selectedNiche['companyValue'][selectedByCom] = {}
-                    print selectedNiche
+                    #print selectedNiche
                     company_total = 0
-                    competenceIndex = get_com_inx('competenceIndex', selectedByCom, selectedNiche['company'],
-                                                  selectedNiche['period'])
+
                     for i, accItem in enumerate(accountItem):
                         nc = selectedNiche['companyValue'][selectedByCom][accItem] = \
                             get_com_acc_value(accItem, selectedByCom, selectedNiche['company'], selectedNiche['period'])
+                        # selectedNiche['companyValue'][selectedByCom]['weight']=weight[i]
+                        competenceIndex = get_com_inx('competenceIndex', selectedByCom, selectedNiche['company'],
+                                                      selectedNiche['period'], accItem)
                         company_total += nc * competenceIndex * weight[i]
-                    for inxItem in indexItem:
-                        selectedNiche['companyValue'][selectedByCom][inxItem] = \
-                            get_com_inx(inxItem, selectedByCom, selectedNiche['company'], selectedNiche['period'])
+                        # accitemIndex = accItem+'Index'
+                        # # selectedNiche['companyValue'][selectedByCom][accitemIndex] ={}
+                        # for inxItem in indexItem:
+                        #     selectedNiche['companyValue'][selectedByCom][inxItem] ={} if indexItem not in selectedNiche['companyValue'][selectedByCom].keys() else selectedNiche['companyValue'][selectedByCom][inxItem]
+                        #     indecValue =get_com_inx(inxItem, selectedByCom, selectedNiche['company'], selectedNiche['period'],accItem)
+                        #
+                        #     selectedNiche['companyValue'][selectedByCom][inxItem][accItem]={"index":indecValue,"accDescID":accItem,'weight':weight[i]}
+                        #
+                        #     selectedNiche['companyValue'][selectedByCom][inxItem]['subTotal'] = 1 if indexItem not in selectedNiche['companyValue'][selectedByCom][inxItem].keys()\
+                        #         else selectedNiche['companyValue'][selectedByCom][inxItem]['subTotal']
+                        #     selectedNiche['companyValue'][selectedByCom][inxItem]['subTotal'] = selectedNiche['companyValue'][selectedByCom][inxItem]['subTotal'] *indecValue
                     selectedNiche['companyValue'][selectedByCom]['company_total'] = company_total
                     selected_com_total += company_total
                 selectedNiche['selected_com_total'] = selected_com_total
@@ -73,9 +85,20 @@ class PerformanceModel():
                 selectedNiche['rankedCompany'] = sorted(selectedNiche['selectedByCompany'],
                                                         key=lambda x: selectedNiche['companyValue'][x]['shareRate']
                                                         , reverse=True)
-                self.db.niches_def.update_one({"_id": selectedNiche['_id']}, {"$set": selectedNiche})
-            pprint(selectedNiche)
-
+                # selectedNiche['rankedCompetenceIndex'] = sorted(selectedNiche['selectedByCompany'],
+                #                                         key=lambda x: selectedNiche['companyValue'][x]['competenceIndex']['subTotal']
+                #                                         , reverse=True)
+                # selectedNiche['rankedStressIndex'] = sorted(selectedNiche['selectedByCompany'],
+                #                                         key=lambda x: selectedNiche['companyValue'][x]['stressIndex']['subTotal']
+                #                                         , reverse=True)
+                # selectedNiche['rankedLegitimacyIndex'] = sorted(selectedNiche['selectedByCompany'],
+                #                                         key=lambda x: selectedNiche['companyValue'][x]['legitimacyIndex']['subTotal']
+                #                                         , reverse=True)
+                # selectedNiche['rankedAdaptabilityIndex'] = sorted(selectedNiche['selectedByCompany'],
+                #                                         key=lambda x: selectedNiche['companyValue'][x]['adaptabilityIndex']['subTotal']
+                #                                         , reverse=True)
+                self.db.niches_cal.update_one({"_id": selectedNiche['_id']}, {"$set": selectedNiche})
+                # pprint(selectedNiche)
 
 
     def marketingShare(self, teamName, companyName, period):
@@ -199,107 +222,24 @@ class PerformanceModel():
                             accountDescID = 'AA033'
                             accountDescID2 = 'AA133'
 
-                            # Account(n['teamName'], n['company'], n['period']).bookkeeping( accountDescID,n['averageRecenuePPPC'] * n['totalCustomers'] * companyValue[
-                            #     'value'] / companies / totalvalue,'Detail','Market Share')
-                            #
-                            # Account(n['teamName'], n['company'], n['period']).bookkeeping(accountDescID2,(
-                            #     n['averageRecenuePPPC'] * n['totalCustomers'] * companyValue['value'] / companies / totalvalue) / 4,'Detail','Market Share')
+                            # Account(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
+                            #         period=self.systemCurrentPeriod).bookkeeping(objectID=employee["_id"],
+                            #                                                      accountDescID=self.categoryToItem(
+                            #                                                          employee['category']),
+                            #                                                      value=employee['HiredBy']['salaryOffer'],
+                            #                                                      comments=employee['employeeID'])
 
-    def queryCurrentMarketData(self):
-        username = request.args["username"]
-        currentPeriod = models.getCurrentPeriod(username)
-        result={}
-        if "companyName" in currentPeriod.keys():
+                            Account(teamName=n['teamName'], companyName=n['company'], period=n['period']) \
+                                .bookkeeping(accountDescID=accountDescID,
+                                             value=n['averageRecenuePPPC'] * n['totalCustomers'] * companyValue[
+                                                 'value'] / companies / totalvalue, comments='Market Share')
 
-            niche_marketingshare = sdb.marketingshare_niche.find({"flag": "#nicheSum", "companyName": currentPeriod['companyName'], })
-            marketPerformance = {}
-            marketValue = {}
-            for niche_v in niche_marketingshare:
-                if niche_v['niche'] not in marketPerformance.keys():
-                    marketPerformance[niche_v['niche']] = {'niche':niche_v['niche']}
-                if niche_v['teamName'] not in marketPerformance[niche_v['niche']].keys():
-                    marketPerformance[niche_v['niche']][niche_v['teamName']] = []
+                            Account(teamName=n['teamName'], companyName=n['company'], period=n['period']) \
+                                .bookkeeping(accountDescID=accountDescID2, value=(n['averageRecenuePPPC'] * n[
+                                'totalCustomers'] * companyValue['value'] / companies / totalvalue) / 4,
+                                             comments='Market Share')
 
-                #great Value
-                if niche_v['teamName'] not in marketValue.keys():
-                    marketValue[niche_v['teamName']] = {'teamName': niche_v['teamName']}
-                if niche_v['currentPeriod'] not in marketValue[niche_v['teamName']].keys():
-                    marketValue[niche_v['teamName']][niche_v['currentPeriod']] = 0
 
-                if niche_v['niche'] =='B2B' and niche_v['currentPeriod'] <=4 and currentPeriod['companyName'] =='LegacyCo':
-                    marketValue[niche_v['teamName']][niche_v['currentPeriod']] += niche_v['shareRate']* 0.7
-                elif niche_v['niche'] == 'B2C' and niche_v['currentPeriod'] <= 4 and currentPeriod['companyName'] == 'LegacyCo':
-                    marketValue[niche_v['teamName']][niche_v['currentPeriod']] += niche_v['shareRate'] * 0.3
-                else:
-                    marketValue[niche_v['teamName']][niche_v['currentPeriod']] += niche_v['totalCustomers']
-
-                marketPerformance[niche_v['niche']][niche_v['teamName']].append({'x':niche_v['currentPeriod'],"y":niche_v['shareRate']*100})
-
-            result["marketPerformance"] = marketPerformance
-            result["marketValue"] = marketValue
-            index_com = sdb.marketingshare_com.find({"flag": "#comSum", "companyName": currentPeriod['companyName']},{"_id": 0})
-
-            managementPerformance_ci = {}
-            managementPerformance_si = {}
-            managementPerformance_ai = {}
-            managementValue = {}
-            for index in index_com:
-                # print index
-                if itemToCatogory(index['accountDescID']) not in managementPerformance_ci.keys():
-                    managementPerformance_ci[itemToCatogory(index['accountDescID'])] = {'category':itemToCatogory(index['accountDescID']),'accItem':'c'+index['accountDescID']}
-                    managementPerformance_si[itemToCatogory(index['accountDescID'])] = {'category': itemToCatogory(index['accountDescID']),'accItem':'s'+index['accountDescID']}
-                    managementPerformance_ai[itemToCatogory(index['accountDescID'])] = {'category': itemToCatogory(index['accountDescID']),'accItem':'a'+index['accountDescID']}
-                if index['teamName'] not in managementPerformance_ci[itemToCatogory(index['accountDescID'])].keys():
-                    managementPerformance_ci[itemToCatogory(index['accountDescID'])][index['teamName']] = []
-                    managementPerformance_si[itemToCatogory(index['accountDescID'])][index['teamName']] = []
-                    managementPerformance_ai[itemToCatogory(index['accountDescID'])][index['teamName']] = []
-
-                    managementPerformance_ci[itemToCatogory(index['accountDescID'])][index['teamName']].append(
-                        {'x': index['currentPeriod'], "y": index['competenceIndex'] * 100})
-                    managementPerformance_si[itemToCatogory(index['accountDescID'])][index['teamName']].append(
-                        {'x': index['currentPeriod'],  "y": index['stressIndex'] * 100})
-                    managementPerformance_ai[itemToCatogory(index['accountDescID'])][index['teamName']].append(
-                        {'x': index['currentPeriod'],  "y": index['adaptabilityIndex'] * 100})
-
-                    #great value
-
-                if index['teamName'] not in managementValue.keys():
-                    managementValue[index['teamName']] = {'teamName': index['teamName']}
-                if index['currentPeriod'] not in managementValue[index['teamName']].keys():
-                    managementValue[index['teamName']][index['currentPeriod']] = 1
-                managementValue[index['teamName']][index['currentPeriod']] = managementValue[index['teamName']][index['currentPeriod']]*index['weight'] * index['competenceIndex'] * 100* 0.5 * index['stressIndex'] * 100 *0.3 * index['adaptabilityIndex'] * 100 *0.2
-
-            result["managementPerformance_ci"] = managementPerformance_ci
-            result["managementPerformance_si"] = managementPerformance_si
-            result["managementPerformance_ai"] = managementPerformance_ai
-            result["managementValue"] = managementValue
-
-            financialPerformance={}
-            financialValue = {}
-
-            acc_ranking_com = sdb.account_ranking.find({"companyName": currentPeriod["companyName"]},{"_id": 0})
-
-            for acc_com in acc_ranking_com:
-                for item in ['ROA','ROS','NOCG']:
-                    if item not in financialPerformance.keys():
-                        financialPerformance[item] = {'item': item}
-                    if acc_com['teamName'] not in financialPerformance[item].keys():
-                        financialPerformance[item][acc_com['teamName']] = []
-
-                        financialPerformance[item][acc_com['teamName']].append(
-                            {'x': acc_com['period'], "y": acc_com[item]})
-
-                        # great value
-
-                if acc_com['teamName'] not in financialValue.keys():
-                    financialValue[acc_com['teamName']] = {'teamName': acc_com['teamName']}
-                if acc_com['period'] not in financialValue[acc_com['teamName']].keys():
-                    financialValue[acc_com['teamName']][acc_com['period']] = {"NOCG":acc_com['NOCG'],"EBITDA":acc_com['AB031']}
-
-            result['financialPerformance'] = financialPerformance
-            result['financialValue'] = financialValue
-
-        return json.dumps(result)
 
 
 class InstructionModel():

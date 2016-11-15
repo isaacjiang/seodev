@@ -430,7 +430,6 @@ class PeriodicTasksService():
         for com in companys:
             PerformanceModel().marketingShare(companyName=com['companyName'],teamName=com['teamName'],period=com['currentPeriod'])
 
-
     def hiringDecision(self):
         tasks = self.db.task_list.find({'taskName': 'Hires', 'period': self.systemCurrentPeriod}, {'_id': 0})
         for task in tasks:
@@ -457,61 +456,17 @@ class PeriodicTasksService():
                 Index(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
                       period=employee['startAtPeriod']).bookkeeping(
                     objectID = employee["_id"],
+                    accDescID=self.categoryToItem(employee['category']),
                     indexName="competenceIndex",
                     value=employee['competenceIndexEffect'],
                     comments=employee['employeeID'])
                 Index(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
                       period=employee['startAtPeriod']).bookkeeping(
                      objectID = employee["_id"],
+                    accDescID=self.categoryToItem(employee['category']),
                     indexName="legitimacyIndex",
                     value=employee['legitimacy'],
                     comments=employee['employeeID'])
-
-
-                        #
-                        #     period = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-                        #     maxoffers = sdb.employees_offers.aggregate([{"$match": {"offeredEmployees.startAtPeriod": period['period']}},
-                        #                                                 {"$group": {"_id": "$offeredEmployees.employeeID", "maxoffer": {
-                        #                                                     "$max": "$offeredEmployees.salaryOffer"}}}])
-                        #     for offer in maxoffers:
-                        #         successoffer = sdb.employees_offers.find_one(
-                        #             {"offeredEmployees.employeeID": offer["_id"], "offeredEmployees.salaryOffer": offer["maxoffer"]},
-                        #             {"username": 1, "offeredEmployees": 1, "_id": 0})
-                        #         userinfo = getCurrentPeriod(successoffer["username"])
-                        #         successoffer["teamName"] = userinfo["teamName"]
-                        #         successoffer["companyName"] = userinfo["companyName"]
-                        #         # print successoffer
-                        #         # save
-                        #         # sdb.employees_hired.insert_one(successoffer)
-                        #         setmessage(category='resource', teamName=teamName, companyName=companyName,
-                        #                    message="Team :" + successoffer["teamName"] + "," + successoffer["companyName"] + ", hired : " +
-                        #                            successoffer["offeredEmployees"]["employeeName"] + ",Offer:" + str(
-                        #                        successoffer["offeredEmployees"]["salaryOffer"]))
-                        #         # update
-                        #         sdb.employees_def.find_one_and_update({"employeeID": successoffer["offeredEmployees"]["employeeID"]}, {
-                        #             "$set": {"status": "employed", "teamName": successoffer["teamName"],
-                        #                      "companyName": successoffer["companyName"]}})
-                        #         for p in range(period['period'] + 1, 8):
-                        #             Account(successoffer["teamName"], successoffer["companyName"], p).bookkeeping(
-                        #                 categoryToItem(successoffer['offeredEmployees']['category']), offer["maxoffer"], 'Detail',
-                        #                 successoffer["offeredEmployees"]["employeeID"])
-                        #         Index(successoffer["teamName"], successoffer["companyName"], period['period']).bookkeeping(
-                        #             "competenceIndex", categoryToItem(successoffer['offeredEmployees']['category']),
-                        #             successoffer['offeredEmployees']["competenceIndexEffect"], 'Detail',
-                        #             successoffer["offeredEmployees"]["employeeID"])
-                        #         Index(successoffer["teamName"], successoffer["companyName"], period['period']).bookkeeping(
-                        #             "legitimacyIndex", categoryToItem(successoffer['offeredEmployees']['category']),
-                        #             successoffer['offeredEmployees']["legitimacy"], 'Detail',
-                        #             successoffer["offeredEmployees"]["employeeID"])
-                        #         HumanResource(successoffer["teamName"], successoffer["companyName"], period['period']).bookkeeping(
-                        #             successoffer["offeredEmployees"]["employeeID"], 1, offer["maxoffer"],
-                        #             categoryToItem(successoffer['offeredEmployees']['category']), period['period'] + 1,
-                        #             successoffer["offeredEmployees"]["employeeID"])
-                        #         # accountBookkeeping(successoffer["teamName"],successoffer["companyName"],p,'AB017',"Credit",offer["maxoffer"],successoffer["offeredEmployees"]["employeeID"])
-                        #         # competenceIndex(successoffer["teamName"],successoffer["companyName"],p,'Hiring',"AB010",successoffer['offeredEmployees']["competenceIndexEffect"],successoffer['offeredEmployees']["employeeID"])
-                        #     result = {"result": "success", "offers": successoffer}
-                        #     # print result
-                        # return result
 
     def workforceAccountBookkeeping(self):
         workforces = self.db.workforce_com.find()
@@ -568,7 +523,9 @@ class PeriodicTasksService():
                                      comments='action2')
             if a["competenceIndex"] > 0:
                 Index(teamName=action['teamName'], companyName=action['companyName'], period=a['periodStart']) \
-                    .bookkeeping(objectID=action['_id'], indexName='competenceIndex', value=a["competenceIndex"],
+                    .bookkeeping(objectID=action['_id'], indexName='competenceIndex',
+                                 accDescID=accountDesc,
+                                 value=a["competenceIndex"],
                                  comments=a['actionID'])
 
     def nichesCalculation(self):
@@ -585,9 +542,10 @@ class PeriodicTasksService():
                                             {"_id": 0})
         teams = get_teams()
         for niche in niche_ini:
-            self.db.niches_def.update_one(
+            niche["selectedByCompany"] = teams
+            self.db.niches_cal.update_one(
                 {"company": niche['company'], "niche": niche['niche'], 'period': niche['period']},
-                {"$set": {"selectedByCompany": teams}}, upsert=True)
+                {"$set": niche}, upsert=True)
 
         niches = self.db.niches_com.find({}, {"_id": 0})
         periods = ['p4', 'p5', 'p6', 'p7', 'p8']
@@ -597,14 +555,12 @@ class PeriodicTasksService():
                 if niche[period] != '' and 'selected' in niche[period].keys() and niche[period]['selected'] == True:
                     niche[period]['selectedCompany'] = [] if 'selectedCompany' not in niche[period].keys() else \
                     niche[period]['selectedCompany']
-                    self.db.niches_def.update_one(
+                    self.db.niches_cal.update_one(
                         {"company": niche[period]['company'], "period": niche[period]['period'],
                          "niche": niche[period]['niche']},
                         {"$addToSet": {
                             "selectedByCompany": {"teamName": niche['teamName'], "companyName": niche['companyName']}}},
                         upsert=True)
-
-
 
     def resourcesComplete(teamName, companyName, taskID):
         allteam = sdb.sys_tasks_team.find({"taskID": taskID, "status": "init"}).count()

@@ -90,7 +90,7 @@ app.config(function ($mdThemingProvider) {
                             params:{username:$rootScope.current_user.username}
                         }
                     ).success(function(d){
-                        //console.log(d)
+                        console.log(d)
                         $rootScope.user_info = d
                         $rootScope.notificationToast("Current Accessed User " + d.userInfo.username + ".")
 
@@ -291,11 +291,11 @@ app.config(function ($mdThemingProvider) {
                         "&id=" + infoFile['objectID'] + "&ctype=" + infoFile['content_type']
                     //'static/pdf/oea-big-data-guide-1522052.pdf';
 
-                    $scope.scroll = 1;
+                    $scope.scroll = 100;
                     $scope.loading = '';
 
                     $scope.getNavStyle = function (scroll) {
-                        if (scroll > 10) return 'pdf-controls fixed';
+                        if (scroll > 100) return 'pdf-controls fixed';
                         else return 'pdf-controls';
                     }
 
@@ -391,8 +391,21 @@ app.config(function ($mdThemingProvider) {
         // }
             $scope.info = function (menuid) {
                 $http.get('/api/general/instruction')
+
                     .success(function (list) {
-                        $scope.instructionMeterial = list
+                        $scope.instructionMeterial = [[], []]
+                        if (list) {
+                            list.forEach(function (d) {
+                                if (d.content_type == 'application/pdf') {
+                                    $scope.instructionMeterial[0].push(d)
+                            }
+                                else {
+                                    $scope.instructionMeterial[1].push(d)
+                                }
+                            })
+                        }
+
+
                     })
                 $mdSidenav(menuid).toggle();
             };
@@ -413,7 +426,7 @@ app.config(function ($mdThemingProvider) {
                             url: "/api/general/instruction",
                             data: {
                                 file: response.data[0]
-                            }
+                        }
                         }
                     ).success(function (list) {
                         console.log(list)
