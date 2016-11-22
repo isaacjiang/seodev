@@ -2,7 +2,7 @@ from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
 from leading.config import leadingdb
 from bson import ObjectId
 from leading.entities.models import EntitiesModel
-from leading.syssetting.models import SystemSetting
+from leading.syssetting.models import SystemSetting, DatabaseBackup
 
 class TasksModel():
     def __init__(self, taskID=None,companyName=None,teamName=None,period=0):
@@ -61,6 +61,7 @@ class TasksModel():
             {"currentPeriod": systemCurrentPeriod, "status": {"$in": ["Active", "Init"]}})
         if checkperiod.count() == 0:
             SystemSetting().upgrade_system_current_period()
+            DatabaseBackup.backup(username='admin')
 
     def task_complete(self):
         # t = sdb.teamtasks.find_one({"teamName":team,"companyName":companyName,"taskID":taskID})

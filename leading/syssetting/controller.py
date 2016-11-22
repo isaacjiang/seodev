@@ -28,6 +28,10 @@ class SystemService():
         res = self.model.DatabaseBackup().restore(request.data)
         return json.dumps(res)
 
+    def backup_restore_latest(self):
+        res = self.model.DatabaseBackup().restore_latest()
+        return json.dumps(res)
+
     def backup_download(self):
         # print request.data
         res = self.model.DatabaseBackup().download(request.data)

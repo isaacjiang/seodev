@@ -78,7 +78,8 @@ app.config(function ($mdThemingProvider) {
             $rootScope.current_user.permission = current_user.permission()
             $rootScope.current_user.status = current_user.status()
             //console.log($rootScope.current_user.permission==0 )
-            $scope.superuser = $rootScope.current_user.permission == '0'
+            $rootScope.superuser = $rootScope.current_user.permission == '0'
+            // console.log('superuser',$rootScope.superuser)
             if ($rootScope.current_user.status.is_anonymous) {
                 userLogin()
             }
@@ -90,7 +91,7 @@ app.config(function ($mdThemingProvider) {
                             params:{username:$rootScope.current_user.username}
                         }
                     ).success(function(d){
-                        console.log(d)
+                        // console.log(d)
                         $rootScope.user_info = d
                         $rootScope.notificationToast("Current Accessed User " + d.userInfo.username + ".")
 
@@ -136,6 +137,19 @@ app.config(function ($mdThemingProvider) {
         $scope.help= function() {
             $window.location.href = '/help'
         };
+
+            $scope.reset = function () {
+                $http.get("/api/syssetting/restorelatest").success(function (res) {
+                    console.log(res)
+                    if (typeof (res) == 'string') {
+                        var mes = res
+                    }
+                    else {
+                        var mes = "System restore to Date " + res[0]['backupDate']
+                    }
+                    $rootScope.notificationToast(mes)
+                })
+            };
 
         $scope.settings= function() {
             $window.location.href = '/settings'
@@ -187,6 +201,8 @@ app.config(function ($mdThemingProvider) {
                 $mdDialog.cancel();
             };
             $scope.newUser = {}
+            //console.log('superuser',$rootScope.superuser)
+            $scope.superuser = $rootScope.superuser
 
             $scope.saveUser = function (newUser) {
                 console.log(newUser)
@@ -213,8 +229,8 @@ app.config(function ($mdThemingProvider) {
                             $rootScope.current_user.username = d.userStatus.username
                             $rootScope.current_user.permission = d.userStatus.permission
                             $rootScope.current_user.status = d.userStatus.status
-                            $rootScope.current_user.settings = d.userStatus.settings
-
+                            //$rootScope.current_user.settings = d.userStatus.settings
+                            $rootScope.superuser = $rootScope.current_user.permission == '0'
                             $mdDialog.cancel();
                             window.location.href = "";
                         }

@@ -3,30 +3,36 @@
     "item" : "actions",
     "key" : "actionID",
     "sheetname" : "actions_def",
+    "filename": "Actions.xlsx",
     "status" : "Init"
   },
   {
     "item" : "employees",
     "key" : "employeeID",
     "sheetname" : "employees_def",
+    "filename": "Employees.xlsx",
+    "orderlist": "status,category,employeeID,title,legitimacy,companyName,startAtPeriod,willingToMove,minimumSalary,employeeName,competenceIndexEffect",
     "status" : "Init"
   },
   {
     "item" : "workforce",
     "key" : "functions,period",
     "sheetname" : "workforce_def",
+    "filename": "Workforce.xlsx",
     "status" : "Init"
   },
   {
     "item" : "resources",
     "key" : "resourceName",
     "sheetname" : "resources_def",
+    "filename": "Resources.xlsx",
     "status" : "Init"
   },
   {
     "item" : "account",
     "key" : "accountDescID",
     "sheetname" : "account_def",
+    "filename": "Account.xlsx",
     "status" : "Init"
   },
 
@@ -34,36 +40,43 @@
     "item" : "budget",
     "key" : "budgetDescID",
     "sheetname" : "budget_def",
+    "filename": "Budget.xlsx",
     "status" : "Init"
   },
   {
     "item" : "negotiation",
     "key" : "employeeID",
     "sheetname" : "negotiation_def",
+    "filename": "Negotiation1.xlsx",
     "status" : "Init"
   },
   {
     "item" : "niches_def",
     "key" : "niche,period",
     "sheetname" : "niches_def",
+    "filename": "Niches.xlsx",
     "status" : "Init"
   },
   {
     "item" : "projects",
     "key" : "projectName",
     "sheetname" : "projects_def",
+    "filename": "Projects.xlsx",
     "status" : "Init"
   },
   {
     "item" : "corporate_acquisitions",
     "key" : "companyID",
     "sheetname" : "corporate_acquisitions_def",
+    "filename": "Corporate_acquisitions.xlsx",
     "status" : "Init"
   },
   {
     "item" : "teams",
     "key" : "teamID",
     "sheetname" : "teams",
+    "filename": "Teams.xlsx",
+    "orderlist": "teamNickname,teamName,teamID,description",
     "status" : "Init"
   }
 ]

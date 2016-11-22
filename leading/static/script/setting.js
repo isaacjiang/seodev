@@ -62,7 +62,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                 page: 1
             };
             $scope.selectedFunc = func
-            console.log($scope.selectedFunc)
+            // console.log($scope.selectedFunc)
             if (func.taskKey == 'systemsettings') {
                 $http.get('/api/syssetting/getsettings', {
                     params: {

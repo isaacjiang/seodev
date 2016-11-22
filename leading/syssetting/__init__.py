@@ -9,6 +9,7 @@ blueprint.add_url_rule('/deletebackup', methods=['POST'],
                        view_func=controller.SystemService().backup_delete)
 
 blueprint.add_url_rule('/restore', methods=['POST'], view_func=controller.SystemService().backup_restore)
+blueprint.add_url_rule('/restorelatest', view_func=controller.SystemService().backup_restore_latest)
 blueprint.add_url_rule('/downloadbackup', methods=['POST'],
                        view_func=controller.SystemService().backup_download)
 blueprint.add_url_rule('/backupsetting', methods=['POST'],

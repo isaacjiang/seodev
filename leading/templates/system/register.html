@@ -28,7 +28,7 @@
                         <label>confirm password</label>
                         <input ng-model="newUser.confirmpassword" type="password">
                     </md-input-container>
-                    <md-input-container ng-if="false">
+                    <md-input-container ng-if="superuser==true">
                         <label>permission</label>
                         <md-select placeholder="Choose permission" ng-model="newUser.permission">
                             <md-option value="0">Administrator</md-option>

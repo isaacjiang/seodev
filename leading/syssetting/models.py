@@ -18,6 +18,7 @@ class DatabaseBackup():
         self.createDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self.temp_folder = '/tmp/'
         self.download_folder = '/tmp/'
+        # print os.path.dirname(__file__)
 
     def backup(self, **kwargs):
         subprocess.check_call(['/bin/mkdir', '-p', self.temp_folder + 'backup'])
@@ -25,10 +26,10 @@ class DatabaseBackup():
         filenames = []
         for db in self.backup_databse:
             subprocess.check_call(
-                ['/usr/local/bin/mongodump', "--host", self.sourcedb_host, "--port", self.sourcedb_port, "-d", db,
+                ['/usr/bin/mongodump', "--host", self.sourcedb_host, "--port", self.sourcedb_port, "-d", db,
                  "--archive=" + self.temp_folder + "backup/" + db + "_backup"])
             subprocess.check_call(
-                ['/usr/local/bin/mongofiles', "--host", self.backupdb_host, "--port", self.backupdb_port, "-d",
+                ['/usr/bin/mongofiles', "--host", self.backupdb_host, "--port", self.backupdb_port, "-d",
                  "dbbackup",
                  "--local",
                  self.temp_folder + "backup/" + db + "_backup", "--replace", "put", db + "_backup_" + self.createDate])
@@ -65,14 +66,33 @@ class DatabaseBackup():
                 subprocess.check_call(['/bin/mkdir', '-p', self.temp_folder + 'backup'])
                 for file in data['filenames']:
                     subprocess.check_call(
-                        ['/usr/local/bin/mongofiles', "--host", data['backupHost'], "--port", data['backupPort'],
+                        ['/usr/bin/mongofiles', "--host", data['backupHost'], "--port", data['backupPort'],
                          "--local",
                          self.temp_folder + "backup/" + file, "-d", 'dbbackup', "get", file])
                     ss = subprocess.check_call(
-                        ['/usr/local/bin/mongorestore', "--host", self.sourcedb_host, "--port", self.sourcedb_port,
+                        ['/usr/bin/mongorestore', "--host", self.sourcedb_host, "--port", self.sourcedb_port,
                          "--drop",
                          "--archive=" + self.temp_folder + "backup/" + file])
         return self.get_list()
+
+    def restore_latest(self):
+        data = leadingdb.backup.find_one({'username': 'admin'}, {"_id": 0})
+        if data and len(data.keys()) > 0:
+            if len(data['filenames']) > 0:
+                subprocess.check_call(['/bin/mkdir', '-p', self.temp_folder + 'backup'])
+                for file in data['filenames']:
+                    subprocess.check_call(
+                        ['/usr/bin/mongofiles', "--host", data['backupHost'], "--port", data['backupPort'],
+                         "--local",
+                         self.temp_folder + "backup/" + file, "-d", 'dbbackup', "get", file])
+                    ss = subprocess.check_call(
+                        ['/usr/bin/mongorestore', "--host", self.sourcedb_host, "--port", self.sourcedb_port,
+                         "--drop",
+                         "--archive=" + self.temp_folder + "backup/" + file])
+            result = self.get_list()
+        else:
+            result = "No backup data."
+        return result
 
     def download(self, data):
         data = json.loads(data)
@@ -81,7 +101,7 @@ class DatabaseBackup():
                 # subprocess.check_call(['/bin/mkdir', '-p', self.temp_folder + 'backup'])
                 for file in data['filenames']:
                     subprocess.check_call(
-                        ['/usr/local/bin/mongofiles', "--host", data['backupHost'], "--port", data['backupPort'],
+                        ['/usr/bin/mongofiles', "--host", data['backupHost'], "--port", data['backupPort'],
                          "--local",
                          self.download_folder + file, "-d", 'dbbackup', "get", file])
         return self.get_list()
