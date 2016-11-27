@@ -1,5 +1,5 @@
 from pymongo import ASCENDING, DESCENDING
-from leading.config import leadingdb,leadingfiledb, DATABASE_DOMAIN, DATABASE_PORT,APPLICATION_DATA
+from leading.config import leadingdb, leadingfiledb, leadingbase, DATABASE_DOMAIN, DATABASE_PORT, APPLICATION_DATA
 from datetime import datetime
 import subprocess
 from flask import json
@@ -14,11 +14,11 @@ class DatabaseBackup():
         self.sourcedb_port = str(DATABASE_PORT)
         self.backupdb_host = "localhost"
         self.backupdb_port = "27017"
-        self.backup_databse = ['leadingdb', 'leadingfiledb']
+        self.backup_databse = ['leadingdb', 'leadingbase', 'leadingfiledb']
         self.createDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self.temp_folder = '/tmp/'
         self.download_folder = '/tmp/'
-        # print os.path.dirname(__file__)
+
 
     def backup(self, **kwargs):
         subprocess.check_call(['/bin/mkdir', '-p', self.temp_folder + 'backup'])
@@ -134,12 +134,17 @@ class SystemSetting():
     def get_system_current_period(self):
         systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
         # if systemInfo != None:
-        return systemInfo['content'][0]['value'] if systemInfo else 0
+        return systemInfo['systemPeriod'] if systemInfo else 0
 
     def upgrade_system_current_period(self):
+        if self.get_system_current_period() == 0:
+            systemInfo = leadingbase.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
+            currentPeriod = systemInfo['content'][0]['value']
+            self.db.systeminfo.update_one({"group": "systemInfo"}, {"$set": {"systemPeriod": currentPeriod}},
+                                          upsert=True)
         # systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
         # currentPeriod = systemInfo['content'][0]['value']
-        self.db.systeminfo.update_one({"group": "systemInfo"}, {"$inc": {"content.0.value": 1}})
+        self.db.systeminfo.update_one({"group": "systemInfo"}, {"$inc": {"systemPeriod": 1}})
         #return currentPeriod + 1
 
 class DataInitialization():
@@ -218,7 +223,8 @@ class DataInitialization():
                     for i1, key1 in enumerate(sd.keys()):
                         ws.cell(row=1, column=i1 + 1, value=key1)
                 for i2, key2 in enumerate(sd.keys()):
+                    if type(sd[key2]) is dict:
+                        sd[key2] = str(sd[key2])
                     ws.cell(row=2 + index, column=i2 + 1, value=sd[key2])
-
         wb.save(os.path.join(APPLICATION_DATA, dataConf['filename']))
         return dataConf

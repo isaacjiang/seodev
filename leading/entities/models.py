@@ -1,5 +1,5 @@
 from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
-from leading.config import leadingdb
+from leading.config import leadingdb, leadingbase
 from bson import ObjectId
 
 
@@ -9,7 +9,6 @@ class EntitiesModel():
         self.dbu = leadingdb.user
         self.dbt = leadingdb.teams
         self.dbt.create_index('usernames')
-
         self.teamName = teamName
         self.companyName = companyName
         self.period = period
@@ -17,11 +16,12 @@ class EntitiesModel():
 
     def get_user_by_username(self):
         result = self.dbu.find_one({"username":self.username},{"_id":0,"password":0,'createDate':0})
+        if self.username == "admin":
+            result = leadingbase.user.find_one({"username": self.username}, {"_id": 0, "password": 0, 'createDate': 0})
         return result
 
     def get_company_by_username(self):
         user = self.get_user_by_username()
-
         result = self.dbc.find_one({"teamName":user['teamName'],'companyName':user['companyName']},{"_id":0})
         return result
 
@@ -31,7 +31,7 @@ class EntitiesModel():
         return result
 
     def get_teams_list(self):
-        result = self.dbt.find({},{"_id":0})
+        result = leadingbase.teams.find({}, {"_id": 0})
         return list(result)
 
     def get_users_list(self):

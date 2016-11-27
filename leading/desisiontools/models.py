@@ -1,5 +1,5 @@
 from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
-from leading.config import leadingdb
+from leading.config import leadingdb, leadingbase
 from bson import ObjectId
 from leading.entities.models import EntitiesModel
 from leading.syssetting.models import SystemSetting, DatabaseBackup
@@ -11,16 +11,21 @@ class TasksModel():
         self.dbtaskdata = leadingdb.tasks_data
         self.taskID = taskID
         self.companyName = companyName
-        self.teamName =  teamName
+        self.teamName = teamName
         self.period = int(period)
 
     def get_tasks(self,companyinfo):
         result =[]
-        res = self.dbtask.find({"teamName":companyinfo['teamName'],"companyName":companyinfo['companyName'],
-                                   "period":companyinfo['currentPeriod']}).sort([("taskID", ASCENDING)])
-        for r in res:
-            r['_id'] = str(r['_id'])
-            result.append(r)
+        systemCurrentPeriod = SystemSetting().get_system_current_period()  #
+        if companyinfo['currentPeriod'] == systemCurrentPeriod:
+            res = self.dbtask.find({"teamName": companyinfo['teamName'], "companyName": companyinfo['companyName'],
+                                    "period": companyinfo['currentPeriod']}).sort([("taskID", ASCENDING)])
+            for r in res:
+                r['_id'] = str(r['_id'])
+                if r["taskName"] == "Forecasting":
+                    result.insert(0, r)
+                else:
+                    result.append(r)
         return result
 
     def check_peer_status(self, taskID, companyName):
@@ -30,13 +35,13 @@ class TasksModel():
     def update_task_file(self,id,**kwargs):
         task= self.dbtask.find_one({"_id":ObjectId(id)},{"_id":0})
 
-        self.db.task_list.update_one({'taskID': task['taskID'], 'companyName': task['companyName'],
+        leadingbase.task_list.update_one({'taskID': task['taskID'], 'companyName': task['companyName'],
                                           'period':task['period']}, {"$set":kwargs})
         return kwargs
 
     def get_task_file(self, id):
         task = self.dbtask.find_one({"_id": ObjectId(id)}, {"_id": 0})
-        result = self.db.task_list.find_one({'taskID': task['taskID'], 'companyName': task['companyName'],
+        result = leadingbase.task_list.find_one({'taskID': task['taskID'], 'companyName': task['companyName'],
                                              'period': task['period']})
         return result['infoFile'] if 'infoFile' in result.keys() else {}
 
@@ -61,7 +66,7 @@ class TasksModel():
             {"currentPeriod": systemCurrentPeriod, "status": {"$in": ["Active", "Init"]}})
         if checkperiod.count() == 0:
             SystemSetting().upgrade_system_current_period()
-            DatabaseBackup.backup(username='admin')
+            # DatabaseBackup().backup(username='admin')
 
     def task_complete(self):
         # t = sdb.teamtasks.find_one({"teamName":team,"companyName":companyName,"taskID":taskID})
@@ -102,13 +107,18 @@ class TeamInitialization(TasksModel):
 
     def task_init(self):
         if self.dbtask.find({"teamName": self.teamName}).count() == 0:  # test
-            t = leadingdb.task_list.find({}, {"_id": 0}).sort([("taskID", ASCENDING)])
+            t = leadingbase.task_list.find({}, {"_id": 0}).sort([("taskID", ASCENDING)])
             for task in t:
                 task['teamName'] = self.teamName
                 task['status'] = 'Init'
                 self.dbtask.insert_one(task)
 
     def company_init(self):
+        if self.db.teams.find({}).count() == 0:
+            teams = leadingbase.teams.find({})
+            for team in teams:
+                self.db.teams.insert_one(team)
+
         if self.db.companies.find({"teamName": self.teamName}).count() == 0:  # test
             self.db.companies.insert_one(
                 {"companyID":  self.teamName + "01", "teamName":  self.teamName, "companyName": 'LegacyCo', "status": "Init",
@@ -124,8 +134,8 @@ class EmployeeModel(TasksModel):
     def get_employees_list(self):
         result ={}
         conditions = {"$or": [{"status": "unemployed"}, {"status": "Hiring"}], "companyName": self.companyName,
-                      "startAtPeriod": {"$gt": self.period}}
-        res = self.db.employees_def.find(conditions)
+                      "startAtPeriod": {"$eq": self.period}}
+        res = leadingbase.employees_def.find(conditions)
         for r in res:
             r['_id'] = str(r['_id'])
             result[r['category']] = [] if r['category'] not in result.keys() else result[r['category']]
@@ -150,17 +160,17 @@ class EmployeeModel(TasksModel):
         # s =  self.db.employees_def.find_one({"_id":ObjectId(id)})
         # if 'offer' not in s.keys():
         #     self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{"offer":[]}})
-        self.db.employees_def.update_one({"_id": ObjectId(id)}, {"$set": {type: photo}})
+        leadingbase.employees_def.update_one({"_id": ObjectId(id)}, {"$set": {type: photo}})
         return id
 
 class WorkforceModel(TasksModel):
 
     def get_init_value(self):
         result ={}
-        valueatstart= self.db.workforce_com.find_one({"teamName":self.teamName,"companyName":self.companyName,
-                                                            "period":self.period-1},{'_id':0})
+        valueatstart = self.db.workforce_com.find({"teamName": self.teamName, "companyName": self.companyName,
+                                                            "period":self.period-1}, {'_id':0})
         if valueatstart:
-            result["valueatstart"] = valueatstart
+            result["valueatstart"] = list(valueatstart)
         forecast = self.db.forecast_com.find_one({"teamName":self.teamName,"companyName":self.companyName,
                                                   "period":self.period},{"_id":0})
         if forecast != None:
@@ -253,7 +263,7 @@ class ActionsModel(TasksModel):
     def get_init(self):
         result = {}
         actions=[]
-        cursor = self.db.actions_def.find({},{"_id":0})
+        cursor = self.db.actions_def.find({"PeriodOccurs": self.period}, {"_id": 0})
         for item in cursor:
             actions.append(item)
         result["keyword"] = "allactions"

@@ -104,7 +104,17 @@ app.config(function ($mdThemingProvider) {
                             params:{username:$rootScope.current_user.username}
                         }
                     ).success(function(d){
+                        //console.log(d)
                         $rootScope.tasklists = d
+                        // d.forEach(function (dd) {
+                        //     if (dd.taskID=="10001"){
+                        //         $rootScope.tasklists.unshift(dd)
+                        //     }
+                        //     else{
+                        //         $rootScope.tasklists.push(dd)
+                        //     }
+                        // })
+
                         $mdSidenav(menuid).toggle();
                     })
                 }
@@ -155,9 +165,7 @@ app.config(function ($mdThemingProvider) {
             $window.location.href = '/settings'
             $rootScope.notificationToast("Landing to settings page.")
             };
-        $scope.instruction= function() {
-            instructionFn('hiring')
-        };
+
 
         $scope.accountBudgetfn = function () {
             accountBudgetfn();
@@ -299,7 +307,7 @@ app.config(function ($mdThemingProvider) {
                 function showpdfCtrl($scope, $mdDialog, infoFile, func) {
 
                     $scope.close = function () {
-                        $mdDialog.cancel();
+                        // $mdDialog.cancel();
                         func(task)
                     };
                     //$scope.pdfName = task.taskName+ '  Introduction';
@@ -414,7 +422,7 @@ app.config(function ($mdThemingProvider) {
                             list.forEach(function (d) {
                                 if (d.content_type == 'application/pdf') {
                                     $scope.instructionMeterial[0].push(d)
-                            }
+                        }
                                 else {
                                     $scope.instructionMeterial[1].push(d)
                                 }
@@ -442,7 +450,7 @@ app.config(function ($mdThemingProvider) {
                             url: "/api/general/instruction",
                             data: {
                                 file: response.data[0]
-                        }
+                            }
                         }
                     ).success(function (list) {
                         console.log(list)
@@ -800,7 +808,7 @@ app.config(function ($mdThemingProvider) {
                     if (idx > -1) {list[type].splice(idx, 1);}
                     else {
                         if (list[type].length >= 3) {
-                            notificationToast("You can only choose three resources.")
+                            $rootScope.notificationToast("You can only choose three resources.")
                         }
                         else {
                             list[type].push(item);
@@ -945,15 +953,40 @@ app.config(function ($mdThemingProvider) {
                     if (d){
                         var forecast =d.forecast.b2b+d.forecast.b2c+d.forecast.newoffering
                         console.log(d)
-                        if (d.valueatstart){
+                        if (d.valueatstart) {
+                            d.valueatstart.forEach(function (sv) {
+                                d.workforce_def.forEach(function (dv) {
+                                    if (sv.functions == dv.functions) {
+                                        dv.valueatstart_core = parseInt(sv.adjustedworkforce_core)
+                                        dv.valueatstart_contract = parseInt(sv.valueatstart_contract)
+                                        dv.valueatstart_total = parseInt(sv.valueatstart_total)
+                                    }
+                                    else {
+                                        dv.valueatstart_core = 0
+                                        dv.valueatstart_contract = 0
+                                        dv.valueatstart_total = 0
+                                    }
+                                })
 
+                            })
+                        }
 
-                        for(i=0;i<d.valueatstart.length;i++){
-                            d.workforce_def[i].valueatstart_core = parseInt(d.valueatstart[i].adjustedworkforce_core)
-                            d.workforce_def[i].valueatstart_contract =  parseInt(d.valueatstart[i].adjustedworkforce_contract)
-                            d.workforce_def[i].valueatstart_total =  parseInt(d.valueatstart[i].adjustedworkforce_total)
+                        // for(i=0;i<d.valueatstart.length;i++){
+                        //
+                        //
+                        //     d.workforce_def[i].valueatstart_core = parseInt(d.valueatstart[i].adjustedworkforce_core)
+                        //     d.workforce_def[i].valueatstart_contract =  parseInt(d.valueatstart[i].adjustedworkforce_contract)
+                        //     d.workforce_def[i].valueatstart_total =  parseInt(d.valueatstart[i].adjustedworkforce_total)
+                        //
+                        // } }
+                        else {
+                            for (i = 0; i < d.workforce_def.length; i++) {
+                                d.workforce_def[i].valueatstart_core = 0
+                                d.workforce_def[i].valueatstart_contract = 0
+                                d.workforce_def[i].valueatstart_total = 0
+                            }
+                        }
 
-                        } }
 
 
                         for (i=0;i<d.workforce_def.length;i++){

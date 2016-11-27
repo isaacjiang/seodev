@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 from pymongo import  ASCENDING, DESCENDING
 from werkzeug.security import check_password_hash, generate_password_hash
-from leading.config import leadingdb
+from leading.config import leadingdb, leadingbase
 from datetime import datetime
 from flask import json
 
@@ -11,6 +11,11 @@ class User(UserMixin):
         userinfo = leadingdb.user.find_one({"username": username},
                                           {"username": 1, "createDate": 1, "password": 1, "permission": 1, "email": 1,
                                            "_id": 0})
+        if username == 'admin':
+            userinfo = leadingbase.user.find_one({"username": username},
+                                                 {"username": 1, "createDate": 1, "password": 1, "permission": 1,
+                                                  "email": 1,
+                                                  "_id": 0})
         if userinfo:
             self.createDate = userinfo["createDate"]
             self.password = userinfo["password"]
@@ -64,7 +69,7 @@ class User(UserMixin):
         superuser_count = leadingdb.user.find({"permission": '0'}).count()
         user1_count = leadingdb.user.find({"permission": '1'}).count()
         user2_count = leadingdb.user.find({"permission": '2'}).count()
-        if (superuser_count > 1) & (user1_count + user2_count > 2):
+        if (superuser_count > 100) and (user1_count + user2_count > 200):
             return False
         return True
 

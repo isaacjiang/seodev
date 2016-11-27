@@ -562,58 +562,58 @@ class PeriodicTasksService():
                             "selectedByCompany": {"teamName": niche['teamName'], "companyName": niche['companyName']}}},
                         upsert=True)
 
-    def resourcesComplete(teamName, companyName, taskID):
-        allteam = sdb.sys_tasks_team.find({"taskID": taskID, "status": "init"}).count()
-        # print allteam
-        if allteam < 0:
-            result = {"result": "Not all companies are completed."}
-        else:
-            period = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-            teams = sdb.resources_com.find({"currentPeriod": period['period']}, {"_id": 0})
-            successCom = {}
-            for team in teams:
-                if team['type'] == "pd":
-                    type = "AB015"
-                elif team['type'] == "ma":
-                    type = "AB011"
-                elif team['type'] == "sa":
-                    type = "AB012"
-                elif team['type'] == "su":
-                    type = "AB013"
-                elif team['type'] == "li":
-                    type = "AB014"
-                else:
-                    type = "AB010"
-                team['maxcomptenceindex'] = getMaxComptenceIndex(team["teamName"], team["companyName"],
-                                                                 period['period'],
-                                                                 type)
-                team['accountDesc'] = type
-                resourcename = team['resource']['resourceName']
-                if (resourcename in successCom.keys()):
-                    if (team['maxcomptenceindex'] > successCom[resourcename]['maxcomptenceindex']):
-                        if team not in successCom.values():
-                            successCom[resourcename] = team
-                else:
-                    successCom[resourcename] = team
-            for res in successCom.keys():
-                sdb.resources_sucess.insert_one(successCom[res])
-                account = Account(successCom[res]['teamName'], successCom[res]['companyName'],
-                                  successCom[res]['currentPeriod'])
-                account.bookkeeping(successCom[res]['accountDesc'], successCom[res]['resource']["cost"] * 1000,
-                                    'Detail', successCom[res]['resource']['resourceName'])
-                # accountBookkeeping(successCom[res]['teamName'], successCom[res]['companyName'],
-                # successCom[res]['currentPeriod'], successCom[res]['accountDesc'], "Credit",
-                # successCom[res]['resource']["cost"] * 1000, successCom[res]['resource']['resourceName'])
+    def resourcesComplete(self):
+        # allteam = sdb.sys_tasks_team.find({"taskID": taskID, "status": "init"}).count()
+        # # print allteam
+        # if allteam < 0:
+        #     result = {"result": "Not all companies are completed."}
+        # else:
+        #     period = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
+        teams = self.db.resources_com.find({"currentPeriod": period['period']}, {"_id": 0})
+        successCom = {}
+        for team in teams:
+            if team['type'] == "pd":
+                type = "AB015"
+            elif team['type'] == "ma":
+                type = "AB011"
+            elif team['type'] == "sa":
+                type = "AB012"
+            elif team['type'] == "su":
+                type = "AB013"
+            elif team['type'] == "li":
+                type = "AB014"
+            else:
+                type = "AB010"
+            team['maxcomptenceindex'] = getMaxComptenceIndex(team["teamName"], team["companyName"],
+                                                             period['period'],
+                                                             type)
+            team['accountDesc'] = type
+            resourcename = team['resource']['resourceName']
+            if (resourcename in successCom.keys()):
+                if (team['maxcomptenceindex'] > successCom[resourcename]['maxcomptenceindex']):
+                    if team not in successCom.values():
+                        successCom[resourcename] = team
+            else:
+                successCom[resourcename] = team
+        for res in successCom.keys():
+            sdb.resources_sucess.insert_one(successCom[res])
+            account = Account(successCom[res]['teamName'], successCom[res]['companyName'],
+                              successCom[res]['currentPeriod'])
+            account.bookkeeping(successCom[res]['accountDesc'], successCom[res]['resource']["cost"] * 1000,
+                                'Detail', successCom[res]['resource']['resourceName'])
+            # accountBookkeeping(successCom[res]['teamName'], successCom[res]['companyName'],
+            # successCom[res]['currentPeriod'], successCom[res]['accountDesc'], "Credit",
+            # successCom[res]['resource']["cost"] * 1000, successCom[res]['resource']['resourceName'])
 
-                # competenceIndex(successCom[res]['teamName'], successCom[res]['companyName'],
-                # successCom[res]['currentPeriod'], "Resource", successCom[res]['accountDesc'],
-                # successCom[res]['resource']["legitimacy"], successCom[res]['resource']['resourceName'])
-                Index(successCom[res]['teamName'], successCom[res]['companyName'],
-                      successCom[res]['currentPeriod']).bookkeeping(
-                    "legitimacyIndex", successCom[res]['accountDesc'],
-                    successCom[res]['resource']["legitimacy"], 'Detail',
-                    successCom[res]['resource']['resourceName'])
-                # print successCom[res]
+            # competenceIndex(successCom[res]['teamName'], successCom[res]['companyName'],
+            # successCom[res]['currentPeriod'], "Resource", successCom[res]['accountDesc'],
+            # successCom[res]['resource']["legitimacy"], successCom[res]['resource']['resourceName'])
+            Index(successCom[res]['teamName'], successCom[res]['companyName'],
+                  successCom[res]['currentPeriod']).bookkeeping(
+                "legitimacyIndex", successCom[res]['accountDesc'],
+                successCom[res]['resource']["legitimacy"], 'Detail',
+                successCom[res]['resource']['resourceName'])
+            # print successCom[res]
         return successCom
 
     def negotiation1AccountBookkeeping(self):

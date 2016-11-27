@@ -52,7 +52,7 @@
   },
   {
     "item" : "niches_def",
-    "key" : "niche,period",
+    "key": "nicheID",
     "sheetname" : "niches_def",
     "filename": "Niches.xlsx",
     "status" : "Init"

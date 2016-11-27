@@ -20,5 +20,6 @@ DATABASE_PORT = 27017
 
 client = MongoClient(DATABASE_DOMAIN, DATABASE_PORT, maxPoolSize=200, connect=False)
 leadingdb = client.leadingdb
+leadingbase = client.leadingbase
 leadingfiledb = client.leadingfiledb
 

@@ -359,7 +359,13 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                     }
                 )
                     .success(function(d){
-                       // console.log(d)
+                        //console.log(d)
+                        d.forEach(function (dd) {
+                            if (dd.orderlist) {
+                                dd.orderlist = dd.orderlist.split(',', 3).join(',') + "..."
+                            }
+                        })
+
                       $scope.dataConf =d
                     })
 

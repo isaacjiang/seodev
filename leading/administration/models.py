@@ -1,7 +1,7 @@
 __author__ = 'isaac'
 import os
 import pymongo
-from leading.config import leadingdb,APPLICATION_DATA,TESTING
+from leading.config import leadingbase, APPLICATION_DATA, TESTING
 from flask import json
 from datetime import datetime
 from bson.son import SON
@@ -9,7 +9,7 @@ from openpyxl import Workbook,load_workbook
 
 class DatabaseInit():
     def __init__(self):
-        self.db = leadingdb
+        self.db = leadingbase
 
     def import_from_json(self,dataFileList):
         for filename in dataFileList:
