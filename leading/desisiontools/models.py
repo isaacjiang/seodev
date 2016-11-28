@@ -146,10 +146,12 @@ class EmployeeModel(TasksModel):
         offer['teamName']=self.teamName
         offer['companyName']=self.companyName
         offer['period'] =self.period
-        # s =  self.db.employees_def.find_one({"_id":ObjectId(id)})
-        # if 'offer' not in s.keys():
-        #     self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{"offer":[]}})
-        self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{'status':"Hiring"},"$addToSet":{"offer":offer}})
+        s = self.db.employees_com.find_one({"_id": ObjectId(id)})
+        if s is None:
+            original = leadingbase.employees_def.find_one({"_id": ObjectId(id)})
+            self.db.employees_com.update_one({"_id": ObjectId(id)}, {"$set": original}, upsert=True)
+        self.db.employees_com.update_one({"_id": ObjectId(id)},
+                                         {"$set": {'status': "Hiring"}, "$addToSet": {"offer": offer}})
         return id
 
     def update_employees_photo(self, id, photo, type):
@@ -178,7 +180,7 @@ class WorkforceModel(TasksModel):
         else:
             result["forecast"] = {}
 
-        workforce_def =  self.db.workforce_def.find({"period":self.period},{"_id":0})
+        workforce_def = leadingbase.workforce_def.find({"period": self.period}, {"_id": 0})
         result['workforce_def']=[]
         for w in workforce_def:
             result['workforce_def'].append(w)
@@ -222,8 +224,8 @@ class ResourceModel(TasksModel):
     def get_init(self):
         result = {}
         resources=[]
-        cursor = self.db.resources_def.find({'companyName':self.companyName,'startPeriod':self.period,
-                                             "status":"normal"},{"_id":0})
+        cursor = leadingbase.resources_def.find({'companyName': self.companyName, 'startPeriod': self.period,
+                                             "status":"normal"}, {"_id":0})
         for item in cursor:
             resources.append(item)
         result["data"]=resources
@@ -263,7 +265,7 @@ class ActionsModel(TasksModel):
     def get_init(self):
         result = {}
         actions=[]
-        cursor = self.db.actions_def.find({"PeriodOccurs": self.period}, {"_id": 0})
+        cursor = leadingbase.actions_def.find({"PeriodOccurs": self.period}, {"_id": 0})
         for item in cursor:
             actions.append(item)
         result["keyword"] = "allactions"
@@ -283,7 +285,7 @@ class ProjectsModel(TasksModel):
     def get_init(self):
         result = {}
         projects=[]
-        cursor = self.db.projects_def.find({},{"_id":0})
+        cursor = leadingbase.projects_def.find({}, {"_id": 0})
         for item in cursor:
             projects.append(item)
         result["keyword"] = "allprojects"
@@ -302,7 +304,7 @@ class ProjectsModel(TasksModel):
 class NichesModel(TasksModel):
     def get_init(self):
         niches = []
-        cursor = self.db.niches_def.find({'company': self.companyName}, {"_id": 0})
+        cursor = leadingbase.niches_def.find({'company': self.companyName}, {"_id": 0})
         for item in cursor:
             niches.append(item)
         return niches
@@ -319,7 +321,7 @@ class Negotiate1Model(TasksModel):
     def get_init(self):
         result = {}
         negotiationhr=[]
-        cursor = self.db.negotiation_def.find()
+        cursor = leadingbase.negotiation_def.find()
         for item in cursor:
             item['_id'] = str(item['_id'])
             negotiationhr.append(item)
@@ -349,7 +351,7 @@ class Negotiate1Model(TasksModel):
         # s =  self.db.employees_def.find_one({"_id":ObjectId(id)})
         # if 'offer' not in s.keys():
         #     self.db.employees_def.update_one({"_id":ObjectId(id)},{"$set":{"offer":[]}})
-        self.db.negotiation_def.update_one({"_id": ObjectId(id)}, {"$set": {'photo': photo}})
+        leadingbase.negotiation_def.update_one({"_id": ObjectId(id)}, {"$set": {'photo': photo}})
         return id
 
 class Negotiate2Model(TasksModel):
@@ -357,7 +359,7 @@ class Negotiate2Model(TasksModel):
     def get_init(self):
         result = {}
         negotiationhr=[]
-        cursor = self.db.negotiation_def.find({},{"_id":0})
+        cursor = leadingbase.negotiation_def.find({}, {"_id": 0})
         for item in cursor:
             negotiationhr.append(item)
         result["data"]=negotiationhr
@@ -411,7 +413,7 @@ class PeriodModel():
 
     def period_init(self):
         if self.dbperiod.find({"teamName":  self.teamName, "companyName":  self.companyName}).count() == 0:  # test
-            p = self.db.periods_def.find({}, {"periodID": 1, "description": 1, "_id": 0})
+            p = leadingbase.periods_def.find({}, {"periodID": 1, "description": 1, "_id": 0})
             for period in p:
                 period['teamName'] =  self.teamName
                 period['companyName'] =  self.companyName

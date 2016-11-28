@@ -1,5 +1,5 @@
 from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
-from leading.config import leadingdb
+from leading.config import leadingdb, leadingbase
 from bson import ObjectId
 
 
@@ -26,7 +26,6 @@ class HumanResource():
         for r in res:
             result += r['total_count']
         return result
-
 
 class Account():
     def __init__(self, teamName, companyName, period):
@@ -198,15 +197,13 @@ class Account():
 
     def query_all(self):
         result = []
-        accounts_desc = self.db.account_def.find({}, {"_id": 0})
+
+        accounts_desc = leadingbase.account_def.find({}, {"_id": 0})
         for acc in accounts_desc:
             row_value = {'Account Description': acc['accountDescName'], 'Desc ID': acc['accountDescID'],
                          'accountDescType': acc['accountDescType'], 'summaryFLag': acc['summaryFLag']}
-            periods = self.db.periods_def.find({"periodID": {"$lte": self.period}}, {'_id': 0})
+            periods = leadingbase.periods_def.find({"periodID": {"$lte": self.period}}, {'_id': 0})
             for p in periods:
-                print p
-
-                # print  userinfo["teamName"],userinfo["companyName"],p['periodID'],acc['accountDescID']
                 value = self.db.account_bookkeeping.aggregate(
                     [{"$match": {"teamName": self.teamName, "companyName": self.companyName,
                                  "period": p['periodID'], "accountDescID": acc['accountDescID']}},
@@ -216,7 +213,6 @@ class Account():
                      ])
                 # value = sdb.account_bookkeeping.find({"teamName": userinfo["teamName"],"companyName":userinfo["companyName"],"period":p['periodID'],"accountDescID":acc['accountDescID']},{"_id":0})
                 for v in value:
-                    # print v
                     pID = str(p['periodID']) if p['periodID'] >= 0 else 'Pre' + str(-p['periodID'])
                     row_value['Period' + pID] = '{0:,.0f}'.format(v['total_value'])
             result.append(row_value)

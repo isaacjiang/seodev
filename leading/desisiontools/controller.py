@@ -1,5 +1,5 @@
 import models
-from leading.config import leadingdb
+from leading.config import leadingdb, leadingbase
 from flask import json, request,render_template
 from leading.entities.models import EntitiesModel
 from leading.account.models import Account, Index, HumanResource
@@ -431,19 +431,19 @@ class PeriodicTasksService():
             PerformanceModel().marketingShare(companyName=com['companyName'],teamName=com['teamName'],period=com['currentPeriod'])
 
     def hiringDecision(self):
-        tasks = self.db.task_list.find({'taskName': 'Hires', 'period': self.systemCurrentPeriod}, {'_id': 0})
+        tasks = leadingbase.task_list.find({'taskName': 'Hires', 'period': self.systemCurrentPeriod}, {'_id': 0})
         for task in tasks:
             if self.model.TasksModel().check_peer_status(taskID=task['taskID'], companyName=task['companyName']):
-                employees = self.db.employees_def.find({"status": "Hiring", "companyName": task['companyName']},
+                employees = self.db.employees_com.find({"status": "Hiring", "companyName": task['companyName']},
                                                        {"_id": 0})
                 for employee in employees:
                     if employee and 'offer' in employee.keys():
                         successed = max(employee['offer'], key=lambda x: x['salaryOffer'])
-                        self.db.employees_def.update_one({"employeeID": employee['employeeID']},
+                        self.db.employees_com.update_one({"employeeID": employee['employeeID']},
                                                          {"$set": {"status": "Hired", "HiredBy": successed}})
 
     def employeesAccountBookkeeping(self):
-        employees = self.db.employees_def.find({"status": "Hired"})
+        employees = self.db.employees_com.find({"status": "Hired"})
         for employee in employees:
             if employee['HiredBy']['period'] <= self.systemCurrentPeriod:
                 Account(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
@@ -538,8 +538,8 @@ class PeriodicTasksService():
                     teams.append(com['teamName'])
             return teams
 
-        niche_ini = self.db.niches_def.find({"period": self.systemCurrentPeriod, "niche": {"$in": ['B2B', 'B2C']}},
-                                            {"_id": 0})
+        niche_ini = leadingbase.niches_def.find({"period": self.systemCurrentPeriod, "niche": {"$in": ['B2B', 'B2C']}},
+                                                {"_id": 0})
         teams = get_teams()
         for niche in niche_ini:
             niche["selectedByCompany"] = teams
@@ -674,5 +674,5 @@ class PeriodicTasksService():
         # accountBookkeeping(teamName, 'NewCo', 5, 'BB142', 'Credit', expenditure1, 'Transfer from LegacyCo.')
 
 
-PeriodicTasksService().calculte_marketing_share()
+PeriodicTasksService().marketing_share()
 #Account(teamName="Team B", companyName='LegacyCo', period=1).sum()
