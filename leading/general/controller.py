@@ -598,6 +598,23 @@ class PerformanceService():
 
             return result
 
+    def queryKPIData(self):
+        username = request.args["username"]
+        userInfo = EntitiesService().get_user_info(username)
+        # currentPeriod = {}
+        # currentPeriod['teamName'] = userInfo['teamInfo']['teamName']
+        # currentPeriod['companyName'] = userInfo['companyInfo']['companyName']
+        # currentPeriod['currentPeriod'] = userInfo['companyInfo']['currentPeriod']
+        systemCurrentPeriod = SystemSetting().get_system_current_period()
+
+        result = {}
+        result["hiredEmployees"] = list(
+            self.db.employees_com.find({"status": "Hired", "HiredBy.teamName": userInfo['teamInfo']['teamName']
+                                           , "HiredBy.companyName": userInfo['companyInfo']['companyName']
+                                           , "HiredBy.period": userInfo['companyInfo']['currentPeriod']},
+                                       {"_id": 0}))
+
+        return json.dumps(result)
 
 class InstructionService():
     def __init__(self):
@@ -606,10 +623,20 @@ class InstructionService():
     def instruction(self):
         if request.method == 'POST':
             f = json.loads(request.data)
-            pprint(f.keys())
+            # pprint(f.keys())
             result = models.InstructionModel().save(f[u'file'])
 
         else:
             result = models.InstructionModel().get_list()
 
+        return json.dumps(result)
+
+    def deleteInstruction(self):
+
+        if request.method == 'POST':
+            f = json.loads(request.data)
+            # pprint(f[u'file'])
+            result = models.InstructionModel().delete(f[u'file'])
+        else:
+            result = models.InstructionModel().get_list()
         return json.dumps(result)

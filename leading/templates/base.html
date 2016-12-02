@@ -64,12 +64,17 @@
                     </md-button>
                 </div>
                 <div>
+                    <md-button ng-click="accountBudget()" class="md-icon-button" layout-align="center end">
+                        <md-icon aria-label="Help"
+                                 md-svg-icon="{{ url_for('static', filename='icon/ic_business_center_white_48px.svg') }}"></md-icon>
+                    </md-button>
+                </div>
+                <div>
                     <md-button ng-click="info('info')" class="md-icon-button" layout-align="center end">
                         <md-icon aria-label="Help"
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_help_outline_white_48px.svg') }}"></md-icon>
                     </md-button>
                 </div>
-
 
             </div>
             <div class="md-toolbar-tools" layout-align="center center">
@@ -151,27 +156,26 @@
         <md-sidenav class="md-sidenav-right" md-component-id="info" style="min-width: 25%">
             <md-toolbar class="md-theme-light">
                 <h1 class="md-toolbar-tools">Instruction</h1>
-
-
             </md-toolbar>
             <md-tabs md-dynamic-height md-border-bottom>
                 <md-tab label="{% raw %}{{$index==0?'PDFs':'Videos' }}{% endraw %}"
                         ng-repeat="type in instructionMeterial">
-                    <md-button ng-if="superuser" class="md-accent md-fab md-mini md-fab-top-right"
-                               ngf-select="addContent($files)"
-                               accept='{% raw %}{{$index==0?".pdf":".mp4" }}{% endraw %}'>
-                        <md-icon aria-label="Menu"
-                                 md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
-                    </md-button>
-            <md-content layout-padding layout-margin="10px" flex>
 
-                <md-list>
-                    <md-list-item ng-repeat="material in type" ng-click="infoClick(material)">
-                        <div class="md-list-item-text">
-                            <h3>{% raw %}{{material.filename }}{% endraw %} </h3>
+                    <md-content layout-padding layout-margin="10px" flex style="min-height: 400px">
+
+                        <md-list>
+                            <md-list-item ng-repeat="material in type" layout>
+                                <div class="md-list-item-text" ng-click="infoClick(material)" flex="70">
+                                    <span>{% raw %}{{material.filename }}{% endraw %} </span>
                         </div>
+                                <md-button ng-if="superuser" class="md-accent md-mini"
+                                           ng-click="deleteContent(material)">
+                                    <md-icon aria-label="Menu"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_delete_black_48px.svg') }}"></md-icon>
+                                </md-button>
                         <md-divider></md-divider>
                 </md-list>
+
                 </md-list-item>
 
             </md-content>
@@ -179,17 +183,23 @@
 
                 </md-tab>
             </md-tabs>
-
+            <md-button ng-if="superuser" class="md-accent md-fab md-mini md-fab-bottom-right"
+                       ngf-select="addContent($files)"
+                       accept='{% raw %}{{$index==0?".pdf":".mp4" }}{% endraw %}'>
+                <md-icon aria-label="Menu"
+                         md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
+            </md-button>
         </md-sidenav>
 
         <md-sidenav class="md-sidenav-right" md-component-id="budget">
             <md-toolbar class="md-theme-indigo">
-                <h1 class="md-toolbar-tools">Forecast</h1>
+                <h1 class="md-toolbar-tools">Account Budget</h1>
             </md-toolbar>
             <md-content layout-padding >
                 <md-divider></md-divider>
 
-                <md-list-item class="md-3-line" ng-repeat="budget in current_budget" ng-click="budget_input($index,budget)"
+                <md-list-item class="md-2-line" ng-repeat="budget in current_budget"
+                              ng-click="budget_input($index,budget)"
                               ng-if="budget.budgetDescLevel==2 || budget.parent == current_budget[current_index].budgetDescID" aria-label ='input'>
 
                     <div class="md-list-item-text" style="margin-top: 10px" >

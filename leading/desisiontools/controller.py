@@ -2,7 +2,7 @@ import models
 from leading.config import leadingdb, leadingbase
 from flask import json, request,render_template
 from leading.entities.models import EntitiesModel
-from leading.account.models import Account, Index, HumanResource
+from leading.account.models import Account, Index, AccountBudget
 from leading.general.models import PerformanceModel
 from leading.syssetting.models import SystemSetting
 
@@ -79,6 +79,8 @@ class TasksService():
             eModel = EntitiesModel(username=data['username'],teamName=teamName)
             eModel.update_user_status(teamName=teamName,companyName=data['data']['companyName'],status ='Active')
             eModel.update_team_users(users=data['username'])
+
+            AccountBudget(teamName=teamName, companyName=companyName, period=0).account_budget_init()
 
             tModel.task_complete()
             return json.dumps({"status":"success"})

@@ -292,7 +292,6 @@ app.config(function ($mdThemingProvider) {
             }
         }
 
-
             function instructionFn(infoFile, func, task) {
                 // console.log(func)
                 // Show the dialog
@@ -307,7 +306,7 @@ app.config(function ($mdThemingProvider) {
                 function showpdfCtrl($scope, $mdDialog, infoFile, func) {
 
                     $scope.close = function () {
-                        // $mdDialog.cancel();
+                        // $mdDialog.hide();
                         func(task)
                     };
                     //$scope.pdfName = task.taskName+ '  Introduction';
@@ -431,6 +430,7 @@ app.config(function ($mdThemingProvider) {
 
 
                     })
+                $mdDialog.cancel()
                 $mdSidenav(menuid).toggle();
             };
             $scope.infoClick = function (infoFile) {
@@ -454,18 +454,56 @@ app.config(function ($mdThemingProvider) {
                         }
                     ).success(function (list) {
                         console.log(list)
-                        $scope.instructionMeterial = list
+                        $scope.instructionMeterial = [[], []]
+                        if (list) {
+                            list.forEach(function (d) {
+                                if (d.content_type == 'application/pdf') {
+                                    $scope.instructionMeterial[0].push(d)
+                                }
+                                else {
+                                    $scope.instructionMeterial[1].push(d)
+                                }
+                            })
+                        }
                         $rootScope.notificationToast('Instruction material uploaded.')
                     })
 
                 });
             }
-            accountBudgetfn = function () {
+            $scope.deleteContent = function (file) {
+                //console.log(file)
+                $http({
+                        method: 'POST',
+                        url: "/api/general/deleteinstruction",
+                        data: {
+                            file: file
+                        }
+                    }
+                ).success(function (list) {
+                    //console.log(list)
+                    $scope.instructionMeterial = [[], []]
+                    if (list) {
+                        list.forEach(function (d) {
+                            if (d.content_type == 'application/pdf') {
+                                $scope.instructionMeterial[0].push(d)
+                            }
+                            else {
+                                $scope.instructionMeterial[1].push(d)
+                            }
+                        })
+                    }
+                    $rootScope.notificationToast('Instruction material deleted.')
+                })
+
+            }
+
+            $scope.accountBudget = function () {
                 console.log('budget')
                 // Show the dialog
                 $mdSidenav('budget').toggle();
 
-                $http.get("/server/accountbudget", {params: {username: $rootScope.current_user.username}}).success(function (res) {
+                $http.get("/api/account/accountbudget", {params: {username: $rootScope.current_user.username}})
+                    .success(function (res) {
                     console.log(res)
                     $scope.current_budget = res
                 })
@@ -479,7 +517,7 @@ app.config(function ($mdThemingProvider) {
                     if (oldVal != undefined && newVal != oldVal) {
                         // console.log( oldVal)
                         if (oldVal != -1) {
-                            $http.post('/server/accountbudget', $scope.current_budget[oldVal]).success(function (res) {
+                            $http.post('/api/account/accountbudget', $scope.current_budget[oldVal]).success(function (res) {
                                 //    console.log(res)
                             })
                         }
@@ -2313,7 +2351,7 @@ app.config(function ($mdThemingProvider) {
 
                 }
                 $scope.close = function () {
-                    $mdDialog.cancel();
+                    $mdDialog.hide();
                 };
                 $scope.forecast={}
                 // console.log(($scope.workforce.projectedsales.b2b)+($scope.workforce.projectedsales.b2c)+($scope.workforce.projectedsales.newoffering))

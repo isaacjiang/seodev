@@ -66,7 +66,7 @@ class TasksModel():
             {"currentPeriod": systemCurrentPeriod, "status": {"$in": ["Active", "Init"]}})
         if checkperiod.count() == 0:
             SystemSetting().upgrade_system_current_period()
-            # DatabaseBackup().backup(username='admin')
+            DatabaseBackup().backup(username='admin')
 
     def task_complete(self):
         # t = sdb.teamtasks.find_one({"teamName":team,"companyName":companyName,"taskID":taskID})
@@ -201,7 +201,6 @@ class WorkforceModel(TasksModel):
                                              upsert=True)
         return workforce
 
-
 class ForecastModel(TasksModel):
 
     def get_start_forecast(self):
@@ -217,7 +216,6 @@ class ForecastModel(TasksModel):
         self.db.forecast_com.update_one({"teamName":self.teamName,"companyName":self.companyName,
                                             "period":self.period},{"$set":{"forecast":forecast}},upsert=True)
         return forecast
-
 
 class ResourceModel(TasksModel):
 
@@ -239,7 +237,6 @@ class ResourceModel(TasksModel):
                    self.db.resources_com.insert_one({"teamName":self.teamName,"companyName":self.companyName,'currentPeriod':self.teamName,'type':type,"resource":res})
 
         return resources
-
 
 class BudgetModel(TasksModel):
 
@@ -279,7 +276,6 @@ class ActionsModel(TasksModel):
 
         return actions
 
-
 class ProjectsModel(TasksModel):
 
     def get_init(self):
@@ -299,7 +295,6 @@ class ProjectsModel(TasksModel):
                                      'projectName':project['projectName']},{"$set":project},upsert=True)
 
         return projects
-
 
 class NichesModel(TasksModel):
     def get_init(self):
@@ -380,7 +375,6 @@ class Negotiate2Model(TasksModel):
         self.db.negotiation2_com.update_one({"teamName":self.teamName,
                                              "currentPeriod":self.period},{"$set":{"status":status}})
 
-
 class VisionaryCompetitionModel(TasksModel):
     def get_init(self):
         conditions = {"teamName": self.teamName}
@@ -400,7 +394,6 @@ class VisionaryCompetitionModel(TasksModel):
                                                      "currentPeriod": self.period,}, {"$set": {"selectniches": niches}},
                                                     upsert=True)
         return data
-
 
 
 class PeriodModel():

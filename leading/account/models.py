@@ -244,3 +244,49 @@ class Index():
                 r['value'] = 1
             result = result * r['value']
         return result
+
+
+class AccountBudget():
+    def __init__(self, teamName=None, companyName=None, period=None):
+        self.db = leadingdb
+        self.teamName = teamName
+        self.companyName = companyName
+        self.period = period
+
+    def account_budget_init(self):
+        if self.db.account_budget_com.find(
+                {"teamName": self.teamName, "companyName": self.companyName}).count() == 0:  # test
+            budget = leadingbase.budget_def.find({}, {"_id": 0})
+            for b in budget:
+                b['teamName'] = self.teamName
+                b['companyName'] = self.companyName
+                b['status'] = 'Init'
+                self.db.account_budget_com.insert_one(b)
+
+    def get_all(self):
+        result = []
+        req = self.db.account_budget_com.find({"teamName": self.teamName, "companyName": self.companyName})
+        for r in req:
+            r['_id'] = str(r['_id'])
+            if r['accountDescID'] != '':
+                r['currentValue'] = Account(self.teamName, self.companyName, self.period).get_item_sum(
+                    r['accountDescID'])
+            if r['budgetDescID'] in ['BG200', 'BG300']:
+                forecastingvalue = self.db.forecasting_com.find_one(
+                    {'teamName': self.teamName, 'companyName': self.companyName,
+                     'currentPeriod': self.period}, {"forecasting": 1, "_id": 0})
+                if forecastingvalue != None:
+                    if r['budgetDescID'] == 'BG200':
+                        r['currentValue'] = forecastingvalue['forecasting']['b2b'] + forecastingvalue['forecasting'][
+                            'b2c'] + forecastingvalue['forecasting']['newoffering']
+                    if r['budgetDescID'] == 'BG300':
+                        r['currentValue'] = (forecastingvalue['forecasting']['b2b'] + forecastingvalue['forecasting'][
+                            'b2c'] + forecastingvalue['forecasting']['newoffering']) * 0.75
+                else:
+                    r['currentValue'] = 0
+            result.append(r)
+        result = sorted(result, key=lambda k: k['budgetDescID'])
+        return result
+
+    def set(self, objectID, value):
+        self.db.account_budget_com.update_one({"_id": objectID}, {'$set': value})

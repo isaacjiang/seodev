@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block javascript %}
-    <script src="{{ url_for('static', filename='script/index.js') }}"></script>
+
 {% endblock %}
 
 
@@ -26,29 +26,162 @@
 
     </style>
 
-     <div ng-controller="contentCtrl" layout="column" ng-cloak>
-         {#         <md-card#}
-         {#                 style="position: absolute;top:90px;width:30%;font-size:32px;color:white;z-index: 100;background-color: transparent">#}
-         {#             <md-card-title>#}
-         {#                 <md-card-title-text>#}
-         {#                     <span class="md-headline" style="font-size:48px;">Information</span>#}
-         {#                 </md-card-title-text>#}
-         {#                 <md-card-content>#}
-         {#    <span>The titles of Washed Out's breakthrough song and the first single from Paracosm share the two most important#}
-         {#        words in Ernest Greene's musical language: feel it. It's a simple request, as well...</span>#}
-         {#                     <span>The titles of Washed Out's breakthrough song and the first single from Paracosm share the two most important#}
-         {#        words in Ernest Greene's musical language: feel it. It's a simple request, as well...</span>#}
-         {#                 </md-card-content>#}
-         {#             </md-card-title>#}
-         {#         </md-card>#}
-
-         <div>
+    <div ng-controller="contentCtrl" layout="row" ng-cloak layout-wrap>
+        <div ng-if="!stopvideo">
              <video style="position: fixed; right: 0; bottom:100px;top:64px; min-width: 100%; min-height: 90%; width: auto; height: auto;"
                     controls loop autoplay>
                  <source src="https://webassets.mongodb.com/_com_assets/media/mdb-video-hero-hp-mongodb-16-9.mp4"
                          type="video/mp4">
-    </video>
-</div>
+             </video>
+        </div>
+        <md-card flex="20" ng-style="setTableHeight(1)" ng-if="stopvideo">
+            <md-list class="md-dense" flex>
+                <md-list-item class="md-2-line" ng-click="toggleFunction(func)"
+                              aria-label="settings" ng-repeat="func in tasks">
+                    <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
+                         class="md-avatar" alt="Photo"/>
+                    <div class="md-list-item-text">
+                        <h3>{% raw %}{{func.taskName }} {% endraw %}</h3>
+                        <p>{% raw %}{{ func.description }} {% endraw %}</p>
+                    </div>
+                    <md-divider></md-divider>
+                </md-list-item>
+            </md-list>
+        </md-card>
+        <div flex layout="col" layout-wrap ng-style="setTableHeight(1)" ng-if="stopvideo">
+            <md-card flex="33" ng-style="setTableHeight(2)" ng-if="selectedFunc.taskKey=='kpi'" class="md-padding">
+                <md-card-title>
+                    <md-card-title-text><span class="md-head">Hired Employees</span></md-card-title-text>
+                </md-card-title>
+                <md-data-table-container>
+                    <table md-table>
+                        <thead md-head md-order="myOrder">
+                        <tr md-row>
+                            <th md-column md-order-by="query.order"><span>Name</span></th>
+                            <th md-column><span>Title</span></th>
+                            <th md-column><span>Salary($)</span></th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+
+                        <tr md-row
+                            ng-repeat="emp in hiredEmployees | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                            <td md-cell>{% raw %}{{emp.employeeName}}{% endraw %}</td>
+                            <td md-cell>{% raw %}{{emp.title}}{% endraw %}</td>
+                            <td md-cell>{% raw %}{{emp.HiredBy.salaryOffer}}{% endraw %}</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </md-data-table-container>
+                <md-table-pagination md-limit="query.limit" md-page="query.page"
+                                     md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
+                                     md-boundary-links="false"></md-table-pagination>
+
+            </md-card>
+            <md-card flex='33'
+            = ng-style="setTableHeight(2)" ng-if="selectedFunc.taskKey=='analysis'" >
+            <md-data-table-container>
+                <table md-table>
+                    <thead md-head md-order="myOrder">
+                    <tr md-row>
+                        <th md-column md-order-by="query.order"><span>Item</span></th>
+                        <th md-column><span>Previous</span></th>
+                        <th md-column><span>Current</span></th>
+                    </tr>
+                    </thead>
+                    <tbody md-body>
+
+                    <tr md-row
+                        ng-repeat="pandl in great_value | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                        <td md-cell>{% raw %}{{pandl.key}}{% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.Previus}}{% endraw %}</td>
+                        <td md-cell>{% raw %}{{pandl.Current}}{% endraw %}</td>
+
+
+                    </tr>
+
+                    </tbody>
+                </table>
+            </md-data-table-container>
+            <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
+                                 md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
+                                 md-boundary-links="true"></md-table-pagination>
+
+            </md-card>
+            <md-card flex="33" ng-style="setTableHeight(2)">
+                <md-list class="md-dense" flex>
+                    <md-list-item class="md-2-line" ng-click="toggleFunction(func)"
+                                  aria-label="settings" ng-repeat="func in tasks">
+                        <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
+                             class="md-avatar" alt="Photo"/>
+                        <div class="md-list-item-text">
+                            <h3>{% raw %}{{func.taskName }} {% endraw %}</h3>
+                            <p>{% raw %}{{ func.description }} {% endraw %}</p>
+                        </div>
+                        <md-divider></md-divider>
+                    </md-list-item>
+                </md-list>
+            </md-card>
+            <md-card flex="30" ng-style="setTableHeight(2)">
+                <md-list class="md-dense" flex>
+                    <md-list-item class="md-2-line" ng-click="toggleFunction(func)"
+                                  aria-label="settings" ng-repeat="func in tasks">
+                        <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
+                             class="md-avatar" alt="Photo"/>
+                        <div class="md-list-item-text">
+                            <h3>{% raw %}{{func.taskName }} {% endraw %}</h3>
+                            <p>{% raw %}{{ func.description }} {% endraw %}</p>
+                        </div>
+                        <md-divider></md-divider>
+                    </md-list-item>
+                </md-list>
+            </md-card>
+            <md-card flex="33" ng-style="setTableHeight(2)">
+                <md-list class="md-dense" flex>
+                    <md-list-item class="md-2-line" ng-click="toggleFunction(func)"
+                                  aria-label="settings" ng-repeat="func in tasks">
+                        <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
+                             class="md-avatar" alt="Photo"/>
+                        <div class="md-list-item-text">
+                            <h3>{% raw %}{{func.taskName }} {% endraw %}</h3>
+                            <p>{% raw %}{{ func.description }} {% endraw %}</p>
+                        </div>
+                        <md-divider></md-divider>
+                    </md-list-item>
+                </md-list>
+            </md-card>
+            <md-card flex="33" ng-style="setTableHeight(2)">
+                <md-list class="md-dense" flex>
+                    <md-list-item class="md-2-line" ng-click="toggleFunction(func)"
+                                  aria-label="settings" ng-repeat="func in tasks">
+                        <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
+                             class="md-avatar" alt="Photo"/>
+                        <div class="md-list-item-text">
+                            <h3>{% raw %}{{func.taskName }} {% endraw %}</h3>
+                            <p>{% raw %}{{ func.description }} {% endraw %}</p>
+                        </div>
+                        <md-divider></md-divider>
+                    </md-list-item>
+                </md-list>
+            </md-card>
+            <md-card flex="30" ng-style="setTableHeight(2)">
+                <md-list class="md-dense" flex>
+                    <md-list-item class="md-2-line" ng-click="toggleFunction(func)"
+                                  aria-label="settings" ng-repeat="func in tasks">
+                        <img ng-src="{% raw %}{{ '/static/icon/'+ func.icon }}{% endraw %}"
+                             class="md-avatar" alt="Photo"/>
+                        <div class="md-list-item-text">
+                            <h3>{% raw %}{{func.taskName }} {% endraw %}</h3>
+                            <p>{% raw %}{{ func.description }} {% endraw %}</p>
+                        </div>
+                        <md-divider></md-divider>
+                    </md-list-item>
+                </md-list>
+            </md-card>
+        </div>
+
+
     </div>
 
 {% endblock %}

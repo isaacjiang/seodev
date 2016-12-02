@@ -8,11 +8,6 @@ class PerformanceModel():
     def __init__(self):
         self.db = leadingdb
 
-    def getCurrentPeriodbyTaskid(self, teamName, companyName, taskid):
-        result = self.db.tasks_team.find_one({"teamName": teamName, "companyName": companyName, "taskID": taskid},
-                                             {"companyName": 1, "teamName": 1, "period": 1, "_id": 0})
-        return result
-
     # Does not use
     def calculateMarketShare(self, systemCurrentPeriod):
         def get_com_acc_value(accountDescID, teamName, companyName, period):
@@ -172,76 +167,63 @@ class PerformanceModel():
                                                     {"$inc": {"value": m['accValue'] * m['competenceIndex'] * m[
                                                         'weight']}}, upsert=True)
 
+        # TODO,need recalculate the niches number of a company selected.
         companies = leadingbase.niches_def.find(
-            {"period": period, "teamName": teamName, "company": companyName},
+            {"period": period, "company": companyName},
             {"_id": 0}).count()
-        print companies
         companies = 1 if companies == 0 else companies
 
         totalvalue = \
         self.db.marketingshare_total.find_one({"flag": "#totalSum", "currentPeriod":period},
                                               {"_id": 0})['value'] / companies
-        #
-        # niches = ['B2B', 'B2C', 'Education', 'Government', 'Entertainment']
-        #
-        # for nicheName in niches:
-        #     # print 'nicheName',nicheName
-        #     selectedniches = self.db.niches_calculation.find(
-        #         {"period": period, "niche": nicheName}, {"_id": 0})
-        #     for n in selectedniches:
-        #         if n != None:
-        #             companyValue = self.db.marketingshare_total.find_one(
-        #                 {'currentPeriod': n['period'], 'teamName': n['teamName'], 'companyName': n['company'],
-        #                  "flag": "#comSum"}, {"_id": 0})
-        #             # print 'companyValue', companyValue, companies
-        #             if companyValue != None:
-        #                 self.db.marketingshare_niche.update_one(
-        #                     {"niche": n['niche'], 'currentPeriod': n['period'], 'teamName': n['teamName'],
-        #                      'companyName': n['company'], "flag": "#nicheSum"},
-        #                     {"$set": {'shareRate': companyValue['value'] / companies / totalvalue,
-        #                               'totalCustomers': n['totalCustomers'] * companyValue[
-        #                                   'value'] / companies / totalvalue,
-        #                               "averageRecenuePPPC": n['averageRecenuePPPC'],
-        #                               "sharedMarketValue": n['averageRecenuePPPC'] * n['totalCustomers'] *
-        #                                                    companyValue[
-        #                                                        'value'] / companies / totalvalue}}, upsert=True)
-        #
-        #                 # print 'totalCustomers', n['totalCustomers'], companyValue['value'], companies, totalvalue
-        #                 if n['niche'] == "B2B":
-        #                     accountDescID = 'AA011'
-        #                     accountDescID2 = 'AA025'
-        #                 elif n['niche'] == "B2C":
-        #                     accountDescID = 'AA012'
-        #                     accountDescID2 = 'AA026'
-        #                 elif n['niche'] == "Education":
-        #                     accountDescID = 'AA031'
-        #                     accountDescID2 = 'AA131'
-        #                 elif n['niche'] == "Government":
-        #                     accountDescID = 'AA032'
-        #                     accountDescID2 = 'AA132'
-        #                 else:
-        #                     accountDescID = 'AA033'
-        #                     accountDescID2 = 'AA133'
-        #
-        #                     # Account(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
-        #                     #         period=self.systemCurrentPeriod).bookkeeping(objectID=employee["_id"],
-        #                     #                                                      accountDescID=self.categoryToItem(
-        #                     #                                                          employee['category']),
-        #                     #                                                      value=employee['HiredBy']['salaryOffer'],
-        #                     #                                                      comments=employee['employeeID'])
-        #
-        #                     Account(teamName=n['teamName'], companyName=n['company'], period=n['period']) \
-        #                         .bookkeeping(accountDescID=accountDescID,
-        #                                      value=n['averageRecenuePPPC'] * n['totalCustomers'] * companyValue[
-        #                                          'value'] / companies / totalvalue, comments='Market Share')
-        #
-        #                     Account(teamName=n['teamName'], companyName=n['company'], period=n['period']) \
-        #                         .bookkeeping(accountDescID=accountDescID2, value=(n['averageRecenuePPPC'] * n[
-        #                         'totalCustomers'] * companyValue['value'] / companies / totalvalue) / 4,
-        #                                      comments='Market Share')
+        totalvalue = 1 if totalvalue == 0 else totalvalue
+        niche_cal = self.db.niches_cal.find({"period": period})
+        for niche in niche_cal:
+            for n in niche['selectedByCompany']:
+                if n != None:
+                    # print 'currentPeriod',niche['period'], 'teamName',n, 'companyName',niche['company']
+                    companyValue = self.db.marketingshare_total.find_one(
+                        {'currentPeriod': niche['period'], 'teamName': n, 'companyName': niche['company'],
+                         "flag": "#comSum"}, {"_id": 0})
+                    if companyValue != None:
+                        self.db.marketingshare_niche.update_one(
+                            {"niche": niche['niche'], 'currentPeriod': niche['period'], 'teamName': n,
+                             'companyName': niche['company'], "flag": "#nicheSum"},
+                            {"$set": {'shareRate': companyValue['value'] / companies / totalvalue,
+                                      'totalCustomers': niche['totalCustomers'] * companyValue[
+                                          'value'] / companies / totalvalue,
+                                      "averageRecenuePPPC": niche['averageRecenuePPPC'],
+                                      "sharedMarketValue": niche['averageRecenuePPPC'] * niche['totalCustomers'] *
+                                                           companyValue[
+                                                               'value'] / companies / totalvalue}}, upsert=True)
 
+                        # print 'totalCustomers', n['totalCustomers'], companyValue['value'], companies, totalvalue
+                        if niche['niche'] == "B2B":
+                            accountDescID = 'AA011'
+                            accountDescID2 = 'AA025'
+                        elif niche['niche'] == "B2C":
+                            accountDescID = 'AA012'
+                            accountDescID2 = 'AA026'
+                        elif niche['niche'] == "Education":
+                            accountDescID = 'AA031'
+                            accountDescID2 = 'AA131'
+                        elif niche['niche'] == "Government":
+                            accountDescID = 'AA032'
+                            accountDescID2 = 'AA132'
+                        else:
+                            accountDescID = 'AA033'
+                            accountDescID2 = 'AA133'
 
+                        Account(teamName=n, companyName=niche['company'], period=niche['period']) \
+                            .bookkeeping(accountDescID=accountDescID, objectID=niche["_id"],
+                                         value=niche['averageRecenuePPPC'] * niche['totalCustomers'] * companyValue[
+                                             'value'] / companies / totalvalue, comments='Market Share')
 
+                        Account(teamName=n, companyName=niche['company'], period=niche['period']) \
+                            .bookkeeping(accountDescID=accountDescID2, objectID=niche["_id"],
+                                         value=(niche['averageRecenuePPPC'] * niche[
+                                             'totalCustomers'] * companyValue['value'] / companies / totalvalue) / 4,
+                                         comments='Market Share')
 
 class InstructionModel():
     def __init__(self):
@@ -253,4 +235,8 @@ class InstructionModel():
 
     def save(self, file):
         self.db.instruction_def.update_one({"_id": ObjectId(file['objectID'])}, {"$set": file}, upsert=True)
+        return self.get_list()
+
+    def delete(self, file):
+        self.db.instruction_def.update_one({"_id": ObjectId(file['objectID'])}, {"$unset": file}, upsert=True)
         return self.get_list()
