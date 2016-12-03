@@ -11,7 +11,12 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
         }, 2000)
 
         $scope.setTableHeight = function (n) {
-            var style = {height: (windowsize.height - 160) / n + 'px'}
+            if (n == 1) {
+                var style = {height: (windowsize.height - 160) / n + 'px'}
+            }
+            else {
+                var style = {height: (windowsize.height - 174) / n + 'px'}
+            }
             return style
         }
         format = function (num) {

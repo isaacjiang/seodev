@@ -1,10 +1,7 @@
 __author__ = 'isaac'
 
-from leading import app
+from leading import app, socketio
 
-#app.register_blueprint(bppwiki)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=5001,debug=True)
-
-
+    socketio.run(app, host='0.0.0.0', port=5001, use_reloader=True)

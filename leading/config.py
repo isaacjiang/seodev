@@ -4,8 +4,6 @@ from pymongo import MongoClient
 import os
 
 SECRET_KEY = os.urandom(24)
-# SESSION_TYPE = 'mongodb'
-# SESSION_MONGODB_DB = 'dbsessions'
 SESSION_COOKIE_NAME = 'session'
 SESSION_PERMANENT = True
 PERMANENT_SESSION_LIFETIME = 32000000

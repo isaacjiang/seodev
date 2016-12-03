@@ -71,6 +71,7 @@ app.config(function ($mdThemingProvider) {
             });
         }
 
+
         //user info
         current_user.getData().then(function () {
             $rootScope.current_user = {}
@@ -93,6 +94,23 @@ app.config(function ($mdThemingProvider) {
                     ).success(function(d){
                         // console.log(d)
                         $rootScope.user_info = d
+                        if (typeof $rootScope.ipc == "undefined") {
+                            $rootScope.ipc = io('http://' + document.domain + ':' + location.port + "/ipc")
+                        }
+                        $rootScope.ipc.on('connect', function (d) {
+                            console.log('connected.')
+                            $rootScope.ipc.emit("join", $rootScope.user_info)
+                        })
+                        $rootScope.ipc.on('message', function (d) {
+                            $rootScope.notificationToast(d)
+                        })
+
+
+
+
+
+
+
                         $rootScope.notificationToast("Current Accessed User " + d.userInfo.username + ".")
 
                     })
@@ -122,6 +140,14 @@ app.config(function ($mdThemingProvider) {
         })
 
         //tasks
+            $rootScope.sendMessage = function (message) {
+                console.log(message)
+                $rootScope.ipc.emit('notification', {
+                    "username": $rootScope.user_info.userInfo.username,
+                    "room": $rootScope.user_info.teamInfo.teamName, "message": message
+                })
+            }
+
 
 
         $scope.home = function() {
@@ -135,7 +161,6 @@ app.config(function ($mdThemingProvider) {
                 $rootScope.notificationToast("Landing to Dashboard page.")
                 }
         };
-
             $scope.account = function () {
             if ($rootScope.current_user.username == null){$window.location.href = '/'}
             else {
@@ -413,6 +438,7 @@ app.config(function ($mdThemingProvider) {
         }
         // }
             $scope.info = function (menuid) {
+
                 $http.get('/api/general/instruction')
 
                     .success(function (list) {
@@ -421,7 +447,7 @@ app.config(function ($mdThemingProvider) {
                             list.forEach(function (d) {
                                 if (d.content_type == 'application/pdf') {
                                     $scope.instructionMeterial[0].push(d)
-                        }
+                                }
                                 else {
                                     $scope.instructionMeterial[1].push(d)
                                 }
@@ -445,28 +471,28 @@ app.config(function ($mdThemingProvider) {
                     data: {files: file}
                 }).then(function (response) {
                     console.log(response)
-                    $http({
-                            method: 'POST',
-                            url: "/api/general/instruction",
-                            data: {
-                                file: response.data[0]
+                $http({
+                        method: 'POST',
+                    url: "/api/general/instruction",
+                        data: {
+                            file: response.data[0]
+                        }
+                    }
+                ).success(function (list) {
+                    console.log(list)
+                    $scope.instructionMeterial = [[], []]
+                    if (list) {
+                        list.forEach(function (d) {
+                            if (d.content_type == 'application/pdf') {
+                                $scope.instructionMeterial[0].push(d)
                             }
-                        }
-                    ).success(function (list) {
-                        console.log(list)
-                        $scope.instructionMeterial = [[], []]
-                        if (list) {
-                            list.forEach(function (d) {
-                                if (d.content_type == 'application/pdf') {
-                                    $scope.instructionMeterial[0].push(d)
-                                }
-                                else {
-                                    $scope.instructionMeterial[1].push(d)
-                                }
-                            })
-                        }
-                        $rootScope.notificationToast('Instruction material uploaded.')
-                    })
+                            else {
+                                $scope.instructionMeterial[1].push(d)
+                            }
+                        })
+                    }
+                    $rootScope.notificationToast('Instruction material uploaded.')
+                })
 
                 });
             }
@@ -2403,10 +2429,12 @@ app.config(function ($mdThemingProvider) {
                         }
                     )
                         .success(function(d){
-                        $window.location.reload();})
+                            //$window.location.reload();
+                        })
                         $mdDialog.cancel();
                         $mdSidenav('taskslist').close()
-                    $rootScope.notificationToast("Submitted application.")
+                    //$rootScope.notificationToast("Submitted application.")
+                    $rootScope.sendMessage("Forecast Completed.")
                 };
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
@@ -2442,12 +2470,11 @@ app.config(function ($mdThemingProvider) {
         }
 
         $rootScope.notificationToast = function (message) {
-
             var toast = $mdToast.simple()
                 .content(message)
                 .action('OK')
                 .highlightAction(false)
-                .hideDelay(5000)
+                .hideDelay(20000)
                 .position('bottom right');
             $mdToast.show(toast).then(function (response) {
                 if (response == 'ok') {

@@ -8,12 +8,14 @@ from flask import Flask
 from users.models import User
 from users.controller import login_manager
 from sessions import MongoSessionInterface
-
+from socket import socketio
 
 app = Flask(__name__)
 
 app.config.from_object(config)
 #
+socketio.init_app(app)
+
 
 app.register_blueprint(blueprint=sessions.blueprint)
 app.register_blueprint(blueprint=syssetting.blueprint)
