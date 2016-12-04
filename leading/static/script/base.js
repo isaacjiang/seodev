@@ -734,11 +734,13 @@ app.config(function ($mdThemingProvider) {
 
                             .success(function(d){
                             //console.log(d)
-                            $window.location.reload();
+                                //$window.location.reload();
+                                getInitData()
                         })
                         $mdDialog.cancel();
                         $mdSidenav('taskslist').close()
                         $rootScope.notificationToast("You made offers to  " + offeredEmployees.length + "  candidates.")
+                        $rootScope.sendMessage($rootScope.current_user.username + " made offers to  " + offeredEmployees.length + "  candidates.")
 
                     },function(){
                         hiringfn($event)
@@ -1115,9 +1117,12 @@ app.config(function ($mdThemingProvider) {
                         }
                     )
                    .success(function(d){
-                        $window.location.reload();})
+                       //$window.location.reload();
+                   })
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
+                    $rootScope.sendMessage($rootScope.current_user.username + " submitted application for workforce.")
+
                     $rootScope.notificationToast("Submitted application for workforce.")
 
                 };
@@ -1582,9 +1587,10 @@ app.config(function ($mdThemingProvider) {
 
                             $mdDialog.cancel();
                             $mdSidenav('taskslist').close()
-                            $window.location.reload();
+                                //$window.location.reload();
                                 $rootScope.notificationToast("Submitted Actions application.")
-                        })
+
+                            })
                         //$mdDialog.hide();
                     },function(){
                         actionsfn(task)
