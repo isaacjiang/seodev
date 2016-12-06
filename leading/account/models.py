@@ -245,6 +245,17 @@ class Index():
             result = result * r['value']
         return result
 
+    def get_index_by_accdescid(self, indexName, accDescID):
+        condition = {"teamName": self.teamName, "companyName": self.companyName, "period": self.period,
+                     "indexName": indexName, "accDescID": accDescID}
+        res = self.data.find(condition, {"_id": 0})
+        result = 1
+        for r in res:
+            if r['value'] == 0:
+                r['value'] = 1
+            result = result * r['value']
+        return result
+
 
 class AccountBudget():
     def __init__(self, teamName=None, companyName=None, period=None):

@@ -405,15 +405,15 @@ class PeriodicTasksService():
 
     def categoryToItem(self, category):
         category = category.lower()
-        if category in ['marketing & advertizing', 'marketing&advertizing', 'marketing']:
+        if category in ['marketing & advertizing', 'marketing&advertizing', 'marketing', 'ma']:
             accountDescID = 'AB012'
-        elif category in ['sales & distribution', 'sales&distribution', 'sales']:
+        elif category in ['sales & distribution', 'sales&distribution', 'sales', 'sa']:
             accountDescID = 'AB011'
-        elif category in ['social media', 'support']:
+        elif category in ['social media', 'support', 'su']:
             accountDescID = 'AB013'
-        elif category in ['logistics & it', 'logisticsit', 'logistics']:
+        elif category in ['logistics & it', 'logisticsit', 'logistics', 'li']:
             accountDescID = 'AB014'
-        elif category in ['product development', 'productdevelopment']:
+        elif category in ['product development', 'productdevelopment', 'pd']:
             accountDescID = 'AB015'
         else:
             accountDescID = 'AB010'
@@ -565,57 +565,38 @@ class PeriodicTasksService():
                         upsert=True)
 
     def resourcesComplete(self):
-        # allteam = sdb.sys_tasks_team.find({"taskID": taskID, "status": "init"}).count()
-        # # print allteam
-        # if allteam < 0:
-        #     result = {"result": "Not all companies are completed."}
-        # else:
-        #     period = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-        teams = self.db.resources_com.find({"currentPeriod": period['period']}, {"_id": 0})
+        print 'resource'
+        teams = self.db.resources_offers.find({"currentPeriod": self.systemCurrentPeriod}, {"_id": 0})
         successCom = {}
         for team in teams:
-            if team['type'] == "pd":
-                type = "AB015"
-            elif team['type'] == "ma":
-                type = "AB011"
-            elif team['type'] == "sa":
-                type = "AB012"
-            elif team['type'] == "su":
-                type = "AB013"
-            elif team['type'] == "li":
-                type = "AB014"
-            else:
-                type = "AB010"
-            team['maxcomptenceindex'] = getMaxComptenceIndex(team["teamName"], team["companyName"],
-                                                             period['period'],
-                                                             type)
-            team['accountDesc'] = type
-            resourcename = team['resource']['resourceName']
-            if (resourcename in successCom.keys()):
-                if (team['maxcomptenceindex'] > successCom[resourcename]['maxcomptenceindex']):
+            team['accountDesc'] = self.categoryToItem(team['type'])
+
+            team['maxcomptenceindex'] = Index(team["teamName"], team["companyName"], self.systemCurrentPeriod). \
+                get_index_by_accdescid("competenceIndex", team['accountDesc'])
+
+            resourceID = team['resource']['_id']
+            if (resourceID in successCom.keys()):
+                if (team['maxcomptenceindex'] > successCom[resourceID]['maxcomptenceindex']):
                     if team not in successCom.values():
-                        successCom[resourcename] = team
+                        successCom[resourceID] = team
             else:
-                successCom[resourcename] = team
+                successCom[resourceID] = team
         for res in successCom.keys():
-            sdb.resources_sucess.insert_one(successCom[res])
+            self.db.resources_com.update_one({"_id": res}, {"$set": successCom[res]}, upsert=True)
+
+
             account = Account(successCom[res]['teamName'], successCom[res]['companyName'],
                               successCom[res]['currentPeriod'])
-            account.bookkeeping(successCom[res]['accountDesc'], successCom[res]['resource']["cost"] * 1000,
-                                'Detail', successCom[res]['resource']['resourceName'])
-            # accountBookkeeping(successCom[res]['teamName'], successCom[res]['companyName'],
-            # successCom[res]['currentPeriod'], successCom[res]['accountDesc'], "Credit",
-            # successCom[res]['resource']["cost"] * 1000, successCom[res]['resource']['resourceName'])
+            account.bookkeeping(objectID=res, accountDescID=successCom[res]['accountDesc'],
+                                value=successCom[res]['resource']["cost"] * 1000,
+                                comments=successCom[res]['resource']['resourceName'])
 
-            # competenceIndex(successCom[res]['teamName'], successCom[res]['companyName'],
-            # successCom[res]['currentPeriod'], "Resource", successCom[res]['accountDesc'],
-            # successCom[res]['resource']["legitimacy"], successCom[res]['resource']['resourceName'])
             Index(successCom[res]['teamName'], successCom[res]['companyName'],
-                  successCom[res]['currentPeriod']).bookkeeping(
-                "legitimacyIndex", successCom[res]['accountDesc'],
-                successCom[res]['resource']["legitimacy"], 'Detail',
-                successCom[res]['resource']['resourceName'])
-            # print successCom[res]
+                  successCom[res]['currentPeriod']) \
+                .bookkeeping(objectID=res, indexName='legitimacyIndex',
+                             accDescID=successCom[res]['accountDesc'],
+                             value=successCom[res]['resource']["legitimacy"],
+                             comments=successCom[res]['resource']['resourceName'])
         return successCom
 
     def negotiation1AccountBookkeeping(self):
@@ -670,11 +651,7 @@ class PeriodicTasksService():
         Account(teamName, 'NewCo', 4).bookkeeping('BB142', expenditure0, 'Detail', 'Transfer from LegacyCo.')
         Account(teamName, 'LegacyCo', 5).bookkeeping('BA032', expenditure1, 'Detail', 'Transfer to NewCo.')
         Account(teamName, 'NewCo', 5).bookkeeping('BB142', expenditure1, 'Detail', 'Transfer from LegacyCo.')
-        # accountBookkeeping(teamName, 'LegacyCo', 4, 'BA032', 'Credit', expenditure0, 'Transfer to NewCo.')
-        # accountBookkeeping(teamName, 'NewCo', 4, 'BB142', 'Credit', expenditure0, 'Transfer from LegacyCo.')
-        # accountBookkeeping(teamName, 'LegacyCo', 5, 'BA032', 'Credit', expenditure1, 'Transfer to NewCo.')
-        # accountBookkeeping(teamName, 'NewCo', 5, 'BB142', 'Credit', expenditure1, 'Transfer from LegacyCo.')
 
 
-PeriodicTasksService().marketing_share()
+PeriodicTasksService().resourcesComplete()
 #Account(teamName="Team B", companyName='LegacyCo', period=1).sum()

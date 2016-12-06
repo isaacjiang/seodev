@@ -223,8 +223,9 @@ class ResourceModel(TasksModel):
         result = {}
         resources=[]
         cursor = leadingbase.resources_def.find({'companyName': self.companyName, 'startPeriod': self.period,
-                                             "status":"normal"}, {"_id":0})
+                                                 "status": "normal"})
         for item in cursor:
+            item["_id"] = str(item['_id'])
             resources.append(item)
         result["data"]=resources
         result["status"] = "success"
@@ -234,7 +235,9 @@ class ResourceModel(TasksModel):
         for type in resources:
             if len(resources[type]) > 0:
                 for res in resources[type]:
-                   self.db.resources_com.insert_one({"teamName":self.teamName,"companyName":self.companyName,'currentPeriod':self.teamName,'type':type,"resource":res})
+                    self.db.resources_offers.insert_one(
+                        {"teamName": self.teamName, "companyName": self.companyName, 'currentPeriod': self.period,
+                         'type': type, "resource": res})
 
         return resources
 
