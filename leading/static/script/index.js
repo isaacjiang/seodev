@@ -63,6 +63,28 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
                 .success(function (res) {
                     console.log(res)
                     $scope.hiredEmployees = res.hiredEmployees
+                    $scope.workforce = res.workforce
+                    $scope.actions = res.actions
+                    $scope.resources = res.resources
+
+                    if (res.forecast) {
+                        res.forecast.forEach(function (fs) {
+                            fs.forecast.b2b = format(fs.forecast.b2b)
+                            fs.forecast.b2c = format(fs.forecast.b2c)
+                            fs.forecast.newoffering = format(fs.forecast.newoffering)
+                        })
+                    }
+                    $scope.forecast = res.forecast
+                    $scope.budget = [{
+                        name: "B2B",
+                        aa: format(res.budget[0].acc_budget.B2B_AA),
+                        dm: format(res.budget[0].acc_budget.B2B_DM),
+                        pd: format(res.budget[0].acc_budget.B2B_PD)
+                    }, {
+                        name: "B2C", aa: format(res.budget[0].acc_budget.B2C_AA),
+                        dm: format(res.budget[0].acc_budget.B2C_DM), pd: format(res.budget[0].acc_budget.B2C_PD)
+                    }]
+
 
                 })
 

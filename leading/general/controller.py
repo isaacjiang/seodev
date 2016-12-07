@@ -613,7 +613,30 @@ class PerformanceService():
                                            , "HiredBy.companyName": userInfo['companyInfo']['companyName']
                                            , "HiredBy.period": userInfo['companyInfo']['currentPeriod']},
                                        {"_id": 0}))
-
+        result["workforce"] = list(
+            self.db.workforce_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                           , "companyName": userInfo['companyInfo']['companyName']
+                                           , "period": userInfo['companyInfo']['currentPeriod']},
+                                       {"_id": 0}))
+        result["forecast"] = list(
+            self.db.forecast_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                          , "companyName": userInfo['companyInfo']['companyName']},
+                                      {"_id": 0}))
+        result["actions"] = list(
+            self.db.actions_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                         , "companyName": userInfo['companyInfo']['companyName']
+                                         , "currentPeriod": userInfo['companyInfo']['currentPeriod']},
+                                     {"_id": 0}))
+        result["resources"] = list(
+            self.db.resources_com.find({"HiredBy": userInfo['teamInfo']['teamName']
+                                           , "companyName": userInfo['companyInfo']['companyName']
+                                           , "currentPeriod": userInfo['companyInfo']['currentPeriod']},
+                                       {"_id": 0}))
+        result["budget"] = list(
+            self.db.budget_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                        , "companyName": userInfo['companyInfo']['companyName']
+                                        , "period": userInfo['companyInfo']['currentPeriod']},
+                                    {"_id": 0}))
         return json.dumps(result)
 
 class InstructionService():

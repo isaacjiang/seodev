@@ -1018,47 +1018,36 @@ app.config(function ($mdThemingProvider) {
                     .success(function(d){
                     if (d){
                         var forecast =d.forecast.b2b+d.forecast.b2c+d.forecast.newoffering
-                        console.log(d)
-                        if (d.valueatstart) {
-                            d.valueatstart.forEach(function (sv) {
-                                d.workforce_def.forEach(function (dv) {
-                                    if (sv.functions == dv.functions) {
-                                        dv.valueatstart_core = parseInt(sv.adjustedworkforce_core)
-                                        dv.valueatstart_contract = parseInt(sv.valueatstart_contract)
-                                        dv.valueatstart_total = parseInt(sv.valueatstart_total)
-                                    }
-                                    else {
-                                        dv.valueatstart_core = 0
-                                        dv.valueatstart_contract = 0
-                                        dv.valueatstart_total = 0
-                                    }
+                        //console.log(d)
+                        d.workforce_def.forEach(function (dv) {
+                            if (dv.valueatstart) {
+                                var v = d.valueatstart.filter(function (sv) {
+                                    return sv.functions == dv.functions
                                 })
-
-                            })
-                        }
-
-                        // for(i=0;i<d.valueatstart.length;i++){
-                        //
-                        //
-                        //     d.workforce_def[i].valueatstart_core = parseInt(d.valueatstart[i].adjustedworkforce_core)
-                        //     d.workforce_def[i].valueatstart_contract =  parseInt(d.valueatstart[i].adjustedworkforce_contract)
-                        //     d.workforce_def[i].valueatstart_total =  parseInt(d.valueatstart[i].adjustedworkforce_total)
-                        //
-                        // } }
-                        else {
-                            for (i = 0; i < d.workforce_def.length; i++) {
-                                d.workforce_def[i].valueatstart_core = 0
-                                d.workforce_def[i].valueatstart_contract = 0
-                                d.workforce_def[i].valueatstart_total = 0
+                                if (v) {
+                                    dv.valueatstart_core = parseInt(v.valueatstart_core)
+                                    dv.valueatstart_contract = parseInt(v.valueatstart_contract)
+                                    dv.valueatstart_total = parseInt(v.valueatstart_total)
+                                }
+                                else {
+                                    dv.valueatstart_core = 0
+                                    dv.valueatstart_contract = 0
+                                    dv.valueatstart_total = 0
+                                }
                             }
-                        }
+                            else {
+                                dv.valueatstart_core = 0
+                                dv.valueatstart_contract = 0
+                                dv.valueatstart_total = 0
+                            }
 
+                        })
 
 
                         for (i=0;i<d.workforce_def.length;i++){
                           //  d.workforce_def[i].valueatstart_core = 0
                            // d.workforce_def[i].valueatstart_contract = 0
-                            d.workforce_def[i].valueatstart_total =  d.workforce_def[i].valueatstart_core+ d.workforce_def[i].valueatstart_contract
+                            //d.workforce_def[i].valueatstart_total =  d.workforce_def[i].valueatstart_core+ d.workforce_def[i].valueatstart_contract
 
                             d.workforce_def[i].recommended_core =parseInt(forecast/(d.workforce_def[i].recommend_base)*(d.workforce_def[i].coreEmployeeRate))
                             d.workforce_def[i].recommended_contract =parseInt( forecast/(d.workforce_def[i].recommend_base)*(1-d.workforce_def[i].coreEmployeeRate))
