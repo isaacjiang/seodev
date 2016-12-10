@@ -1,6 +1,6 @@
 
 from flask_login import LoginManager
-from flask_login import login_user, logout_user, current_user, current_app
+from flask_login import login_user, logout_user, current_user
 
 import models
 from flask import json, request, session

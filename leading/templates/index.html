@@ -7,24 +7,6 @@
 
 {% block content %}
     <script src="{{ url_for('static', filename='script/index.js') }}"></script>
-    <style>
-        body {
-            margin: 0;
-            background: rgba(255, 255, 255, 0);
-            min-width: 960px;
-        }
-
-        rect {
-            fill: none;
-            pointer-events: all;
-        }
-
-        circle {
-            fill: none;
-            stroke-width: 2.5px;
-        }
-
-    </style>
 
     <div ng-controller="contentCtrl" layout="row" ng-cloak layout-wrap>
         <div ng-if="!stopvideo">
@@ -69,8 +51,7 @@
                         </thead>
                         <tbody md-body>
 
-                        <tr md-row
-                            ng-repeat="emp in hiredEmployees | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                        <tr md-row ng-repeat="emp in hiredEmployees | orderBy: query.order | limitTo: query.limit">
                             <td md-cell>{% raw %}{{emp.employeeName}}{% endraw %}</td>
                             <td md-cell>{% raw %}{{emp.title}}{% endraw %}</td>
                             <td md-cell>{% raw %}{{emp.HiredBy.salaryOffer}}{% endraw %}</td>
@@ -80,7 +61,7 @@
                     </table>
                 </md-data-table-container>
                 <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                     md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
+                                     md-total="{% raw %}{{hiredEmployees.length}}{% endraw %}" md-page-select="false"
                                      md-boundary-links="false"></md-table-pagination>
 
                 </md-card>
@@ -104,7 +85,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="wf in workforce | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                                ng-repeat="wf in workforce | orderBy: query.order | limitTo: query.limit">
                                 <td md-cell>{% raw %}{{wf.functions}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{wf.adjustedworkforce_total}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{wf.adjustedworkforce_core}}{% endraw %}</td>
@@ -115,7 +96,7 @@
                         </table>
                     </md-data-table-container>
                     <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
+                                         md-total="{% raw %}{{workforce.length}}{% endraw %}" md-page-select="false"
                                          md-boundary-links="false"></md-table-pagination>
             </md-card>
             </div>
@@ -137,7 +118,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="fs in forecast | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                                ng-repeat="fs in forecast | orderBy: query.order | limitTo:  query.page.limit">
                                 <td md-cell>{% raw %}{{fs.period}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{fs.forecast.b2b}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{fs.forecast.b2c}}{% endraw %}</td>
@@ -148,7 +129,7 @@
                         </table>
                     </md-data-table-container>
                     <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
+                                         md-total="{% raw %}{{forecast.length}}{% endraw %}" md-page-select="false"
                                          md-boundary-links="false"></md-table-pagination>
             </md-card>
             </div>
@@ -169,7 +150,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="action in actions | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                                ng-repeat="action in actions | orderBy: actionID | limitTo: query.limit">
                                 <td md-cell>{% raw %}{{action.action.actionID}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{action.action.adaptabilityIndex}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{action.action.competenceIndex}}{% endraw %}</td>
@@ -179,8 +160,8 @@
                         </table>
                     </md-data-table-container>
                     <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
-                                         md-boundary-links="false"></md-table-pagination>
+                                         md-total="{% raw %}{{actions.length}}{% endraw %}" md-page-select="false"
+                                         md-boundary-links="true"></md-table-pagination>
             </md-card>
             </div>
             <div flex="33">
@@ -201,7 +182,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="bg in budget | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                                ng-repeat="bg in budget | orderBy: query.order | limitTo: query.limit">
                                 <td md-cell>{% raw %}{{bg.name}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{bg.aa}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{bg.dm}}{% endraw %}</td>
@@ -212,7 +193,7 @@
                         </table>
                     </md-data-table-container>
                     <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
+                                         md-total="{% raw %}{{ budget.length}}{% endraw %}" md-page-select="false"
                                          md-boundary-links="false"></md-table-pagination>
             </md-card>
             </div>
@@ -234,7 +215,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="rs in resources | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
+                                ng-repeat="rs in resources | orderBy: query.order | limitTo: query.page">
                                 <td md-cell>{% raw %}{{rs.resource.resourceType}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{rs.resource.resourceName}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{rs.resource.legitimacy}}{% endraw %}</td>
@@ -245,7 +226,7 @@
                         </table>
                     </md-data-table-container>
                     <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
+                                         md-total="{% raw %}{{resources.length}}{% endraw %}" md-page-select="false"
                                          md-boundary-links="false"></md-table-pagination>
             </md-card>
             </div>

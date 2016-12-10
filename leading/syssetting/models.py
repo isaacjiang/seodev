@@ -115,7 +115,7 @@ class SystemSetting():
 
     def get_all(self):
         results = []
-        result = self.db.settings.find().sort('group', ASCENDING)
+        result = leadingbase.systeminfo.find().sort('group', ASCENDING)
 
         for res in result:
             res['_id'] = str(res['_id'])
@@ -123,13 +123,13 @@ class SystemSetting():
         return results
 
     def update_id(self, **kwargs):
-        exist_data = self.db.settings.find_one({'group': kwargs['group']})
+        exist_data = leadingbase.systeminfo.find_one({'group': kwargs['group']})
         if exist_data != None:
             self._id = exist_data['_id']
 
     def set(self, **kwargs):
         self.update_id(group=kwargs['group'])
-        self.db.settings.update_one({"_id": self._id}, {"$set": kwargs}, upsert=True)
+        leadingbase.systeminfo.update_one({"_id": self._id}, {"$set": kwargs}, upsert=True)
 
     def get_system_current_period(self):
         systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
@@ -149,7 +149,7 @@ class SystemSetting():
 
 class DataInitialization():
     def __init__(self):
-        self.db = leadingdb
+        self.db = leadingbase
 
     def set_data_config(self,dataConf):
         self.db.data_conf_def.update_one({'item':dataConf['item']},{"$set":dataConf},upsert=True)

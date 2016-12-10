@@ -227,7 +227,7 @@ class PerformanceModel():
 
 class InstructionModel():
     def __init__(self):
-        self.db = leadingdb
+        self.db = leadingbase
 
     def get_list(self):
         result = self.db.instruction_def.find({}, {"_id": 0})

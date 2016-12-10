@@ -101,11 +101,11 @@ md-edit-dialog > .md-actions .md-button + .md-button {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  height: 56px;
+    height: 32px;
 }
 .md-table-pagination > .buttons:not(:first-child),
 .md-table-pagination > .limit-select:not(:first-child) {
-  margin-left: 32px;
+    margin-left: 36px;
 }
 .md-table-pagination > .buttons {
   margin-right: -16px;
@@ -226,11 +226,11 @@ table.md-table {
   overflow: hidden;
 }
 table.md-table thead.md-head > tr.md-row {
-  height: 56px;
+    height: 48px;
 }
 table.md-table tbody.md-body > tr.md-row,
 table.md-table tfoot.md-foot > tr.md-row {
-  height: 48px;
+    height: 32px;
 }
 table.md-table thead.md-head + .md-table-progress md-progress-linear {
   top: -3px;
@@ -255,7 +255,7 @@ table.md-table .md-table-progress th md-progress-linear > .md-container > .md-ba
 }
 table.md-table th.md-column {
   color: rgba(0, 0, 0, 0.54);
-  font-size: 12px;
+    font-size: 10px;
   font-weight: bold;
   white-space: nowrap;
 }

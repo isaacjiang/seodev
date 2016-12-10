@@ -565,7 +565,7 @@ class PeriodicTasksService():
                         upsert=True)
 
     def resourcesComplete(self):
-        print 'resource'
+
         teams = self.db.resources_offers.find({"currentPeriod": self.systemCurrentPeriod}, {"_id": 0})
         successCom = {}
         for team in teams:

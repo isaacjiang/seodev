@@ -95,7 +95,7 @@ app.config(function ($mdThemingProvider) {
                         // console.log(d)
                         $rootScope.user_info = d
                         if (typeof $rootScope.ipc == "undefined") {
-                            $rootScope.ipc = io('http://' + document.domain + ':' + location.port + "/ipc")
+                            $rootScope.ipc = io("/ipc")
                         }
                         $rootScope.ipc.on('connect', function (d) {
                             console.log('connected.')
@@ -471,28 +471,31 @@ app.config(function ($mdThemingProvider) {
                     data: {files: file}
                 }).then(function (response) {
                     console.log(response)
-                $http({
-                        method: 'POST',
-                    url: "/api/general/instruction",
-                        data: {
-                            file: response.data[0]
-                        }
-                    }
-                ).success(function (list) {
-                    console.log(list)
-                    $scope.instructionMeterial = [[], []]
-                    if (list) {
-                        list.forEach(function (d) {
-                            if (d.content_type == 'application/pdf') {
-                                $scope.instructionMeterial[0].push(d)
+                    if (response.data) {
+                        $http({
+                            method: 'POST',
+                            url: "/api/general/instruction",
+                            data: {
+                                file: response.data[0]
                             }
-                            else {
-                                $scope.instructionMeterial[1].push(d)
                             }
+                        ).success(function (list) {
+                            console.log(list)
+                            $scope.instructionMeterial = [[], []]
+                            if (list) {
+                                list.forEach(function (d) {
+                                    if (d.content_type == 'application/pdf') {
+                                        $scope.instructionMeterial[0].push(d)
+                                    }
+                                    else {
+                                        $scope.instructionMeterial[1].push(d)
+                                    }
+                                })
+                            }
+                            $rootScope.notificationToast('Instruction material uploaded.')
                         })
                     }
-                    $rootScope.notificationToast('Instruction material uploaded.')
-                })
+
 
                 });
             }

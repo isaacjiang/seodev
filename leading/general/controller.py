@@ -628,7 +628,7 @@ class PerformanceService():
                                          , "currentPeriod": userInfo['companyInfo']['currentPeriod']},
                                      {"_id": 0}))
         result["resources"] = list(
-            self.db.resources_com.find({"HiredBy": userInfo['teamInfo']['teamName']
+            self.db.resources_com.find({"teamName": userInfo['teamInfo']['teamName']
                                            , "companyName": userInfo['companyInfo']['companyName']
                                            , "currentPeriod": userInfo['companyInfo']['currentPeriod']},
                                        {"_id": 0}))
@@ -647,7 +647,8 @@ class InstructionService():
         if request.method == 'POST':
             f = json.loads(request.data)
             # pprint(f.keys())
-            result = models.InstructionModel().save(f[u'file'])
+            if f:
+                result = models.InstructionModel().save(f[u'file'])
 
         else:
             result = models.InstructionModel().get_list()
