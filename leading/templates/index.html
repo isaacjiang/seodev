@@ -215,7 +215,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="rs in resources | orderBy: query.order | limitTo: query.page">
+                                ng-repeat="rs in resources | orderBy: query.order | limitTo: query.limit">
                                 <td md-cell>{% raw %}{{rs.resource.resourceType}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{rs.resource.resourceName}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{rs.resource.legitimacy}}{% endraw %}</td>

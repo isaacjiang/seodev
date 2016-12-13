@@ -379,19 +379,22 @@ class TasksService():
             teamName = request.args["teamName"]  if 'teamName' in request.args.keys() else None
             period = request.args["period"] if 'period' in request.args.keys() else 0
             #print taskID
-            result = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period).get_start_forecast()
+            result = models.CorporateAcquisitionsModel(taskID=taskID, companyName=companyName, teamName=teamName,
+                                                       period=period).get_init()
             return json.dumps(result)
 
         if request.method == 'POST':
             data= json.loads(request.data)
+            print data
             taskID = data["taskID"]
             companyName =  data["companyName"] if 'companyName' in data.keys() else None
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
 
-            tModel = models.ForecastModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            tModel.task_data_save(data['forecast'])
-            tModel.update_forecast(data['forecast'])
+            tModel = models.CorporateAcquisitionsModel(taskID=taskID, companyName=companyName, teamName=teamName,
+                                                       period=period)
+            tModel.task_data_save(data['offer'])
+            tModel.save(data['offer'])
 
             tModel.task_complete()
             return json.dumps({"status":"success"})
@@ -652,6 +655,3 @@ class PeriodicTasksService():
         Account(teamName, 'LegacyCo', 5).bookkeeping('BA032', expenditure1, 'Detail', 'Transfer to NewCo.')
         Account(teamName, 'NewCo', 5).bookkeeping('BB142', expenditure1, 'Detail', 'Transfer from LegacyCo.')
 
-
-PeriodicTasksService().resourcesComplete()
-#Account(teamName="Team B", companyName='LegacyCo', period=1).sum()

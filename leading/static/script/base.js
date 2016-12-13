@@ -99,17 +99,14 @@ app.config(function ($mdThemingProvider) {
                         }
                         $rootScope.ipc.on('connect', function (d) {
                             console.log('connected.')
-                            $rootScope.ipc.emit("join", $rootScope.user_info)
+                            if ($rootScope.user_info.teamInfo) {
+                                $rootScope.ipc.emit("join", $rootScope.user_info)
+                            }
+
                         })
                         $rootScope.ipc.on('message', function (d) {
                             $rootScope.notificationToast(d)
                         })
-
-
-
-
-
-
 
                         $rootScope.notificationToast("Current Accessed User " + d.userInfo.username + ".")
 
@@ -423,6 +420,9 @@ app.config(function ($mdThemingProvider) {
                 if (['02005'].indexOf(taskName)>=0){visionarycompetitionfn(task);}
                 if (['04006','05006','06006','07006'].indexOf(taskName)>=0){actionsfn(task);}
                 if (['04008','05008'].indexOf(taskName)>=0){nichesfn(task);}
+                if (['04009'].indexOf(taskName) >= 0) {
+                    corporateacquisitionsfn(task);
+                }
             }
             if (companyName=='LegacyCo'){
                 if (['01001','03001','04001'].indexOf(taskName)>=0){hiringfn(task);}
@@ -1021,28 +1021,25 @@ app.config(function ($mdThemingProvider) {
                     .success(function(d){
                     if (d){
                         var forecast =d.forecast.b2b+d.forecast.b2c+d.forecast.newoffering
-                        //console.log(d)
+
                         d.workforce_def.forEach(function (dv) {
-                            if (dv.valueatstart) {
-                                var v = d.valueatstart.filter(function (sv) {
+
+
+                            var v = d.valueatstart.filter(function (sv) {
                                     return sv.functions == dv.functions
                                 })
+
                                 if (v) {
-                                    dv.valueatstart_core = parseInt(v.valueatstart_core)
-                                    dv.valueatstart_contract = parseInt(v.valueatstart_contract)
-                                    dv.valueatstart_total = parseInt(v.valueatstart_total)
+                                    dv.valueatstart_core = parseInt(v[0].adjustment_core)
+                                    dv.valueatstart_contract = parseInt(v[0].adjustment_contract)
+                                    dv.valueatstart_total = parseInt(v[0].adjustment_total)
                                 }
                                 else {
                                     dv.valueatstart_core = 0
                                     dv.valueatstart_contract = 0
                                     dv.valueatstart_total = 0
                                 }
-                            }
-                            else {
-                                dv.valueatstart_core = 0
-                                dv.valueatstart_contract = 0
-                                dv.valueatstart_total = 0
-                            }
+
 
                         })
 
@@ -2276,8 +2273,22 @@ app.config(function ($mdThemingProvider) {
                     return list.indexOf(item) > -1;
                 };
 
-                $http.get('/server/querycorporateswithconditions?company='+$rootScope.userAtCompany.companyName+
-                    "&period="+$rootScope.userAtCompany.currentPeriod).success(function(data){
+                // $http.get('/server/querycorporateswithconditions?company='+$rootScope.userAtCompany.companyName+
+                //     "&period="+$rootScope.userAtCompany.currentPeriod)
+                $http({
+                        method: 'GET',
+                        url: "/api/dtools/corporateacquisitions",
+                        params: {
+                            username: $rootScope.current_user.username,
+                            taskID: task.taskID,
+                            companyName: task.companyName,
+                            teamName: task.teamName,
+                            period: task.period
+                        }
+                    }
+                )
+                    .success(function (data) {
+                        console.log(data)
                     $scope.corporates = data
 
                     $scope.progress= 1
@@ -2300,21 +2311,35 @@ app.config(function ($mdThemingProvider) {
 
                 $scope.offer={current_share_price:98,treasury_shares:4900}
 
-                $scope.submit = function (selectedNiches,event) {
+                $scope.submit = function (offer) {
 
                     //console.log(selectedNiches)
-                    $http.post('server/visionarycompetition',data={companyName:$rootScope.userAtCompany.companyName,teamName:$rootScope.userAtCompany.teamName,selectedNiches:selectedNiches}).success(function(d){
+                    // $http.post('server/visionarycompetition',data={companyName:$rootScope.userAtCompany.companyName,teamName:$rootScope.userAtCompany.teamName,selectedNiches:selectedNiches})
+                    $http({
+                            method: 'POST',
+                            url: "/api/dtools/corporateacquisitions",
+                            data: {
+                                username: $rootScope.current_user.username,
+                                taskID: task.taskID,
+                                companyName: task.companyName,
+                                teamName: task.teamName,
+                                period: task.period,
+                                offer: $scope.offer
+                            }
+                        }
+                    )
+                        .success(function (d) {
                         console.log(d)
                         $window.location.reload();
                     })
 
 
                     $mdDialog.cancel();
-                    $mdSidenav('left').close()
+                    $mdSidenav('taskslist').close()
                     $rootScope.notificationToast("Submitted application.")
                 };
                 $timeout(function () {
-                    timer('2016-09-16 01:01:38')
+                    timer('2016-12-16 01:01:38')
                 },1000)
 
                 $scope.fileSelected=function(file) {

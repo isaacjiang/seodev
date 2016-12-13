@@ -65,7 +65,8 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
                 params: {username: $rootScope.current_user.username}
             })
                 .success(function (res) {
-                    console.log(res)
+
+                    if (Object.keys(res).length > 0) {
                     $scope.hiredEmployees = res.hiredEmployees
                     $scope.workforce = res.workforce
                     $scope.actions = res.actions
@@ -79,6 +80,7 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
                         })
                     }
                     $scope.forecast = res.forecast
+                        if (res.budget[0]) {
                     $scope.budget = [{
                         name: "B2B",
                         aa: format(res.budget[0].acc_budget.B2B_AA),
@@ -88,7 +90,8 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
                         name: "B2C", aa: format(res.budget[0].acc_budget.B2C_AA),
                         dm: format(res.budget[0].acc_budget.B2C_DM), pd: format(res.budget[0].acc_budget.B2C_PD)
                     }]
-
+                        }
+                    }
 
                 })
 

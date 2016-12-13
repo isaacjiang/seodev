@@ -265,8 +265,9 @@ class ActionsModel(TasksModel):
     def get_init(self):
         result = {}
         actions=[]
-        cursor = leadingbase.actions_def.find({"PeriodOccurs": self.period}, {"_id": 0})
+        cursor = leadingbase.actions_def.find({"periodStart": self.period}, {"_id": 0})
         for item in cursor:
+
             actions.append(item)
         result["keyword"] = "allactions"
         result["data"]=actions
@@ -398,6 +399,23 @@ class VisionaryCompetitionModel(TasksModel):
                                                     upsert=True)
         return data
 
+
+class CorporateAcquisitionsModel(TasksModel):
+    def get_init(self):
+        conditions = {"company": self.companyName, "startAtPeriod": self.period}
+        result = []
+        corporate = leadingbase.corporate_acquisitions_def.find(conditions, {"_id": 0})
+        if corporate is not None:
+            result = list(corporate)
+        return result
+
+    def save(self, data):
+        # print selectniches
+
+        self.db.corporate_acquisitions.update_one({"teamName": self.teamName, "companyName": self.companyName,
+                                                   "currentPeriod": self.period,}, {"$set": {"offer": data}},
+                                                  upsert=True)
+        return data
 
 class PeriodModel():
     def __init__(self, teamName=None,companyName=None):

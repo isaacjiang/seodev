@@ -1,8 +1,5 @@
 [
-
-{"processNo":0,"preProcess":0,"taskID":"10001","period":1,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
 {"processNo":0,"preProcess":0,"taskID":"10001","period":1,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
-{"processNo":0,"preProcess":0,"taskID":"10002","period":2,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
 {"processNo":0,"preProcess":0,"taskID":"10002","period":2,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
 {"processNo":0,"preProcess":0,"taskID":"10003","period":3,"companyName":"NewCo","taskName":"Forecasting","comment":"account Budget"},
 {"processNo":0,"preProcess":0,"taskID":"10003","period":3,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},

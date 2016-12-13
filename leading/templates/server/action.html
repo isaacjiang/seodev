@@ -91,7 +91,7 @@
         </svg>
     </div>
             <md-tabs  md-selected="selectedIndex" style="min-height:600px;max-height: 600px" md-swipe-content>
-             <md-tab id="tab1" >
+                <md-tab id="tab1" ng-if="leadershipActions.length>0">
         <md-tab-label>LEADERSHIP</md-tab-label>
         <md-tab-body>
                 <md-list class="md-dense" ng-repeat="action in leadershipActions" >
@@ -112,7 +112,7 @@
 
         </md-tab-body>
       </md-tab>
-              <md-tab id="tab2" >
+                <md-tab id="tab2" ng-if="marketingActions.length>0">
         <md-tab-label>MARKETING & ADVERTISING</md-tab-label>
         <md-tab-body>
                 <md-list class="md-dense" ng-repeat="action in marketingActions" >
@@ -132,7 +132,7 @@
 
         </md-tab-body>
       </md-tab>
-                 <md-tab id="tab3" >
+                <md-tab id="tab3" ng-if="salesActions.length>0">
         <md-tab-label>SALES & DISTRIBUTION</md-tab-label>
         <md-tab-body>
               <md-list class="md-dense" ng-repeat="action in salesActions" >
@@ -152,7 +152,7 @@
 
         </md-tab-body>
       </md-tab>
-                 <md-tab id="tab4" >
+                <md-tab id="tab4" ng-if="supportActions.length>0">
         <md-tab-label>SOCIAL MEDIA</md-tab-label>
         <md-tab-body>
                <md-list class="md-dense" ng-repeat="action in supportActions" >
@@ -171,7 +171,7 @@
 
         </md-tab-body>
       </md-tab>
-                 <md-tab id="tab5" >
+                <md-tab id="tab5" ng-if="logisticsActions.length>0">
         <md-tab-label>LOGISTICS & IT</md-tab-label>
         <md-tab-body>
                <md-list class="md-dense" ng-repeat="action in logisticsActions" >
@@ -190,7 +190,7 @@
 
         </md-tab-body>
       </md-tab>
-                 <md-tab id="tab6" >
+                <md-tab id="tab6" ng-if="productdevelopmentActions.length>0">
         <md-tab-label>PRODUCT DEVELOPMENT</md-tab-label>
         <md-tab-body>
                 <md-list class="md-dense" ng-repeat="action in productdevelopmentActions" >

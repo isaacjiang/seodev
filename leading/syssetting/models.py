@@ -76,8 +76,10 @@ class DatabaseBackup():
         return self.get_list()
 
     def restore_latest(self):
-        data = leadingdb.backup.find_one({'username': 'admin'}, {"_id": 0})
-        if data and len(data.keys()) > 0:
+        data = list(leadingdb.backup.find({'username': 'admin'}, {"_id": 0}).sort("backupDate", -1).limit(1))
+
+        if len(data) > 0:
+            data = data[0]
             if len(data['filenames']) > 0:
                 subprocess.check_call(['/bin/mkdir', '-p', self.temp_folder + 'backup'])
                 for file in data['filenames']:

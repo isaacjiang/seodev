@@ -202,7 +202,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                         .cancel('No').ok('Yes')
 
                     $mdDialog.show(confirm).then(function () {
-                        $rootScope.showProgress()
+                        // $rootScope.showProgress()
                         $http.post('/api/syssetting/restore', data = d).success(function (res) {
                             $scope.cancel()
                             $scope.backupRecords = res

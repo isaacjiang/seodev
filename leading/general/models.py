@@ -98,13 +98,6 @@ class PerformanceModel():
 
     def marketingShare(self, teamName, companyName, period):
 
-
-        #currentPeriod = self.getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-
-        # self.db.marketingshare_com.delete_many({"currentPeriod": period})
-        # self.db.marketingshare_total.delete_many({"currentPeriod": period})
-        # self.db.marketingshare_niche.delete_many({"currentPeriod": period})
-
         accountItem = ['AB010', 'AB011', 'AB012', 'AB013', 'AB014', 'AB015']
         weight = [0.1, 0.2, 0.1, 0.2, 0.3, 0.1]
         for index, item in enumerate(accountItem):
@@ -125,7 +118,7 @@ class PerformanceModel():
                 self.db.marketingshare_com.update_one({"flag": "#comSum", "currentPeriod": r['period'],
                                                        "accountDescID": r['accountDescID'],
                                                        "teamName": r['teamName'], "companyName": r['companyName']},
-                                                      {"$inc": {"accValue": r['value']}})
+                                                      {"$inc": {"accValue": float(r['value'])}})
 
             condition2 = {"period": period, "accDescID": item, "companyName": companyName}
             index_value = self.db.index_bookkeeping.find(condition2, {"_id": 0})
@@ -160,11 +153,11 @@ class PerformanceModel():
         for m in market:
             self.db.marketingshare_total.update_one({"flag": "#comSum", "currentPeriod": m['currentPeriod'],
                                                      "teamName": m['teamName'], "companyName": m['companyName']},
-                                                    {"$inc": {"value": m['accValue'] * m['competenceIndex'] * m[
+                                                    {"$inc": {"value": float(m['accValue']) * m['competenceIndex'] * m[
                                                         'weight']}}, upsert=True)
             self.db.marketingshare_total.update_one({"flag": "#totalSum", "currentPeriod": m['currentPeriod'],
                                                      "teamName": '', "companyName": ''},
-                                                    {"$inc": {"value": m['accValue'] * m['competenceIndex'] * m[
+                                                    {"$inc": {"value": float(m['accValue']) * m['competenceIndex'] * m[
                                                         'weight']}}, upsert=True)
 
         # TODO,need recalculate the niches number of a company selected.

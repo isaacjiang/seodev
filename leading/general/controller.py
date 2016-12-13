@@ -599,45 +599,48 @@ class PerformanceService():
             return result
 
     def queryKPIData(self):
-        username = request.args["username"]
-        userInfo = EntitiesService().get_user_info(username)
-        # currentPeriod = {}
-        # currentPeriod['teamName'] = userInfo['teamInfo']['teamName']
-        # currentPeriod['companyName'] = userInfo['companyInfo']['companyName']
-        # currentPeriod['currentPeriod'] = userInfo['companyInfo']['currentPeriod']
-        systemCurrentPeriod = SystemSetting().get_system_current_period()
 
         result = {}
-        result["hiredEmployees"] = list(
-            self.db.employees_com.find({"status": "Hired", "HiredBy.teamName": userInfo['teamInfo']['teamName']
-                                           , "HiredBy.companyName": userInfo['companyInfo']['companyName']
-                                           , "HiredBy.period": userInfo['companyInfo']['currentPeriod']},
-                                       {"_id": 0}))
-        result["workforce"] = list(
-            self.db.workforce_com.find({"teamName": userInfo['teamInfo']['teamName']
-                                           , "companyName": userInfo['companyInfo']['companyName']
-                                           , "period": userInfo['companyInfo']['currentPeriod']},
-                                       {"_id": 0}))
-        result["forecast"] = list(
-            self.db.forecast_com.find({"teamName": userInfo['teamInfo']['teamName']
-                                          , "companyName": userInfo['companyInfo']['companyName']},
-                                      {"_id": 0}))
-        result["actions"] = list(
-            self.db.actions_com.find({"teamName": userInfo['teamInfo']['teamName']
-                                         , "companyName": userInfo['companyInfo']['companyName']
-                                         , "currentPeriod": userInfo['companyInfo']['currentPeriod']},
-                                     {"_id": 0}))
-        result["resources"] = list(
-            self.db.resources_com.find({"teamName": userInfo['teamInfo']['teamName']
-                                           , "companyName": userInfo['companyInfo']['companyName']
-                                           , "currentPeriod": userInfo['companyInfo']['currentPeriod']},
-                                       {"_id": 0}))
-        result["budget"] = list(
-            self.db.budget_com.find({"teamName": userInfo['teamInfo']['teamName']
-                                        , "companyName": userInfo['companyInfo']['companyName']
-                                        , "period": userInfo['companyInfo']['currentPeriod']},
-                                    {"_id": 0}))
+        if len(request.args.keys()) > 0:
+
+            username = request.args["username"]
+            print username
+            userInfo = EntitiesService().get_user_info(username)
+            systemCurrentPeriod = SystemSetting().get_system_current_period()
+
+            print userInfo.keys()
+            if 'teamInfo' in userInfo.keys():
+                result["hiredEmployees"] = list(
+                    self.db.employees_com.find({"status": "Hired", "HiredBy.teamName": userInfo['teamInfo']['teamName']
+                                                   , "HiredBy.companyName": userInfo['companyInfo']['companyName']
+                                                   , "HiredBy.period": userInfo['companyInfo']['currentPeriod']},
+                                               {"_id": 0}))
+                result["workforce"] = list(
+                    self.db.workforce_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                                   , "companyName": userInfo['companyInfo']['companyName']
+                                                   , "period": userInfo['companyInfo']['currentPeriod']},
+                                               {"_id": 0}))
+                result["forecast"] = list(
+                    self.db.forecast_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                                  , "companyName": userInfo['companyInfo']['companyName']},
+                                              {"_id": 0}))
+                result["actions"] = list(
+                    self.db.actions_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                                 , "companyName": userInfo['companyInfo']['companyName']
+                                                 , "currentPeriod": userInfo['companyInfo']['currentPeriod']},
+                                             {"_id": 0}))
+                result["resources"] = list(
+                    self.db.resources_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                                   , "companyName": userInfo['companyInfo']['companyName']
+                                                   , "currentPeriod": userInfo['companyInfo']['currentPeriod']},
+                                               {"_id": 0}))
+                result["budget"] = list(
+                    self.db.budget_com.find({"teamName": userInfo['teamInfo']['teamName']
+                                                , "companyName": userInfo['companyInfo']['companyName']
+                                                , "period": userInfo['companyInfo']['currentPeriod']},
+                                            {"_id": 0}))
         return json.dumps(result)
+
 
 class InstructionService():
     def __init__(self):
