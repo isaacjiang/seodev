@@ -1019,6 +1019,7 @@ app.config(function ($mdThemingProvider) {
                     }
                 )
                     .success(function(d){
+                        console.log(d)
                     if (d){
                         var forecast =d.forecast.b2b+d.forecast.b2c+d.forecast.newoffering
 
@@ -1029,7 +1030,7 @@ app.config(function ($mdThemingProvider) {
                                     return sv.functions == dv.functions
                                 })
 
-                                if (v) {
+                            if (v.length > 0) {
                                     dv.valueatstart_core = parseInt(v[0].adjustment_core)
                                     dv.valueatstart_contract = parseInt(v[0].adjustment_contract)
                                     dv.valueatstart_total = parseInt(v[0].adjustment_total)
@@ -1750,8 +1751,8 @@ app.config(function ($mdThemingProvider) {
                         console.log(d)
                     $scope.projects = d.data
                     $scope.projects.forEach(function(d){
-                        d.totalCost = d.costHitPDbudget.period2+d.costHitPDbudget.period3+d.costHitPDbudget.period4+d.costHitPDbudget.period5+d.costHitPDbudget.period6+d.costHitPDbudget.period7
-                        d.elapsedDevTimePeriods= d.finalAtPeriod- d.startAtPeriodconsole
+                        d.totalCost = d.costAtPeriod2 + d.costAtPeriod3 + d.costAtPeriod4 + d.costAtPeriod5 + d.costAtPeriod6 + d.costAtPeriod7
+                        d.elapsedDevTimePeriods = d.finalAtPeriod - d.startAtPeriod
                         if (d.status == "Compulsory"){
                             $scope.selectedProjects.push(d)
                         }

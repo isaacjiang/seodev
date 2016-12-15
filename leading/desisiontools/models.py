@@ -354,15 +354,14 @@ class Negotiate1Model(TasksModel):
         return id
 
 class Negotiate2Model(TasksModel):
-
-    def get_init(self):
-        result = {}
-        negotiationhr=[]
-        cursor = leadingbase.negotiation_def.find({}, {"_id": 0})
-        for item in cursor:
-            negotiationhr.append(item)
-        result["data"]=negotiationhr
-        return result
+    # def get_init(self):
+    #     result = {}
+    #     negotiationhr=[]
+    #     cursor = leadingbase.negotiation_def.find({}, {"_id": 0})
+    #     for item in cursor:
+    #         negotiationhr.append(item)
+    #     result["data"]=negotiationhr
+    #     return result
 
     def get_saved_data(self):
         taskdata = self.db.negotiation2_com.find_one({"teamName":self.teamName,

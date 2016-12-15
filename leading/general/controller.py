@@ -613,7 +613,8 @@ class PerformanceService():
                 result["hiredEmployees"] = list(
                     self.db.employees_com.find({"status": "Hired", "HiredBy.teamName": userInfo['teamInfo']['teamName']
                                                    , "HiredBy.companyName": userInfo['companyInfo']['companyName']
-                                                   , "HiredBy.period": userInfo['companyInfo']['currentPeriod']},
+                                                   ,
+                                                "HiredBy.period": {"$lte": userInfo['companyInfo']['currentPeriod']}},
                                                {"_id": 0}))
                 result["workforce"] = list(
                     self.db.workforce_com.find({"teamName": userInfo['teamInfo']['teamName']

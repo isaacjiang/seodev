@@ -247,9 +247,7 @@ class TasksService():
             period = request.args["period"] if 'period' in request.args.keys() else 0
             #print taskID
             tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            result = tModel.get_init()
-
-            result['taskdata']=tModel.get_saved_data()
+            result = tModel.get_saved_data()
             return json.dumps(result)
 
         if request.method == 'POST':
@@ -269,6 +267,8 @@ class TasksService():
 
                     tModel.task_data_save(data)
                     tModel.task_complete()
+                    models.Negotiate2Model(taskID=taskID, companyName='NewCo', teamName=teamName,
+                                           period=period).task_complete()
                 else:
                     tModel.update_status('returned')
 

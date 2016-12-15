@@ -51,7 +51,8 @@
                         </thead>
                         <tbody md-body>
 
-                        <tr md-row ng-repeat="emp in hiredEmployees | orderBy: query.order | limitTo: query.limit">
+                        <tr md-row
+                            ng-repeat="emp in hiredEmployees | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                             <td md-cell>{% raw %}{{emp.employeeName}}{% endraw %}</td>
                             <td md-cell>{% raw %}{{emp.title}}{% endraw %}</td>
                             <td md-cell>{% raw %}{{emp.HiredBy.salaryOffer}}{% endraw %}</td>
@@ -85,7 +86,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="wf in workforce | orderBy: query.order | limitTo: query.limit">
+                                ng-repeat="wf in workforce | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                                 <td md-cell>{% raw %}{{wf.functions}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{wf.adjustedworkforce_total}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{wf.adjustedworkforce_core}}{% endraw %}</td>
@@ -118,7 +119,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="fs in forecast | orderBy: query.order | limitTo:  query.page.limit">
+                                ng-repeat="fs in forecast | orderBy: query.order | limitTo:  query.limit : (query.page -1) * query.limit">
                                 <td md-cell>{% raw %}{{fs.period}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{fs.forecast.b2b}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{fs.forecast.b2c}}{% endraw %}</td>
@@ -150,7 +151,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="action in actions | orderBy: actionID | limitTo: query.limit">
+                                ng-repeat="action in actions | orderBy: actionID | limitTo: query.limit : (query.page -1) * query.limit">
                                 <td md-cell>{% raw %}{{action.action.actionID}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{action.action.adaptabilityIndex}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{action.action.competenceIndex}}{% endraw %}</td>
@@ -182,7 +183,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="bg in budget | orderBy: query.order | limitTo: query.limit">
+                                ng-repeat="bg in budget | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                                 <td md-cell>{% raw %}{{bg.name}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{bg.aa}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{bg.dm}}{% endraw %}</td>
@@ -215,7 +216,7 @@
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="rs in resources | orderBy: query.order | limitTo: query.limit">
+                                ng-repeat="rs in resources | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                                 <td md-cell>{% raw %}{{rs.resource.resourceType}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{rs.resource.resourceName}}{% endraw %}</td>
                                 <td md-cell>{% raw %}{{rs.resource.legitimacy}}{% endraw %}</td>
