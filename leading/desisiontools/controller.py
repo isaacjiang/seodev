@@ -626,32 +626,56 @@ class PeriodicTasksService():
             # accountBookkeeping(teamName, 'NewCo', currentPeriod['period'], 'BB142', 'Credit', expense + fundings,
             # 'Transfer from LegacyCo.')
 
-    def negotiation2Complete(teamName, companyName, taskID):
-        currentPeriod = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
-        negotiation2 = sdb.negotiation2_com.find_one({"userTeam.teamName": teamName, "status": "approved"}, {"_id": 0})
+    def negotiation2AccountBookkeeping(self):
+        # currentPeriod = getCurrentPeriodbyTaskid(teamName, companyName, taskID)
+        negotiation2 = self.db.negotiation2_com.find_one({"status": "approved"})
         # print negotiation2
         for costs in negotiation2['negotiation']['costs']:
             if costs['period'] == 4:
                 expense = costs['marketing'] * 90000 + costs['sales'] * 100000 + costs['support'] * 60000 + costs[
                                                                                                                 'logisticsit'] * 90000 + \
                           costs['development'] * 80000
-                accountBookkeeping(teamName, 'LegacyCo', 4, 'BA032', 'Credit', expense, 'Transfer to NewCo.')
-                accountBookkeeping(teamName, 'NewCo', 4, 'BB142', 'Credit', expense, 'Transfer from LegacyCo.')
+                Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
+                        period=negotiation2['currentPeriod']) \
+                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA032', value=expense,
+                                 comments='Transfer to NewCo.')
+                Account(teamName=negotiation2['teamName'], companyName='NewCo',
+                        period=negotiation2['currentPeriod']) \
+                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=expense,
+                                 comments='Transfer  from LegacyCo.')
             if costs['period'] == 5:
                 expense = costs['marketing'] * 90000 + costs['sales'] * 100000 + costs['support'] * 60000 + costs[
                                                                                                                 'logisticsit'] * 90000 + \
                           costs['development'] * 80000
-                accountBookkeeping(teamName, 'LegacyCo', 4, 'BA032', 'Credit', expense, 'Transfer to NewCo.')
-                accountBookkeeping(teamName, 'NewCo', 4, 'BB142', 'Credit', expense, 'Transfer from LegacyCo.')
+                Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
+                        period=negotiation2['currentPeriod']) \
+                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA032', value=expense,
+                                 comments='Transfer to NewCo.')
+                Account(teamName=negotiation2['teamName'], companyName='NewCo',
+                        period=negotiation2['currentPeriod']) \
+                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB142', value=expense,
+                                 comments='Transfer  from LegacyCo.')
+
         expenditure0 = negotiation2['negotiation']['expenditure']['0']['dm'] + \
                        negotiation2['negotiation']['expenditure']['0']['ad'] + \
                        negotiation2['negotiation']['expenditure']['0']['pd']
         expenditure1 = negotiation2['negotiation']['expenditure']['1']['dm'] + \
                        negotiation2['negotiation']['expenditure']['1']['ad'] + \
                        negotiation2['negotiation']['expenditure']['1']['pd']
+        Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
+                period=negotiation2['currentPeriod']) \
+            .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA032', value=expenditure0,
+                         comments='Transfer to NewCo.')
+        Account(teamName=negotiation2['teamName'], companyName='NewCo',
+                period=negotiation2['currentPeriod']) \
+            .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=expenditure0,
+                         comments='Transfer  from LegacyCo.')
 
-        Account(teamName, 'LegacyCo', 4).bookkeeping('BA032', expenditure0, 'Detail', 'Transfer to NewCo.')
-        Account(teamName, 'NewCo', 4).bookkeeping('BB142', expenditure0, 'Detail', 'Transfer from LegacyCo.')
-        Account(teamName, 'LegacyCo', 5).bookkeeping('BA032', expenditure1, 'Detail', 'Transfer to NewCo.')
-        Account(teamName, 'NewCo', 5).bookkeeping('BB142', expenditure1, 'Detail', 'Transfer from LegacyCo.')
-
+        Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
+                period=negotiation2['currentPeriod']) \
+            .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA032', value=expenditure1,
+                         comments='Transfer to NewCo.')
+        Account(teamName=negotiation2['teamName'], companyName='NewCo',
+                period=negotiation2['currentPeriod']) \
+            .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=expenditure1,
+                         comments='Transfer  from LegacyCo.')

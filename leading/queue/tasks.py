@@ -26,6 +26,8 @@ def taskTasksCompleted2(params):
     tasks.actionsAccountBookkeeping()
     tasks.nichesCalculation()
     tasks.resourcesComplete()
+    tasks.negotiation1AccountBookkeeping()
+    tasks.negotiation2AccountBookkeeping()
     print "Executed Task taskTasksCompleted @ " + params
 
 @capp.task(name='leading.queue.taskAccountSum')
