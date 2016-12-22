@@ -615,13 +615,13 @@ class PeriodicTasksService():
 
             Account(teamName=negotiation1['teamName'], companyName='LegacyCo',
                     period=negotiation1['negotiation']['startAtPeriod']) \
-                .bookkeeping(objectID=negotiation1['_id'], accountDescID='BA032', value=expense,
+                .bookkeeping(objectID=negotiation1['_id'], accountDescID='BA061', value=expense,
                              comments='Transfer to NewCo.')
             # accountBookkeeping(teamName, 'LegacyCo', currentPeriod['period'], 'BA032', 'Credit', expense + fundings,
             # 'Transfer to NewCo.')
             Account(teamName=negotiation1['teamName'], companyName='NewCo',
                     period=negotiation1['negotiation']['startAtPeriod']) \
-                .bookkeeping(objectID=negotiation1['_id'], accountDescID='BB142', value=expense,
+                .bookkeeping(objectID=negotiation1['_id'], accountDescID='BB042', value=expense,
                              comments='Transfer from LegacyCo.')
             # accountBookkeeping(teamName, 'NewCo', currentPeriod['period'], 'BB142', 'Credit', expense + fundings,
             # 'Transfer from LegacyCo.')
@@ -637,7 +637,7 @@ class PeriodicTasksService():
                           costs['development'] * 80000
                 Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
                         period=negotiation2['currentPeriod']) \
-                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA032', value=expense,
+                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA061', value=expense,
                                  comments='Transfer to NewCo.')
                 Account(teamName=negotiation2['teamName'], companyName='NewCo',
                         period=negotiation2['currentPeriod']) \
@@ -649,11 +649,11 @@ class PeriodicTasksService():
                           costs['development'] * 80000
                 Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
                         period=negotiation2['currentPeriod']) \
-                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA032', value=expense,
+                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA061', value=expense,
                                  comments='Transfer to NewCo.')
                 Account(teamName=negotiation2['teamName'], companyName='NewCo',
                         period=negotiation2['currentPeriod']) \
-                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB142', value=expense,
+                    .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=expense,
                                  comments='Transfer  from LegacyCo.')
 
         expenditure0 = negotiation2['negotiation']['expenditure']['0']['dm'] + \
@@ -664,7 +664,7 @@ class PeriodicTasksService():
                        negotiation2['negotiation']['expenditure']['1']['pd']
         Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
                 period=negotiation2['currentPeriod']) \
-            .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA032', value=expenditure0,
+            .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA061', value=expenditure0,
                          comments='Transfer to NewCo.')
         Account(teamName=negotiation2['teamName'], companyName='NewCo',
                 period=negotiation2['currentPeriod']) \
@@ -673,7 +673,7 @@ class PeriodicTasksService():
 
         Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
                 period=negotiation2['currentPeriod']) \
-            .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA032', value=expenditure1,
+            .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA061', value=expenditure1,
                          comments='Transfer to NewCo.')
         Account(teamName=negotiation2['teamName'], companyName='NewCo',
                 period=negotiation2['currentPeriod']) \

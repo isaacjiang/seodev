@@ -1059,9 +1059,10 @@ app.config(function ($mdThemingProvider) {
 
                 })
                 $scope.$watch('workforce',function (nVal,oVal) {
-                   // console.log(nVal)
+
                  if (nVal != undefined){
                      $scope.workforce.forEach(function (wf) {
+
                          if (wf.adjustment_core != undefined || wf.adjustment_contract != undefined){
                              wf.adjustment_core = wf.adjustment_core == undefined? 0: wf.adjustment_core
                              wf.adjustment_contract = wf.adjustment_contract == undefined? 0: wf.adjustment_contract
@@ -1073,17 +1074,20 @@ app.config(function ($mdThemingProvider) {
                              wf.adjustedworkforce_total = formatNum(wf.valueatstart_total + wf.adjustment_total)
 
 
-                             wf.adjustmentcost_core =formatNum((wf.avWage+wf.avExpense)*wf.adjustment_core  + (wf.avWage+wf.avExpense)* (wf.adjustment_core >0? wf.costOfHire:wf.costOfFire))
-                             wf.adjustmentcost_contract =formatNum((wf.avWage+wf.avExpense)*wf.adjustment_contract  + (wf.avWage+wf.avExpense)* (wf.adjustment_contract >0? wf.costOfHire:wf.costOfFire))
-                             wf.adjustmentcost_total =formatNum((wf.avWage+wf.avExpense)*wf.adjustment_total  + (wf.avWage+wf.avExpense)* (wf.adjustment_total >0? wf.costOfHire:wf.costOfFire))
+                             wf.adjustmentcost_core = formatNum((wf.avWage + wf.avExpense) * wf.adjustment_core *
+                                 (wf.adjustment_core > 0 ? wf.costOfHire : (wf.costOfFire * (-1))))
+                             wf.adjustmentcost_contract = formatNum((wf.avWage + wf.avExpense) * wf.adjustment_contract *
+                                 (wf.adjustment_contract > 0 ? wf.costOfHire : (wf.costOfFire * (-1))))
+                             wf.adjustmentcost_total = formatNum((wf.avWage + wf.avExpense) * wf.adjustment_total
+                                 * (wf.adjustment_total > 0 ? wf.costOfHire : (wf.costOfFire * (-1))))
 
-                             wf.adjustwages_core =formatNum(wf.avWage*wf.adjustment_core  + wf.avWage* (wf.adjustment_core >0? wf.costOfHire:wf.costOfFire))
-                             wf.adjustwages_contract =formatNum(wf.avWage*wf.adjustment_contract  + wf.avExpense* (wf.adjustment_contract >0? wf.costOfHire:wf.costOfFire))
-                             wf.adjustwages_total =formatNum(wf.avWage*wf.adjustment_total   + wf.avExpense* (wf.adjustment_total  >0? wf.costOfHire:wf.costOfFire))
+                             wf.adjustwages_core = formatNum(wf.avWage * wf.adjustment_core)
+                             wf.adjustwages_contract = formatNum(wf.avWage * wf.adjustment_contract)
+                             wf.adjustwages_total = formatNum(wf.avWage * wf.adjustment_total)
 
-                             wf.adjustexpenses_core =formatNum(wf.avExpense*wf.adjustment_core  + wf.avExpense* (wf.adjustment_core >0? wf.costOfHire:wf.costOfFire))
-                             wf.adjustexpenses_contract =formatNum(wf.avExpense*wf.adjustment_contract  + wf.avExpense* (wf.adjustment_contract >0? wf.costOfHire:wf.costOfFire))
-                             wf.adjustexpenses_total =formatNum(wf.avExpense*wf.adjustment_total  + wf.avExpense* (wf.adjustment_total  >0? wf.costOfHire:wf.costOfFire))
+                             wf.adjustexpenses_core = formatNum(wf.avExpense * wf.adjustment_core)
+                             wf.adjustexpenses_contract = formatNum(wf.avExpense * wf.adjustment_contract)
+                             wf.adjustexpenses_total = formatNum(wf.avExpense * wf.adjustment_total)
 
                          }
                      })
