@@ -1605,30 +1605,21 @@ app.config(function ($mdThemingProvider) {
                     }
                 )
                     .success(function(d){
-                   // console.log($rootScope.userAtCompany.companyName)
-                    $scope.actions = d.data.filter(function (d) {
-                        return d.companyName ==task.companyName
-                    })
-                    $scope.leadershipActions=[]
-                    $scope.marketingActions=[]
-                    $scope.salesActions=[]
-                    $scope.supportActions=[]
-                    $scope.logisticsActions=[]
-                    $scope.productdevelopmentActions=[]
-                    console.log(d)
-                    $scope.actions.forEach(function(action){
-                        if (action.category == "leadership"){  $scope.leadershipActions.push(action)}
-                        else if (action.category == "marketing"){$scope.marketingActions.push(action)}
-                        else if (action.category == "sales"){$scope.salesActions.push(action)}
-                        else if (action.category == "support"){$scope.supportActions.push(action)}
-                        else if (action.category == "logisticsit"){$scope.logisticsActions.push(action)}
-                        else if (action.category == "productdevelopment"){$scope.productdevelopmentActions.push(action)}
-                    })
+                        //console.log(d)
+                        $scope.actions = {}
+                        if (d.data.length > 0) {
+                            d.data.forEach(function (action) {
+                                if (Object.keys($scope.actions).indexOf(action.category) < 0) {
+                                    $scope.actions[action.category] = []
+                                }
+                                $scope.actions[action.category].push(action)
+                            })
+                        }
+                        $scope.actionsKeys = Object.keys($scope.actions)
+
 
                 })
-                $timeout(function () {
-                    timer('2016-09-16 01:01:38')
-                },1000)
+
 
                 $scope.fileSelected=function(file) {
                     // var fileID =  fileUpload(file)

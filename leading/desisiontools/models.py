@@ -265,9 +265,8 @@ class ActionsModel(TasksModel):
     def get_init(self):
         result = {}
         actions=[]
-        cursor = leadingbase.actions_def.find({"periodStart": self.period}, {"_id": 0})
+        cursor = leadingbase.actions_def.find({'companyName': self.companyName, "periodStart": self.period}, {"_id": 0})
         for item in cursor:
-
             actions.append(item)
         result["keyword"] = "allactions"
         result["data"]=actions

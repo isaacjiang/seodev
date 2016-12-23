@@ -188,6 +188,7 @@ class DataInitialization():
         else:
             ws = wb[dataConf['sheetname']]
             title = []
+            self.db.drop_collection(dataConf['sheetname'])
             for index, row in enumerate(ws.iter_rows()):
                 if index == 0:
                     for cel in row:
