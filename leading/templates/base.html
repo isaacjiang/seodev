@@ -63,9 +63,15 @@
                     </md-button>
                 </div>
                 <div ng-if="superuser">
-                    <md-button ng-click="reset()" class="md-icon-button" layout-align="center end">
+                    <md-button ng-click="go_back()" class="md-icon-button" layout-align="center end">
                         <md-icon aria-label="Menu"
-                                 md-svg-icon="{{ url_for('static', filename='icon/ic_restore_white_48px.svg') }}"></md-icon>
+                                 md-svg-icon="{{ url_for('static', filename='icon/ic_skip_previous_white_48px.svg') }}"></md-icon>
+                    </md-button>
+                </div>
+                <div ng-if="superuser">
+                    <md-button ng-click="go_forward()" class="md-icon-button" layout-align="center end">
+                        <md-icon aria-label="Menu"
+                                 md-svg-icon="{{ url_for('static', filename='icon/ic_skip_next_white_48px.svg') }}"></md-icon>
                     </md-button>
                 </div>
                 <div>

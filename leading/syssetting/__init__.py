@@ -2,6 +2,10 @@ from flask import Blueprint
 import controller
 
 blueprint = Blueprint(__name__, __name__, url_prefix='/api/syssetting')
+
+blueprint.add_url_rule('/backtopreviousperiod', view_func=controller.SystemService().back_to_provious_period)
+blueprint.add_url_rule('/goforwardnextperiod', view_func=controller.SystemService().go_forward_next_period)
+
 ##System Data Service
 blueprint.add_url_rule('/startbackup', view_func=controller.SystemService().backup_start)
 blueprint.add_url_rule('/listbackup', view_func=controller.SystemService().backup_list)

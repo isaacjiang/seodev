@@ -101,7 +101,8 @@ class TasksModel():
         #     negotiation2Complete(teamName, 'NewCo', taskID)
         # Alarms(source='task_complete', alarm=teamName + ' ' + companyName + ' ' + str(taskID) + " Completed")
         self.auto_upgrade()
-        print self.teamName, self.companyName, self.taskID, "Completed"
+        # print self.teamName, self.companyName, self.taskID, "Completed"
+        return {"currentPeriod": SystemSetting().get_system_current_period()}
 
 class TeamInitialization(TasksModel):
 

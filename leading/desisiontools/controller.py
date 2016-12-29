@@ -82,8 +82,8 @@ class TasksService():
 
             AccountBudget(teamName=teamName, companyName=companyName, period=0).account_budget_init()
 
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def hiring(self):
         if request.method =='GET':
@@ -106,8 +106,8 @@ class TasksService():
             tModel.task_data_save(data['offer'])
             for offeredEmployees in data['offer']:
                 tModel.update_employees_offer(id=offeredEmployees['_id'],offer={'salaryOffer':offeredEmployees['salaryOffer']})
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def workforce(self):
         if request.method =='GET':
@@ -129,8 +129,8 @@ class TasksService():
             tModel = models.WorkforceModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
             tModel.task_data_save(data['workforce'])
             tModel.save(workforce=data['workforce'])
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def forecast(self):
         if request.method =='GET':
@@ -153,8 +153,8 @@ class TasksService():
             tModel.task_data_save(data['forecast'])
             tModel.update_forecast(data['forecast'])
 
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def resource(self):
         if request.method =='GET':
@@ -176,8 +176,8 @@ class TasksService():
             tModel = models.ResourceModel(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
             tModel.task_data_save(data['selectedResources'])
             tModel.save(data['selectedResources'])
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def budget(self):
         # if request.method =='GET':
@@ -200,8 +200,8 @@ class TasksService():
             tModel.task_data_save(data['acc_budgets'])
             tModel.save(data['acc_budgets'])
 
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def negotiate1(self):
         if request.method =='GET':
@@ -231,13 +231,14 @@ class TasksService():
                     tModel.update_status('approved')
 
                     tModel.task_data_save(data)
-                    tModel.task_complete()
+                    result = tModel.task_complete()
                     models.Negotiate1Model(taskID=taskID, companyName='NewCo', teamName=teamName,
                                            period=period).task_complete()
                 else:
                     tModel.update_status('returned')
+                    result = {"currentPeriod": data["period"]}
 
-            return json.dumps({"status":"success"})
+            return json.dumps(result)
 
     def negotiate2(self):
         if request.method =='GET':
@@ -266,13 +267,14 @@ class TasksService():
                     tModel.update_status('approved')
 
                     tModel.task_data_save(data)
-                    tModel.task_complete()
+                    result = tModel.task_complete()
                     models.Negotiate2Model(taskID=taskID, companyName='NewCo', teamName=teamName,
                                            period=period).task_complete()
                 else:
                     tModel.update_status('returned')
+                    result = {"currentPeriod": data["period"]}
 
-            return json.dumps({"status":"success"})
+            return json.dumps(result)
 
     def actions(self):
         if request.method =='GET':
@@ -295,8 +297,8 @@ class TasksService():
             tModel.task_data_save(data['actions'])
             tModel.save(data['actions'])
 
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def projects(self):
         if request.method =='GET':
@@ -319,8 +321,8 @@ class TasksService():
             tModel.task_data_save(data['projects'])
             tModel.save(data['projects'])
 
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def niches(self):
         if request.method =='GET':
@@ -344,8 +346,8 @@ class TasksService():
             tModel.task_data_save(data['niches'])
             tModel.save(data['niches'])
 
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
     def visionarycompetition(self):
         if request.method =='GET':
@@ -368,8 +370,8 @@ class TasksService():
                                                       period=period)
             tModel.task_data_save(data)
             tModel.save(data)
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
 
     def corporateacquisitions(self):
@@ -396,8 +398,8 @@ class TasksService():
             tModel.task_data_save(data['offer'])
             tModel.save(data['offer'])
 
-            tModel.task_complete()
-            return json.dumps({"status":"success"})
+            result = tModel.task_complete()
+            return json.dumps(result)
 
 
 class PeriodicTasksService():
@@ -410,13 +412,13 @@ class PeriodicTasksService():
         category = category.lower()
         if category in ['marketing & advertizing', 'marketing&advertizing', 'marketing', 'ma']:
             accountDescID = 'AB012'
-        elif category in ['sales & distribution', 'sales&distribution', 'sales', 'sa']:
+        elif category in ['sales & distribution', 'sales&distribution', 'sales', 'sa', "sales & dist'n"]:
             accountDescID = 'AB011'
         elif category in ['social media', 'support', 'su']:
             accountDescID = 'AB013'
         elif category in ['logistics & it', 'logisticsit', 'logistics', 'li']:
             accountDescID = 'AB014'
-        elif category in ['product development', 'productdevelopment', 'pd']:
+        elif category in ['product development', 'productdevelopment', 'pd', 'product devt']:
             accountDescID = 'AB015'
         else:
             accountDescID = 'AB010'

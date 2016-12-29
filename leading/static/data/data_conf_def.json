@@ -16,7 +16,7 @@
   },
   {
     "item" : "workforce",
-    "key" : "functions,period",
+    "key": "workforceID",
     "sheetname" : "workforce_def",
     "filename": "Workforce.xlsx",
     "status" : "Init"

@@ -138,7 +138,7 @@ app.config(function ($mdThemingProvider) {
 
         //tasks
             $rootScope.sendMessage = function (message) {
-                console.log(message)
+                // console.log(message)
                 $rootScope.ipc.emit('notification', {
                     "username": $rootScope.user_info.userInfo.username,
                     "room": $rootScope.user_info.teamInfo.teamName, "message": message
@@ -169,6 +169,33 @@ app.config(function ($mdThemingProvider) {
         $scope.help= function() {
             $window.location.href = '/help'
         };
+
+            $scope.go_forward = function () {
+                $http({
+                        method: 'GET',
+                        url: "/api/syssetting/goforwardnextperiod",
+                        params: {username: $rootScope.current_user.username}
+                    }
+                ).success(function (d) {
+                    //console.log(d)
+                    $rootScope.user_info.companyInfo.currentPeriod = d
+                    $rootScope.sendMessage('Go forward to Period #' + d)
+                })
+
+            }
+            $scope.go_back = function () {
+                $http({
+                        method: 'GET',
+                        url: "/api/syssetting/backtopreviousperiod",
+                        params: {username: $rootScope.current_user.username}
+                    }
+                ).success(function (d) {
+                    //console.log(d)
+                    $rootScope.user_info.companyInfo.currentPeriod = d
+                    $rootScope.sendMessage('Back to Period #' + d)
+                })
+
+            }
 
             $scope.reset = function () {
                 $http.get("/api/syssetting/restorelatest").success(function (res) {
@@ -331,7 +358,7 @@ app.config(function ($mdThemingProvider) {
                         // $mdDialog.hide();
                         func(task)
                     };
-                    //$scope.pdfName = task.taskName+ '  Introduction';
+                    $scope.pdfName = task.taskName + '  Introduction';
                     $scope.pdfUrl = "/files/download?filename=" + infoFile['filename'] +
                         "&id=" + infoFile['objectID'] + "&ctype=" + infoFile['content_type']
                     //'static/pdf/oea-big-data-guide-1522052.pdf';
@@ -685,6 +712,7 @@ app.config(function ($mdThemingProvider) {
 
 
                 $scope.openResume = function (resumefile) {
+                    console.log(resumefile)
                     if (resumefile) {
                         func(resumefile, hiringfn, task)
                     }
@@ -738,11 +766,13 @@ app.config(function ($mdThemingProvider) {
                             .success(function(d){
                             //console.log(d)
                                 //$window.location.reload();
+                                $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                                 getInitData()
                         })
                         $mdDialog.cancel();
                         $mdSidenav('taskslist').close()
-                        $rootScope.notificationToast("You made offers to  " + offeredEmployees.length + "  candidates.")
+
+                        //$rootScope.notificationToast("You made offers to  " + offeredEmployees.length + "  candidates.")
                         $rootScope.sendMessage($rootScope.current_user.username + " made offers to  " + offeredEmployees.length + "  candidates.")
 
                     },function(){
@@ -907,6 +937,7 @@ app.config(function ($mdThemingProvider) {
                     )
                         .success(function(d){
                         console.log(d)
+                            $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                             $rootScope.notificationToast("Submit application for resources.")
                     })
 
@@ -1112,6 +1143,7 @@ app.config(function ($mdThemingProvider) {
                     )
                    .success(function(d){
                        //$window.location.reload();
+                       $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                    })
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
@@ -1210,7 +1242,8 @@ app.config(function ($mdThemingProvider) {
                     )
                         .success(function(d){
                         console.log(d)
-                        $window.location.reload();
+                            $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
+                            // $window.location.reload();
                     })
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
@@ -1376,7 +1409,8 @@ app.config(function ($mdThemingProvider) {
 
                         .success(function(d){
                         console.log(d)
-                       $window.location.reload();
+                            // $window.location.reload();
+                            $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                     })
                     $mdDialog.cancel();
                     $mdSidenav('left').close()
@@ -1578,7 +1612,7 @@ app.config(function ($mdThemingProvider) {
 
                             .success(function(d){
                             console.log(d)
-
+                                $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                             $mdDialog.cancel();
                             $mdSidenav('taskslist').close()
                                 //$window.location.reload();
@@ -1718,7 +1752,8 @@ app.config(function ($mdThemingProvider) {
                         )
                             .success(function(d){
                             console.log(d)
-                            $window.location.reload();
+                                // $window.location.reload();
+                                $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                         })
 
 
@@ -1892,7 +1927,7 @@ app.config(function ($mdThemingProvider) {
                                     $scope.visionary = visionaries[Math.floor((Math.random() * 6))]
                                     $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
                                 }
-                            }, 100)
+                            }, 1000)
                         }
                 })
 
@@ -1917,7 +1952,8 @@ app.config(function ($mdThemingProvider) {
                     )
                         .success(function(d){
                         console.log(d)
-                        $window.location.reload();
+                            // $window.location.reload();
+                            $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                     })
 
 
@@ -2050,8 +2086,9 @@ app.config(function ($mdThemingProvider) {
                     )
 
                         .success(function(d){
-                        $window.location.reload();
+                            // $window.location.reload();
                         console.log(d)})
+                    $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
                     $rootScope.notificationToast("Submitted application.")
@@ -2135,7 +2172,8 @@ app.config(function ($mdThemingProvider) {
                         }
                     })
                         .success(function (d) {
-                        $window.location.reload();
+                            // $window.location.reload();
+                            $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                         console.log(d)})
 
 
@@ -2326,7 +2364,8 @@ app.config(function ($mdThemingProvider) {
                     )
                         .success(function (d) {
                         console.log(d)
-                        $window.location.reload();
+                            $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
+                            // $window.location.reload();
                     })
 
 

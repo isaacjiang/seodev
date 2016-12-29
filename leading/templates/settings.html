@@ -215,7 +215,8 @@
                                     <td md-cell>{% raw %}{{  $index+(query.limit*(query.page-1))+1  }}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{ dc['item']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{ dc['sheetname']}}{% endraw %}</td>
-                                    <td md-cell style="max-width: 200px;">{% raw %}{{ dc['orderlist']}}{% endraw %}</td>
+                                    <td md-cell style="max-width: 200px;">{% raw %}{{
+                                        dc['orderlistAlias']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{ dc['upload_date']}}{% endraw %}</td>
                                     <td md-cell>
                                         <div layout flex="80">

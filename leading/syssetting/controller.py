@@ -6,11 +6,29 @@ import os
 from threading import Timer
 
 import models
+from leading.entities.models import EntitiesModel
 
 class SystemService():
 
     def __init__(self):
         self.model = models
+
+    def back_to_provious_period(self):
+        companyInfo = EntitiesModel(username=request.args['username']).get_company_by_username()
+        if companyInfo['currentPeriod'] > 0:
+            EntitiesModel(companyName=companyInfo['companyName'], teamName=companyInfo['teamName']).update_company_info(
+                currentPeriod=companyInfo['currentPeriod'] - 1)
+        result = self.model.SystemSetting().system_current_period_back()
+        return json.dumps(result)
+
+    def go_forward_next_period(self):
+        companyInfo = EntitiesModel(username=request.args['username']).get_company_by_username()
+        if companyInfo['currentPeriod'] > 0:
+            EntitiesModel(companyName=companyInfo['companyName'], teamName=companyInfo['teamName']).update_company_info(
+                currentPeriod=companyInfo['currentPeriod'] + 1)
+
+        result = self.model.SystemSetting().upgrade_system_current_period()
+        return json.dumps(result)
 
     def backup_start(self):
         result = self.model.DatabaseBackup().backup(username=request.args['username'])

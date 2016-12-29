@@ -362,7 +362,7 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                         //console.log(d)
                         d.forEach(function (dd) {
                             if (dd.orderlist) {
-                                dd.orderlist = dd.orderlist.split(',', 3).join(',') + "..."
+                                dd.orderlistAlias = dd.orderlist.split(',', 3).join(',') + "..."
                             }
                         })
 
