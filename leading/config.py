@@ -13,7 +13,7 @@ TESTING = True
 APPLICATION_ROOT = os.path.dirname(os.path.abspath(__file__))
 APPLICATION_DATA = os.path.join(APPLICATION_ROOT, 'static', 'data')
 
-DATABASE_DOMAIN = '35.161.31.19'  # 52.34.181.89 localhost  192.168.254.3
+DATABASE_DOMAIN = 'localhost'  # 52.34.181.89 localhost  192.168.254.3
 DATABASE_PORT = 27017
 
 client = MongoClient(DATABASE_DOMAIN, DATABASE_PORT, maxPoolSize=200, connect=False)

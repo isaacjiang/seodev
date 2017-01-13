@@ -15,7 +15,7 @@ class SystemService():
 
     def back_to_provious_period(self):
         companyInfo = EntitiesModel(username=request.args['username']).get_company_by_username()
-        if companyInfo['currentPeriod'] > 0:
+        if companyInfo['currentPeriod'] > 1:
             EntitiesModel(companyName=companyInfo['companyName'], teamName=companyInfo['teamName']).update_company_info(
                 currentPeriod=companyInfo['currentPeriod'] - 1)
         result = self.model.SystemSetting().system_current_period_back()
@@ -23,7 +23,7 @@ class SystemService():
 
     def go_forward_next_period(self):
         companyInfo = EntitiesModel(username=request.args['username']).get_company_by_username()
-        if companyInfo['currentPeriod'] > 0:
+        if companyInfo['currentPeriod'] >= 0 and companyInfo['currentPeriod'] <= 7:
             EntitiesModel(companyName=companyInfo['companyName'], teamName=companyInfo['teamName']).update_company_info(
                 currentPeriod=companyInfo['currentPeriod'] + 1)
 

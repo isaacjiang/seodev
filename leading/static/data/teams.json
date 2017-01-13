@@ -1,7 +1,65 @@
 [
-  {"teamID":1,"teamName":"Team A","teamNickname":"x","description":"xx","users":[]},
-  {"teamID":2,"teamName":"Team B","teamNickname":"x","description":"xx","users":[]},
-  {"teamID":3,"teamName":"Team C","teamNickname":"x","description":"xx","users":[]},
-  {"teamID":4,"teamName":"Team D","teamNickname":"x","description":"xx","users":[]},
-  {"teamID":5,"teamName":"Team E","teamNickname":"x","description":"xx","users":[]}
+  {
+    "teamID": 1,
+    "teamName": "Team A",
+    "teamNickname": "Fennec Fox",
+    "description": "xx",
+    "users": []
+  },
+  {
+    "teamID": 2,
+    "teamName": "Team B",
+    "teamNickname": "Kingfisher",
+    "description": "xx",
+    "users": []
+  },
+  {
+    "teamID": 3,
+    "teamName": "Team C",
+    "teamNickname": "Red Colobus",
+    "description": "xx",
+    "users": []
+  },
+  {
+    "teamID": 4,
+    "teamName": "Team D",
+    "teamNickname": "Caracal",
+    "description": "xx",
+    "users": []
+  },
+  {
+    "teamID": 5,
+    "teamName": "Team E",
+    "teamNickname": "Hummingbird",
+    "description": "xx",
+    "users": []
+  },
+  {
+    "teamID": 6,
+    "teamName": "Team F",
+    "teamNickname": "Tiger",
+    "description": "xx",
+    "users": []
+  },
+  {
+    "teamID": 7,
+    "teamName": "Team G",
+    "teamNickname": "WildCat",
+    "description": "xx",
+    "users": []
+  },
+  {
+    "teamID": 8,
+    "teamName": "Team H",
+    "teamNickname": "Sunset Moth",
+    "description": "xx",
+    "users": []
+  },
+  {
+    "teamID": 9,
+    "teamName": "Team J",
+    "teamNickname": "Lion",
+    "description": "xx",
+    "users": []
+  }
 ]

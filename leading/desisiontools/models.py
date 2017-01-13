@@ -242,6 +242,11 @@ class ResourceModel(TasksModel):
 
         return resources
 
+    def update_info_file(self, id, infoFile):
+        print id, infoFile
+        leadingbase.resources_def.update_one({"_id": ObjectId(id)}, {"$set": {"infoFile": infoFile}})
+        return id
+
 class BudgetModel(TasksModel):
 
     # def get_init(self):
@@ -285,8 +290,9 @@ class ProjectsModel(TasksModel):
     def get_init(self):
         result = {}
         projects=[]
-        cursor = leadingbase.projects_def.find({}, {"_id": 0})
+        cursor = leadingbase.projects_def.find({})
         for item in cursor:
+            item["_id"] = str(item['_id'])
             projects.append(item)
         result["keyword"] = "allprojects"
         result["data"]=projects
@@ -299,6 +305,11 @@ class ProjectsModel(TasksModel):
                                      'projectName':project['projectName']},{"$set":project},upsert=True)
 
         return projects
+
+    def update_info_file(self, id, infoFile):
+        print id, infoFile
+        leadingbase.projects_def.update_one({"_id": ObjectId(id)}, {"$set": {"infoFile": infoFile}})
+        return id
 
 class NichesModel(TasksModel):
     def get_init(self):

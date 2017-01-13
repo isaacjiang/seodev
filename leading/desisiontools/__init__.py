@@ -10,6 +10,10 @@ blueprint.add_url_rule('/uploademployeephoto', view_func=controller.TasksService
                        methods=['POST'])
 blueprint.add_url_rule('/uploadnegotiationphoto', view_func=controller.TasksService().upload_negotiation_photo,
                        methods=['POST'])
+blueprint.add_url_rule('/uploadresourceinfofile', view_func=controller.TasksService().upload_resource_infofile,
+                       methods=['POST'])
+blueprint.add_url_rule('/uploadprojectinfofile', view_func=controller.TasksService().upload_project_infofile,
+                       methods=['POST'])
 
 
 blueprint.add_url_rule('/getpage', view_func=controller.TasksService().get_page)

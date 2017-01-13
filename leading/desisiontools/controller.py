@@ -34,6 +34,20 @@ class TasksService():
         result = models.Negotiate1Model().update_employees_photo(employeeid, photo=data["photo"])
         return json.dumps(result)
 
+    def upload_resource_infofile(self):
+        data = json.loads(request.data)
+        # print data
+        resourceid = data['resourceid']
+        result = models.ResourceModel().update_info_file(resourceid, infoFile=data['infoFile'])
+        return json.dumps(result)
+
+    def upload_project_infofile(self):
+        data = json.loads(request.data)
+        print data
+        projectid = data['projectid']
+        result = models.ProjectsModel().update_info_file(projectid, infoFile=data['infoFile'])
+        return json.dumps(result)
+
     def get_task_files(self):
         result = models.TasksModel().get_task_file(request.args['task_id'])
         return json.dumps(result)

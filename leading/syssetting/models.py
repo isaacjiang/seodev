@@ -138,7 +138,7 @@ class SystemSetting():
         return systemInfo['systemPeriod'] if systemInfo else 0
 
     def system_current_period_back(self):
-        if self.get_system_current_period() > 0:
+        if self.get_system_current_period() > 1:
             self.db.systeminfo.update_one({"group": "systemInfo"}, {"$inc": {"systemPeriod": -1}})
         return self.get_system_current_period()
 
@@ -150,7 +150,8 @@ class SystemSetting():
                                           upsert=True)
         # systemInfo = self.db.systeminfo.find_one({"group": "systemInfo"}, {"_id": 0})
         # currentPeriod = systemInfo['content'][0]['value']
-        self.db.systeminfo.update_one({"group": "systemInfo"}, {"$inc": {"systemPeriod": 1}})
+        if self.get_system_current_period() >= 0 and self.get_system_current_period() <= 7:
+            self.db.systeminfo.update_one({"group": "systemInfo"}, {"$inc": {"systemPeriod": 1}})
         return self.get_system_current_period()
         #return currentPeriod + 1
 

@@ -726,7 +726,11 @@ app.config(function ($mdThemingProvider) {
                     var offeredEmployees=[]
                     $scope.employees_keys.forEach(function (key) {
                         $scope.employees[key].forEach(function (e) {
-                         if (e.salaryOffer){offeredEmployees.push(e)}
+                            if (e.salaryOffer) {
+
+                                offeredEmployees.push(e)
+
+                            }
                         })
                     })
 
@@ -872,6 +876,7 @@ app.config(function ($mdThemingProvider) {
 
         }
         function resourcesfn(task) {
+
             // Show the dialog
             $mdDialog.show({
                 clickOutsideToClose: false,
@@ -883,7 +888,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function resourcesCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
                     console.log(task)
                     $http({
@@ -919,9 +927,6 @@ app.config(function ($mdThemingProvider) {
                     return list[type].indexOf(item) > -1;
                 };
                 $scope.submit = function () {
-
-                    //$http.post('server/resources',data={"username":$rootScope.current_user.username,"companyName":$rootScope.userAtCompany.companyName,
-                    // "teamName":$rootScope.userAtCompany.teamName,selectedResources:$scope.selectedResources})
                     $http({
                             method:'POST',
                             url:"/api/dtools/resource",
@@ -936,7 +941,7 @@ app.config(function ($mdThemingProvider) {
                         }
                     )
                         .success(function(d){
-                        console.log(d)
+                            console.log(d)
                             $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                             $rootScope.notificationToast("Submit application for resources.")
                     })
@@ -946,34 +951,75 @@ app.config(function ($mdThemingProvider) {
                     $window.location.reload();
                 };
 
-                $http({
-                        method:'GET',
-                        url:"/api/dtools/resource",
-                        params:{
+                var getInitData = function () {
+
+                    $http({
+                        method: 'GET',
+                        url: "/api/dtools/resource",
+                        params: {
                             username: $rootScope.current_user.username,
-                            taskID:task.taskID,
-                            companyName :task.companyName,
-                            teamName : task.teamName,
-                            period:task.period
+                            taskID: task.taskID,
+                            companyName: task.companyName,
+                            teamName: task.teamName,
+                            period: task.period
                         }
-                    }
-                )
-
-               // $http.get('/server/queryresourcesbyusername?username='+$rootScope.current_user.username)
-                    .success(function(d){
+                        }
+                    ).success(function (d) {
                         console.log(d)
-                    $scope.resources_ls = d.data.filter(function(e){return e.resourceType == "Lobbyist"})
-                    $scope.resources_ma = d.data.filter(function(e){return e.resourceType == "AD&DM"})
-                    $scope.resources_sa = d.data.filter(function(e){return e.resourceType == "Distribution Partners"})
-                    $scope.resources_su = d.data.filter(function(e){return e.resourceType == "Call Centre (inbound)"})
-                    $scope.resources_li = d.data.filter(function(e){return e.resourceType == "Production Outsourcer"})
-                    $scope.resources_pd = d.data.filter(function(e){return e.resourceType == "Development Partners"})
+                        $scope.resources_ls = d.data.filter(function (e) {
+                            return e.resourceType == "Lobbyist"
+                        })
+                        $scope.resources_ma = d.data.filter(function (e) {
+                            return e.resourceType == "AD&DM"
+                        })
+                        $scope.resources_sa = d.data.filter(function (e) {
+                            return e.resourceType == "Distribution Partners"
+                        })
+                        $scope.resources_su = d.data.filter(function (e) {
+                            return e.resourceType == "Call Centre (inbound)"
+                        })
+                        $scope.resources_li = d.data.filter(function (e) {
+                            return e.resourceType == "Production Outsourcer"
+                        })
+                        $scope.resources_pd = d.data.filter(function (e) {
+                            return e.resourceType == "Development Partners"
+                        })
 
-                })
+                    })
+                }
 
-                $timeout(function () {
-                    timer('2016-09-16 01:01:38')
-                },1000)
+                getInitData()
+
+                $scope.openInfo = function (infofile) {
+                    console.log(infofile)
+                    if (infofile) {
+                        func(infofile, resourcesfn, task)
+                    }
+
+                }
+
+                $scope.infoFileUpload = function (file, resourceid) {
+                    Upload.upload({
+                        url: '/files/upload',
+                        data: {files: file}
+                    }).then(function (response) {
+                        console.log(response)
+                        $http({
+                                method: 'POST',
+                                url: "/api/dtools/uploadresourceinfofile",
+                                data: {
+                                    resourceid: resourceid,
+                                    infoFile: response.data[0]
+                                }
+                            }
+                        ).success(function () {
+                            getInitData()
+                            $rootScope.notificationToast('File uploaded.')
+                        })
+
+                    });
+                }
+
 
                 $scope.fileSelected=function(file) {
                     // var fileID =  fileUpload(file)
@@ -1017,7 +1063,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function workforceCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -1200,6 +1249,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function budgetCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -1296,7 +1349,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function negotiateCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -1556,7 +1612,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function actionsCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -1697,7 +1756,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function projectCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -1765,32 +1827,64 @@ app.config(function ($mdThemingProvider) {
 
                 };
                 // $http.get('/server/querywithdata?keyword=allprojects')
-                $http({
-                        method:'GET',
-                        url:"/api/dtools/projects",
-                        params:{
+                var getInitData = function () {
+                    $http({
+                        method: 'GET',
+                        url: "/api/dtools/projects",
+                        params: {
                             username: $rootScope.current_user.username,
-                            taskID:task.taskID,
-                            companyName :task.companyName,
-                            teamName : task.teamName,
-                            period:task.period
+                            taskID: task.taskID,
+                            companyName: task.companyName,
+                            teamName: task.teamName,
+                            period: task.period
                         }
+                        }
+                    )
+                        .success(function (d) {
+                            console.log(d)
+                            $scope.projects = d.data
+                            $scope.projects.forEach(function (d) {
+                                d.totalCost = d.costAtPeriod2 + d.costAtPeriod3 + d.costAtPeriod4 + d.costAtPeriod5 + d.costAtPeriod6 + d.costAtPeriod7
+                                d.elapsedDevTimePeriods = d.finalAtPeriod - d.startAtPeriod
+                                if (d.status == "Compulsory") {
+                                    $scope.selectedProjects.push(d)
+                                }
+                            })
+                        })
+                }
+
+                getInitData()
+
+                $scope.openInfo = function (infofile) {
+                    console.log(infofile)
+                    if (infofile) {
+                        func(infofile, projectfn, task)
                     }
-                )
-                    .success(function(d){
-                        console.log(d)
-                    $scope.projects = d.data
-                    $scope.projects.forEach(function(d){
-                        d.totalCost = d.costAtPeriod2 + d.costAtPeriod3 + d.costAtPeriod4 + d.costAtPeriod5 + d.costAtPeriod6 + d.costAtPeriod7
-                        d.elapsedDevTimePeriods = d.finalAtPeriod - d.startAtPeriod
-                        if (d.status == "Compulsory"){
-                            $scope.selectedProjects.push(d)
-                        }
-                    })
-                })
-                $timeout(function () {
-                    timer('2016-09-16 01:01:38')
-                },1000)
+
+                }
+
+                $scope.infoFileUpload = function (file, projectid) {
+                    Upload.upload({
+                        url: '/files/upload',
+                        data: {files: file}
+                    }).then(function (response) {
+                        console.log(response)
+                        $http({
+                                method: 'POST',
+                                url: "/api/dtools/uploadprojectinfofile",
+                                data: {
+                                    projectid: projectid,
+                                    infoFile: response.data[0]
+                                }
+                            }
+                        ).success(function () {
+                            getInitData()
+                            $rootScope.notificationToast('File uploaded.')
+                        })
+
+                    });
+                }
+
 
                 $scope.fileSelected=function(file) {
                     // var fileID =  fileUpload(file)
@@ -1834,7 +1928,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function visionarycompetitionCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -2007,6 +2104,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function negotiate2Ctrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -2139,7 +2240,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function nichesCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -2268,7 +2372,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function corporateacquisitionsCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload,$interval) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
@@ -2419,7 +2526,10 @@ app.config(function ($mdThemingProvider) {
             });
 
             function forecastingCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
-
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
                 $scope.instruction = function () {
 
                     $http({
