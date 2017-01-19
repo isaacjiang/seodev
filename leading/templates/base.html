@@ -169,13 +169,12 @@
                 <h1 class="md-toolbar-tools">Instruction</h1>
             </md-toolbar>
             <md-tabs md-dynamic-height md-border-bottom>
-                <md-tab label="{% raw %}{{$index==0?'PDFs':'Videos' }}{% endraw %}"
-                        ng-repeat="type in instructionMeterial">
+                <md-tab label='PDFs'>
 
                     <md-content layout-padding layout-margin="10px" flex style="min-height: 400px">
 
                         <md-list>
-                            <md-list-item ng-repeat="material in type" layout>
+                            <md-list-item ng-repeat="material in instructionMeterial[0]" layout>
                                 <div class="md-list-item-text" ng-click="infoClick(material)" flex="70">
                                     <span>{% raw %}{{material.filename }}{% endraw %} </span>
                         </div>
@@ -196,7 +195,7 @@
             </md-tabs>
             <md-button ng-if="superuser" class="md-accent md-fab md-mini md-fab-bottom-right"
                        ngf-select="addContent($files)"
-                       accept='{% raw %}{{$index==0?".pdf":".mp4" }}{% endraw %}'>
+                       accept=".pdf">
                 <md-icon aria-label="Menu"
                          md-svg-icon="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"></md-icon>
             </md-button>

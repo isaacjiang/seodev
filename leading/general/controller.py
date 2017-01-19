@@ -649,11 +649,13 @@ class InstructionService():
 
     def instruction(self):
         if request.method == 'POST':
+
             f = json.loads(request.data)
             # pprint(f.keys())
             if f:
                 result = models.InstructionModel().save(f[u'file'])
-
+            else:
+                result = models.InstructionModel().get_list()
         else:
             result = models.InstructionModel().get_list()
 

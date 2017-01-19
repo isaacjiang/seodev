@@ -358,7 +358,7 @@ app.config(function ($mdThemingProvider) {
                         // $mdDialog.hide();
                         func(task)
                     };
-                    $scope.pdfName = task.taskName + '  Introduction';
+                    $scope.pdfName = ' Introduction';
                     $scope.pdfUrl = "/files/download?filename=" + infoFile['filename'] +
                         "&id=" + infoFile['objectID'] + "&ctype=" + infoFile['content_type']
                     //'static/pdf/oea-big-data-guide-1522052.pdf';
@@ -475,9 +475,9 @@ app.config(function ($mdThemingProvider) {
                                 if (d.content_type == 'application/pdf') {
                                     $scope.instructionMeterial[0].push(d)
                                 }
-                                else {
-                                    $scope.instructionMeterial[1].push(d)
-                                }
+                                // else {
+                                //     $scope.instructionMeterial[1].push(d)
+                                // }
                             })
                         }
 
@@ -514,9 +514,9 @@ app.config(function ($mdThemingProvider) {
                                     if (d.content_type == 'application/pdf') {
                                         $scope.instructionMeterial[0].push(d)
                                     }
-                                    else {
-                                        $scope.instructionMeterial[1].push(d)
-                                    }
+                                    // else {
+                                    //     $scope.instructionMeterial[1].push(d)
+                                    // }
                                 })
                             }
                             $rootScope.notificationToast('Instruction material uploaded.')
