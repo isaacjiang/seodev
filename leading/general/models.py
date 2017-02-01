@@ -2,7 +2,7 @@ from pymongo import TEXT, ASCENDING, DESCENDING, IndexModel
 from leading.config import leadingdb, leadingbase
 from bson import ObjectId
 from leading.account.models import Account
-
+from leading.syssetting.models import SystemSetting
 
 class PerformanceModel():
     def __init__(self):
@@ -189,7 +189,7 @@ class PerformanceModel():
                                       "sharedMarketValue": niche['averageRecenuePPPC'] * niche['totalCustomers'] *
                                                            companyValue[
                                                                'value'] / companies / totalvalue}}, upsert=True)
-
+                        # TODO change totalCuustomers to customersAvailiable
                         # print 'totalCustomers', n['totalCustomers'], companyValue['value'], companies, totalvalue
                         if niche['niche'] == "B2B":
                             accountDescID = 'AA011'
@@ -223,7 +223,8 @@ class InstructionModel():
         self.db = leadingbase
 
     def get_list(self):
-        result = self.db.instruction_def.find({}, {"_id": 0})
+        currentPeriod = SystemSetting().get_system_current_period()
+        result = self.db.instruction_def.find({'period': currentPeriod}, {"_id": 0})
         return list(result)
 
     def save(self, file):

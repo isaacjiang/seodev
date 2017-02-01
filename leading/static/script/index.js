@@ -41,18 +41,20 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
             })
                 .success(function (res) {
                     //console.log(res)
-                    $scope.tasks = res
+                    $scope.tasks = []
                     // $scope.functions = []
-                    $scope.tasks.forEach(function (t) {
+                    res.forEach(function (t) {
 
                         //$scope.functions.push(t)
                         if (t.taskKey == "kpi") {
                             t.icon = 'ic_flag_black_48px.svg'
+                            $scope.tasks.push(t)
                             // t.colspan = 5
                             // t.rowspan = 5
                             $rootScope.toggleFunction(t)
                         }
                         else if (t.taskKey == "analysis") {
+
                             t.icon = 'ic_local_shipping_black_48px.svg'
                         }
 

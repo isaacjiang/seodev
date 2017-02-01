@@ -469,10 +469,12 @@ app.config(function ($mdThemingProvider) {
                 $http.get('/api/general/instruction')
 
                     .success(function (list) {
+                        console.log(list)
                         $scope.instructionMeterial = [[], []]
                         if (list) {
                             list.forEach(function (d) {
-                                if (d.content_type == 'application/pdf') {
+                                d.companyName == $rootScope.user_info.companyInfo.companyName
+                                if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
                                     $scope.instructionMeterial[0].push(d)
                                 }
                                 // else {
@@ -497,8 +499,11 @@ app.config(function ($mdThemingProvider) {
                     url: '/files/upload',
                     data: {files: file}
                 }).then(function (response) {
-                    console.log(response)
-                    if (response.data) {
+
+                    if (response.data && response.data[0] != undefined) {
+                        response.data[0].companyName = $rootScope.user_info.companyInfo.companyName
+                        response.data[0].period = parseInt($rootScope.user_info.companyInfo.currentPeriod)
+                        console.log(response.data[0])
                         $http({
                             method: 'POST',
                             url: "/api/general/instruction",
@@ -511,7 +516,7 @@ app.config(function ($mdThemingProvider) {
                             $scope.instructionMeterial = [[], []]
                             if (list) {
                                 list.forEach(function (d) {
-                                    if (d.content_type == 'application/pdf') {
+                                    if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
                                         $scope.instructionMeterial[0].push(d)
                                     }
                                     // else {
@@ -540,12 +545,12 @@ app.config(function ($mdThemingProvider) {
                     $scope.instructionMeterial = [[], []]
                     if (list) {
                         list.forEach(function (d) {
-                            if (d.content_type == 'application/pdf') {
+                            if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
                                 $scope.instructionMeterial[0].push(d)
                             }
-                            else {
-                                $scope.instructionMeterial[1].push(d)
-                            }
+                            // else {
+                            //     $scope.instructionMeterial[1].push(d)
+                            // }
                         })
                     }
                     $rootScope.notificationToast('Instruction material deleted.')
