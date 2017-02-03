@@ -1381,9 +1381,20 @@ app.config(function ($mdThemingProvider) {
                 $scope.selectedEmployees = [];
                 //console.log($scope.selectedEmployees)
                 $scope.toggle = function (item, list) {
-                    //console.log(item)
+                    console.log(item)
+                    var result = false, idx = -1
+                    if (list.length > 0) {
+                        list.forEach(function (l, i) {
 
-                    var idx = list.indexOf(item);
+                            if (l._id == item._id) {
+                                idx = i
+                                result = true
+                            }
+                        })
+                    }
+
+
+                    // var idx = list.indexOf(item);
                     if (idx > -1) {
                         list.splice(idx, 1);
                     }
@@ -1434,11 +1445,82 @@ app.config(function ($mdThemingProvider) {
                         })
                     }
 
+
+                    $scope.technicalExperts = item.technicalExperts
+                    //console.log(list)
+
+                    $scope.calculatedValues = {
+                        'marketingLoss': 1,
+                        'developmentLoss': 1,
+                        'marketingGain': 1,
+                        "developmentGain": 1
+                    }
+
+                    list.forEach(function (d) {
+                        $scope.calculatedValues.marketingLoss = $scope.calculatedValues.marketingLoss * d.marketingLoss
+                        $scope.calculatedValues.developmentLoss = $scope.calculatedValues.developmentLoss * d.developmentLoss
+                        $scope.calculatedValues.marketingGain = $scope.calculatedValues.marketingGain * d.marketingGain
+                        $scope.calculatedValues.developmentGain = $scope.calculatedValues.developmentLoss * d.developmentGain
+                    })
+                    $scope.calculatedValues.marketingLoss = ($scope.calculatedValues.marketingLoss * 100).toFixed(2)
+                    $scope.calculatedValues.developmentLoss = ($scope.calculatedValues.developmentLoss * 100).toFixed(2)
+                    $scope.calculatedValues.marketingGain = ($scope.calculatedValues.marketingGain * 100).toFixed(2)
+                    $scope.calculatedValues.developmentGain = ($scope.calculatedValues.developmentGain * 100).toFixed(2)
+
+                    var sumInfluence = {
+                        'VRKidEd': 0,
+                        "GovVR": 0,
+                        "VRGames": 0,
+                        "MilitaryVR": 0,
+                        "AdEdVR": 0,
+                        "VRCinema": 0
+                    }
+                    list.forEach(function (d) {
+
+                        if (d.category == "ProductDeveloper") {
+                            sumInfluence.VRKidEd += d.technicalExperts.sum * d.influenceBVs.VRKidEd
+                            sumInfluence.GovVR += d.technicalExperts.sum * d.influenceBVs.GovVR
+                            sumInfluence.VRGames += d.technicalExperts.sum * d.influenceBVs.VRGames
+                            sumInfluence.MilitaryVR += d.technicalExperts.sum * d.influenceBVs.MilitaryVR
+                            sumInfluence.AdEdVR += d.technicalExperts.sum * d.influenceBVs.AdEdVR
+                            sumInfluence.VRCinema += d.technicalExperts.sum * d.influenceBVs.VRCinema
+                        }
+
+                    })
+
+                    $scope.sumInfluenceSales = {
+                        'VRKidEd': 0,
+                        "GovVR": 0,
+                        "VRGames": 0,
+                        "MilitaryVR": 0,
+                        "AdEdVR": 0,
+                        "VRCinema": 0
+                    }
+                    list.forEach(function (d) {
+                        if (d.category == "Salespeople") {
+                            $scope.sumInfluenceSales.VRKidEd += sumInfluence.VRKidEd * d.influenceBVs.VRKidEd
+                            $scope.sumInfluenceSales.GovVR += sumInfluence.GovVR * d.influenceBVs.GovVR
+                            $scope.sumInfluenceSales.VRGames += sumInfluence.VRGames * d.influenceBVs.VRGames
+                            $scope.sumInfluenceSales.MilitaryVR += sumInfluence.MilitaryVR * d.influenceBVs.MilitaryVR
+                            $scope.sumInfluenceSales.AdEdVR += sumInfluence.AdEdVR * d.influenceBVs.AdEdVR
+                            $scope.sumInfluenceSales.VRCinema += sumInfluence.VRCinema * d.influenceBVs.VRCinema
+                        }
+
+                    })
+
                 };
 
                 $scope.exists = function (item, list) {
+                    var result = false
+                    if (list.length > 0) {
+                        list.forEach(function (l) {
+                            if (l._id == item._id) {
+                                result = true
+                            }
+                        })
+                    }
 
-                    return list.indexOf(item) > -1 ;
+                    return result;
                 };
                 $scope.funding={additionalProductDevelopment:0,desiredSalesBudget:0}
 
@@ -1493,7 +1575,7 @@ app.config(function ($mdThemingProvider) {
                         }
                     )
                         .success(function (data) {
-                            console.log(data)
+
                             $scope.negotiationhr_sales = []
                             $scope.negotiationhr_pd = []
                             $scope.negotiationhr_te = []
@@ -1521,19 +1603,22 @@ app.config(function ($mdThemingProvider) {
                                 $scope.status = data.taskdata.status
                                 $scope.selectedEmployees = []
                                 data.taskdata.negotiation.selectedEmployees.forEach(function (d) {
-
-                                    if (d.title=="Top Salespeople") {
-                                        $scope.negotiationhr_sales.forEach(function (e) {
-                                            //console.log(e.employeeID, d.employeeID,e)
-                                            if (e.employeeID == d.employeeID) {e.selected = true}
-                                        })}
-                                    else if (d.title=="Technical Experts"){
-                                        $scope.negotiationhr_te.forEach(function (e) {
-                                            if (e.employeeID == d.employeeID) {e.selected = true}
-                                        })}
-                                    else{$scope.negotiationhr_pd.forEach(function (e) {
-                                        if (e.employeeID == d.employeeID) {e.selected = true}
-                                    })}
+                                    //console.log(d)
+                                    // if (d.title=="Top Salespeople") {
+                                    //     $scope.negotiationhr_sales.forEach(function (e) {
+                                    //         //console.log(e.employeeID, d.employeeID,e)
+                                    //         if (e.employeeID == d.employeeID) {
+                                    //             e.selected = true
+                                    //         }
+                                    //     })}
+                                    // else if (d.title=="Technical Experts"){
+                                    //     $scope.negotiationhr_te.forEach(function (e) {
+                                    //         if (e.employeeID == d.employeeID) {
+                                    //             e.selected = true}
+                                    //     })}
+                                    // else{$scope.negotiationhr_pd.forEach(function (e) {
+                                    //     if (e.employeeID == d.employeeID) {e.selected = true}
+                                    // })}
 
                                     $scope.toggle(d,$scope.selectedEmployees)
 
@@ -1544,6 +1629,7 @@ app.config(function ($mdThemingProvider) {
                                 $scope.calculatedValues =data.taskdata.negotiation.calculatedValues
                                 $scope.applyStatus = data.taskdata.status
                             }
+                            console.log($scope.selectedEmployees)
                         })
                 }
                 getInitData()
