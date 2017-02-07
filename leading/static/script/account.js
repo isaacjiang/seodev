@@ -62,7 +62,7 @@ app.controller("accountCtrl", ["$scope", "$http", "windowsize", "current_user", 
                     $scope.data_total = res.filter(function (d) {
                         return d.summaryFLag == true
                     })
-                    console.log($scope.data_profitAndLoss)
+                    //console.log($scope.data_profitAndLoss)
 
                     // console.log(d3.select(".accountcard"))
                     // d3.select(".accountcard").style('width',(windowsize.width-320)+"px").style('height',"100px")

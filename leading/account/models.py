@@ -86,8 +86,8 @@ class Account():
     def sum(self):
         # 1-14
         self.subset_plus(["AA011", "AA012"], "AA021", 1)
-        self.subset_plus(["AA011"], "AA025", 0.25)
-        self.subset_plus(["AA012"], "AA026", 0.25)
+        self.subset_plus(["AA011"], "AA025", 0.32)
+        self.subset_plus(["AA012"], "AA026", 0.32)
         self.subset_plus(["AA025", "AA026"], "AA029", 1)
         self.subset_plus(["AA031", "AA032", "AA033"], "AA041", 1)
         self.subset_plus(["AA031"], "AA131", 0.25)
@@ -118,9 +118,9 @@ class Account():
         self.subset_plus(["AA025"], "BB011", 0.1)
         self.subset_plus(["AA026"], "BB012", 0.1)
         self.subset_plus(["AA141"], "BB013", 0.1)
-        self.subset_plus(["AA011"], "BB014", 0.1)
-        self.subset_plus(["AA012"], "BB015", 0.1)
-        self.subset_plus(["AA041"], "BB016", 0.1)
+        self.subset_plus(["AA011"], "BB014", 0.2)
+        self.subset_plus(["AA012"], "BB015", 0.2)
+        self.subset_plus(["AA041"], "BB016", 0.2)
         self.subset_plus(["BB011", "BB012", "BB013", "BB014", "BB015", "BB016"], "BB021", 1)
 
         self.trans_item(["BB031", "BB032"], "BB031", self.period + 1)
@@ -263,6 +263,16 @@ class AccountBudget():
         self.teamName = teamName
         self.companyName = companyName
         self.period = period
+
+    def account_init(self):
+        if self.db.account_budget_com.find(
+                {"teamName": self.teamName, "companyName": self.companyName}).count() == 0:  # test
+            acc = leadingbase.account_ini.find({})
+            for b in acc:
+                b['teamName'] = self.teamName
+                b['companyName'] = self.companyName
+                b['originID'] = str(b['_id'])
+                self.db.account_bookkeeping.insert_one(b)
 
     def account_budget_init(self):
         if self.db.account_budget_com.find(

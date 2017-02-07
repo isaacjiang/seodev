@@ -1,7 +1,15 @@
 [
   {
-    "periodID": 0,
-    "description": "Period #0"
+    "periodID": -3,
+    "description": "PrePeriod #3"
+  },
+  {
+    "periodID": -2,
+    "description": "PrePeriod #2"
+  },
+  {
+    "periodID": -1,
+    "description": "PrePeriod #1"
   },
    {"periodID":1,"description":"Period #1"},
    {"periodID":2,"description":"Period #2"},

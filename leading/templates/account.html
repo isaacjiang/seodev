@@ -54,6 +54,9 @@
                                 <tr md-row>
                                     <th md-column md-order-by="accountDescID"><span>Desc ID</span></th>
                                     <th md-column md-order-by="accountDescription"><span>Account Description</span></th>
+                                    <th md-column md-order-by="PeriodPre1"><span>Pre Period 3</span></th>
+                                    <th md-column md-order-by="PeriodPre2"><span>Pre Period 2</span></th>
+                                    <th md-column md-order-by="PeriodPre3"><span>Pre Period 1</span></th>
                                     <th md-column md-order-by="Period1"><span>Period 1</span></th>
                                     <th md-column md-order-by="Period2"><span>Period 2</span></th>
                                     <th md-column md-order-by="Period3"><span>Period 3</span></th>
@@ -69,6 +72,10 @@
                                     ng-repeat="rec in data_total | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
                                     <td md-cell>{% raw %}{{rec['Desc ID']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Account Description']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre3']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre2']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre1']}}{% endraw %}</td>
+
                                     <td md-cell>{% raw %}{{rec['Period1']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period2']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period3']}}{% endraw %}</td>
@@ -95,6 +102,9 @@
                                 <tr md-row>
                                     <th md-column md-order-by="accountDescID"><span>Desc ID</span></th>
                                     <th md-column md-order-by="accountDescription"><span>Account Description</span></th>
+                                    <th md-column md-order-by="PeriodPre1"><span>Pre Period 3</span></th>
+                                    <th md-column md-order-by="PeriodPre2"><span>Pre Period 2</span></th>
+                                    <th md-column md-order-by="PeriodPre3"><span>Pre Period 1</span></th>
                                     <th md-column md-order-by="Period1"><span>Period 1</span></th>
                                     <th md-column md-order-by="Period2"><span>Period 2</span></th>
                                     <th md-column md-order-by="Period3"><span>Period 3</span></th>
@@ -110,6 +120,9 @@
                                     ng-repeat="rec in data_profitAndLoss | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
                                     <td md-cell>{% raw %}{{rec['Desc ID']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Account Description']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre3']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre2']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre1']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period1']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period2']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period3']}}{% endraw %}</td>
@@ -134,6 +147,9 @@
                                 <tr md-row>
                                     <th md-column md-order-by="accountDescID"><span>Desc ID</span></th>
                                     <th md-column md-order-by="accountDescription"><span>Account Description</span></th>
+                                    <th md-column md-order-by="PeriodPre1"><span>Pre Period 3</span></th>
+                                    <th md-column md-order-by="PeriodPre2"><span>Pre Period 2</span></th>
+                                    <th md-column md-order-by="PeriodPre3"><span>Pre Period 1</span></th>
                                     <th md-column md-order-by="Period1"><span>Period 1</span></th>
                                     <th md-column md-order-by="Period2"><span>Period 2</span></th>
                                     <th md-column md-order-by="Period3"><span>Period 3</span></th>
@@ -149,6 +165,9 @@
                                     ng-repeat="rec in data_balance | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
                                     <td md-cell>{% raw %}{{rec['Desc ID']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Account Description']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre3']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre2']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre1']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period1']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period2']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period3']}}{% endraw %}</td>
@@ -173,6 +192,9 @@
                                 <tr md-row>
                                     <th md-column md-order-by="accountDescID"><span>Desc ID</span></th>
                                     <th md-column md-order-by="accountDescription"><span>Account Description</span></th>
+                                    <th md-column md-order-by="PeriodPre1"><span>Pre Period 3</span></th>
+                                    <th md-column md-order-by="PeriodPre2"><span>Pre Period 2</span></th>
+                                    <th md-column md-order-by="PeriodPre3"><span>Pre Period 1</span></th>
                                     <th md-column md-order-by="Period1"><span>Period 1</span></th>
                                     <th md-column md-order-by="Period2"><span>Period 2</span></th>
                                     <th md-column md-order-by="Period3"><span>Period 3</span></th>
@@ -188,6 +210,9 @@
                                     ng-repeat="rec in data_cashflow | orderBy: myOrder | limitTo: query.limit : (query.page -1) * query.limit">
                                     <td md-cell>{% raw %}{{rec['Desc ID']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Account Description']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre3']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre2']}}{% endraw %}</td>
+                                    <td md-cell>{% raw %}{{rec['PeriodPre1']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period1']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period2']}}{% endraw %}</td>
                                     <td md-cell>{% raw %}{{rec['Period3']}}{% endraw %}</td>

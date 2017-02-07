@@ -1,10 +1,156 @@
 [
-    {"accountDescID":"BA011","period":0,"value":2000000,"type":"Credit","comments":"init data"},
-    {"accountDescID":"BA041","period":0,"value":3000000,"type":"Credit","comments":"init data"},
-    {"accountDescID":"BB031","period":0,"value":2000000,"type":"Credit","comments":"init data"},
-    {"accountDescID":"BA032","period":7,"value":-1000000,"type":"Credit","comments":"init data"},
-    {"accountDescID":"BB042","period":7,"value":-1000000,"type":"Credit","comments":"init data"},
-    {"accountDescID":"BB111","period":0,"value":3000000,"type":"Credit","comments":"init data"},
-
-    {"accountDescID":"BA062","period":1,"value":620000,"type":"Credit","comments":"init data"}
+  {
+    "accountDescID": "BA041",
+    "period": -3,
+    "value": 20000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "BB111",
+    "period": -3,
+    "value": 20000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "BA040",
+    "period": -2,
+    "value": 20000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "BB111",
+    "period": -2,
+    "value": 20000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AA011",
+    "period": -2,
+    "value": 250000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AA012",
+    "period": -2,
+    "value": 400000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AA011",
+    "period": -1,
+    "value": 300000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AA012",
+    "period": -1,
+    "value": 450000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB010",
+    "period": -2,
+    "value": 5535000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB011",
+    "period": -2,
+    "value": 150000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB012",
+    "period": -2,
+    "value": 100000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB013",
+    "period": -2,
+    "value": 15000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB014",
+    "period": -2,
+    "value": 22000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB015",
+    "period": -2,
+    "value": 25000000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB016",
+    "period": -2,
+    "value": 0,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB010",
+    "period": -1,
+    "value": 5535000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB011",
+    "period": -1,
+    "value": 166050000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB012",
+    "period": -1,
+    "value": 108560000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB013",
+    "period": -1,
+    "value": 17600000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB014",
+    "period": -1,
+    "value": 27880000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB015",
+    "period": -1,
+    "value": 33210000,
+    "type": "Credit",
+    "comments": "init data"
+  },
+  {
+    "accountDescID": "AB016",
+    "period": -1,
+    "value": 0,
+    "type": "Credit",
+    "comments": "init data"
+  }
 ]
