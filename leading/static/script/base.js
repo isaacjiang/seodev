@@ -621,7 +621,7 @@ app.config(function ($mdThemingProvider) {
 
                     //console.log(current_user,selectedTeam)
                     if (selectedTeam.length == 1 && selectedCompany.length == 1){
-                        console.log(selectedTeam)
+                        //console.log(selectedTeam)
                         $http({
                                 method:'POST',
                                 url:"/api/dtools/jointeam",
@@ -1124,6 +1124,28 @@ app.config(function ($mdThemingProvider) {
                                     dv.valueatstart_core = 0
                                     dv.valueatstart_contract = 0
                                     dv.valueatstart_total = 0
+
+                                if (task.period == 1) {
+                                    if (dv.functions == 'Leadship') {
+                                        dv.valueatstart_total = 10, dv.valueatstart_core = 10, dv.valueatstart_contract = 0
+                                    }
+                                    if (dv.functions == 'Logistics') {
+                                        dv.valueatstart_total = 369, dv.valueatstart_core = 369, dv.valueatstart_contract = 0
+                                    }
+                                    if (dv.functions == 'Marketing') {
+                                        dv.valueatstart_total = 492, dv.valueatstart_core = 487, dv.valueatstart_contract = 5
+                                    }
+                                    if (dv.functions == 'Sales') {
+                                        dv.valueatstart_total = 164, dv.valueatstart_core = 82, dv.valueatstart_contract = 82
+                                    }
+                                    if (dv.functions == 'Product Development') {
+                                        dv.valueatstart_total = 123, dv.valueatstart_core = 123, dv.valueatstart_contract = 0
+                                    }
+                                    if (dv.functions == 'Social Media') {
+                                        dv.valueatstart_total = 35, dv.valueatstart_core = 24, dv.valueatstart_contract = 11
+                                    }
+                                }
+
                                 }
 
 

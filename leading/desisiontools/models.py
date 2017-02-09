@@ -58,10 +58,14 @@ class TasksModel():
         return result
 
     def auto_upgrade(self):
-        result = self.dbtask.find({"teamName":self.teamName,"companyName":self.companyName,'period':self.period,'status':'Init'},{"_id":0})
-        if result.count() ==0:
-            EntitiesModel(teamName=self.teamName,companyName=self.companyName).update_company_info(currentPeriod = self.period+1,status='Active')
         systemCurrentPeriod = SystemSetting().get_system_current_period()
+        result = self.dbtask.find(
+            {"teamName": self.teamName, "companyName": self.companyName, 'period': systemCurrentPeriod,
+             'status': 'Init'}, {"_id": 0})
+        if result.count() == 0:
+            EntitiesModel(teamName=self.teamName, companyName=self.companyName).update_company_info(
+                currentPeriod=systemCurrentPeriod + 1, status='Active')
+
         checkperiod = self.db.companies.find(
             {"currentPeriod": systemCurrentPeriod, "status": {"$in": ["Active", "Init"]}})
         if checkperiod.count() == 0:
@@ -119,14 +123,15 @@ class TeamInitialization(TasksModel):
             teams = leadingbase.teams.find({})
             for team in teams:
                 self.db.teams.insert_one(team)
+        systemCurrentPeriod = SystemSetting().get_system_current_period()
 
         if self.db.companies.find({"teamName": self.teamName}).count() == 0:  # test
             self.db.companies.insert_one(
                 {"companyID":  self.teamName + "01", "teamName":  self.teamName, "companyName": 'LegacyCo', "status": "Init",
-                 "currentPeriod": 0})
+                 "currentPeriod": systemCurrentPeriod})
             self.db.companies.insert_one(
                 {"companyID":  self.teamName + "02", "teamName":  self.teamName, "companyName": 'NewCo', "status": "Init",
-                 "currentPeriod": 0})
+                 "currentPeriod": systemCurrentPeriod})
             #Alarms(source='company_init', alarm="Company init complete:" + teamName)
         print "company init complete, team Name",  self.teamName
 

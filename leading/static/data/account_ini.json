@@ -152,5 +152,12 @@
     "value": 0,
     "type": "Credit",
     "comments": "init data"
+  },
+  {
+    "accountDescID": "AB014",
+    "period": 1,
+    "value": 12000000,
+    "type": "Credit",
+    "comments": "init data"
   }
 ]

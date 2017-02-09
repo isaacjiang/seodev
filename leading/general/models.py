@@ -183,10 +183,10 @@ class PerformanceModel():
                             {"niche": niche['niche'], 'currentPeriod': niche['period'], 'teamName': n,
                              'companyName': niche['company'], "flag": "#nicheSum"},
                             {"$set": {'shareRate': companyValue['value'] / companies / totalvalue,
-                                      'totalCustomers': niche['totalCustomers'] * companyValue[
+                                      'totalCustomers': niche['customersAvailable'] * companyValue[
                                           'value'] / companies / totalvalue,
                                       "averageRecenuePPPC": niche['averageRecenuePPPC'],
-                                      "sharedMarketValue": niche['averageRecenuePPPC'] * niche['totalCustomers'] *
+                                      "sharedMarketValue": niche['averageRecenuePPPC'] * niche['customersAvailable'] *
                                                            companyValue[
                                                                'value'] / companies / totalvalue}}, upsert=True)
                         # TODO change totalCuustomers to customersAvailiable
@@ -209,13 +209,14 @@ class PerformanceModel():
 
                         Account(teamName=n, companyName=niche['company'], period=niche['period']) \
                             .bookkeeping(accountDescID=accountDescID, objectID=niche["_id"],
-                                         value=niche['averageRecenuePPPC'] * niche['totalCustomers'] * companyValue[
+                                         value=niche['averageRecenuePPPC'] * niche['customersAvailable'] * companyValue[
                                              'value'] / companies / totalvalue, comments='Market Share')
 
                         Account(teamName=n, companyName=niche['company'], period=niche['period']) \
                             .bookkeeping(accountDescID=accountDescID2, objectID=niche["_id"],
                                          value=(niche['averageRecenuePPPC'] * niche[
-                                             'totalCustomers'] * companyValue['value'] / companies / totalvalue) / 4,
+                                             'customersAvailable'] * companyValue[
+                                                    'value'] / companies / totalvalue) / 4,
                                          comments='Market Share')
 
 class InstructionModel():
@@ -224,7 +225,7 @@ class InstructionModel():
 
     def get_list(self):
         currentPeriod = SystemSetting().get_system_current_period()
-        result = self.db.instruction_def.find({'period': currentPeriod}, {"_id": 0})
+        result = self.db.instruction_def.find({'period': currentPeriod}, {"_id": 0}).sort("filename", 1)
         return list(result)
 
     def save(self, file):

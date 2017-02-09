@@ -110,10 +110,10 @@ class Account():
         self.subset_plus(["AA026"], "BA016", 0.1)
         self.subset_plus(["AA141"], "BA017", 0.1)
         self.trans_item(["BA040", "BA041"], "BA040", self.period + 1)
-        self.subset_plus(["BA040", 'BA041'], "BA042", 1)
+        # self.subset_plus(["BA040", 'BA041'], "BA042", 1)
 
         self.trans_item(["BA061", "BA062"], "BA061", self.period + 1)
-        self.subset_minus("BA061", "BA062", "BA061", 1)
+        # self.subset_minus("BA061", "BA062", "BA061", 1)
 
         self.subset_plus(["AA025"], "BB011", 0.1)
         self.subset_plus(["AA026"], "BB012", 0.1)
@@ -265,13 +265,13 @@ class AccountBudget():
         self.period = period
 
     def account_init(self):
-        if self.db.account_budget_com.find(
-                {"teamName": self.teamName, "companyName": self.companyName}).count() == 0:  # test
+        if self.companyName == 'LegacyCo':  # test
             acc = leadingbase.account_ini.find({})
             for b in acc:
                 b['teamName'] = self.teamName
                 b['companyName'] = self.companyName
                 b['originID'] = str(b['_id'])
+                del b['_id']
                 self.db.account_bookkeeping.insert_one(b)
 
     def account_budget_init(self):

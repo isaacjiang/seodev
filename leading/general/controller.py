@@ -150,7 +150,7 @@ class PerformanceService():
         currentPeriod['companyName'] = userInfo['companyInfo']['companyName']
         currentPeriod['currentPeriod'] = userInfo['companyInfo']['currentPeriod']
         systemCurrentPeriod = SystemSetting().get_system_current_period()
-
+        print currentPeriod
         # currentPeriod = models.getCurrentPeriod(username)
         #models.marketingShare(currentPeriod['teamName'], currentPeriod['companyName'],'0'+ str(currentPeriod['currentPeriod'])+'100')
         result = {}
@@ -166,9 +166,7 @@ class PerformanceService():
                          "currentPeriod": period}).sort([("shareRate", pymongo.ASCENDING)])
                     for index, niche_rank in enumerate(niche_marketingshare_ranking):
                         self.db.marketingshare_niche.update_one(
-                            {"flag": "#nicheSum", "niche": niche, "teamName": currentPeriod['teamName'],
-                             "companyName": currentPeriod['companyName'],
-                             "currentPeriod": period}, {"$set": {"ranking": index + 1}})
+                            {"_id": niche_rank['_id']}, {"$set": {"ranking": index + 1}})
 
             niche_marketingshare = self.db.marketingshare_niche.find(
                 {"flag": "#nicheSum", "teamName": currentPeriod['teamName'],
@@ -201,35 +199,28 @@ class PerformanceService():
                     niche_index_ranking = self.db.marketingshare_com.find(
                         {"flag": "#comSum", "accountDescID": acc, "companyName": currentPeriod['companyName'],
                          "currentPeriod": period}).sort([("competenceIndex", pymongo.ASCENDING)])
+
                     for index, acc_rank in enumerate(niche_index_ranking):
-                        self.db.marketingshare_com.update_one(
-                            {"flag": "#comSum", "accountDescID": acc, "teamName": currentPeriod['teamName'],
-                             "companyName": currentPeriod['companyName'],
-                             "currentPeriod": period}, {"$set": {"competenceIndexRank": index + 1}})
+                        self.db.marketingshare_com.update_one({'_id': acc_rank['_id']},
+                                                              {"$set": {"competenceIndexRank": index + 1}})
                     niche_index_ranking2 = self.db.marketingshare_com.find(
                         {"flag": "#comSum", "accountDescID": acc, "companyName": currentPeriod['companyName'],
                          "currentPeriod": period}).sort([("stressIndex", pymongo.ASCENDING)])
                     for index, acc_rank in enumerate(niche_index_ranking2):
                         self.db.marketingshare_com.update_one(
-                            {"flag": "#comSum", "accountDescID": acc, "teamName": currentPeriod['teamName'],
-                             "companyName": currentPeriod['companyName'],
-                             "currentPeriod": period}, {"$set": {"stressIndexRank": index + 1}})
+                            {'_id': acc_rank['_id']}, {"$set": {"stressIndexRank": index + 1}})
                     niche_index_ranking3 = self.db.marketingshare_com.find(
                         {"flag": "#comSum", "accountDescID": acc, "companyName": currentPeriod['companyName'],
                          "currentPeriod": period}).sort([("adaptabilityIndex", pymongo.ASCENDING)])
                     for index, acc_rank in enumerate(niche_index_ranking3):
                         self.db.marketingshare_com.update_one(
-                            {"flag": "#comSum", "accountDescID": acc, "teamName": currentPeriod['teamName'],
-                             "companyName": currentPeriod['companyName'],
-                             "currentPeriod": period}, {"$set": {"adaptabilityIndexRank": index + 1}})
+                            {'_id': acc_rank['_id']}, {"$set": {"adaptabilityIndexRank": index + 1}})
                     niche_index_ranking4 = self.db.marketingshare_com.find(
                         {"flag": "#comSum", "accountDescID": acc, "companyName": currentPeriod['companyName'],
                          "currentPeriod": period}).sort([("legitimacyIndex", pymongo.ASCENDING)])
                     for index, acc_rank in enumerate(niche_index_ranking4):
                         self.db.marketingshare_com.update_one(
-                            {"flag": "#comSum", "accountDescID": acc, "teamName": currentPeriod['teamName'],
-                             "companyName": currentPeriod['companyName'],
-                             "currentPeriod": period}, {"$set": {"legitimacyIndexRank": index + 1}})
+                            {'_id': acc_rank['_id']}, {"$set": {"legitimacyIndexRank": index + 1}})
 
             for index in index_com:
                 #print index
@@ -289,25 +280,20 @@ class PerformanceService():
                                                 'period': acc_r['period']}, {"$set": {'ROS': ROS,'ROA':ROA,"NOCG":NOCG}},
                                                    upsert=True)
                 acc_ranking = self.db.account_ranking.find(
-                    {'period': period, "companyName": currentPeriod["companyName"]},
-                    {"_id": 0}).sort([("ROS", pymongo.ASCENDING)])
+                    {'period': period, "companyName": currentPeriod["companyName"]}).sort([("ROS", pymongo.ASCENDING)])
                 for index, acc_rank in enumerate(acc_ranking):
-                    self.db.account_ranking.update({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'],
-                                                'period': acc_r['period']},
+                    self.db.account_ranking.update({"_id": acc_rank['_id']},
                                                    {"$set": {'ROSrank': index+1}})
                 acc_ranking2 = self.db.account_ranking.find(
-                    {'period': period, "companyName": currentPeriod["companyName"]},
-                    {"_id": 0}).sort([("ROA", pymongo.ASCENDING)])
+                    {'period': period, "companyName": currentPeriod["companyName"]}).sort([("ROA", pymongo.ASCENDING)])
                 for index, acc_rank in enumerate(acc_ranking2):
-                    self.db.account_ranking.update({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'],
-                                                'period': acc_r['period']},
+                    self.db.account_ranking.update({"_id": acc_rank['_id']},
                                                    {"$set": {'ROArank': index + 1}})
                 acc_ranking3 = self.db.account_ranking.find(
-                    {'period': period, "companyName": currentPeriod["companyName"]},
-                    {"_id": 0}).sort([("NOCG", pymongo.ASCENDING)])
+                    {'period': period, "companyName": currentPeriod["companyName"]}, ).sort(
+                    [("NOCG", pymongo.ASCENDING)])
                 for index, acc_rank in enumerate(acc_ranking3):
-                    self.db.account_ranking.update({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'],
-                                                'period': acc_r['period']},
+                    self.db.account_ranking.update({"_id": acc_rank['_id']},
                                                    {"$set": {'NOCGrank': index + 1}})
 
                 acc_ranking_com = self.db.account_ranking.find_one(
