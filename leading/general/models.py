@@ -126,6 +126,7 @@ class PerformanceModel():
             for c in index_value:
                 # print "index",c['indexName'],c['category'],c['value']
                 if c['indexName'] == "competenceIndex":
+                    # print c['value']
                     self.db.marketingshare_com.update_one({"flag": "#comSum", "currentPeriod": c['period'],
                                                            "accountDescID": c['accDescID'],
                                                            "teamName": c['teamName'],
@@ -149,6 +150,9 @@ class PerformanceModel():
                                                            "teamName": c['teamName'],
                                                            "companyName": c['companyName']},
                                                           {"$mul": {"legitimacyIndex": c['value']}})
+
+        self.db.marketingshare_total.drop()
+
         market = self.db.marketingshare_com.find({}, {"_id": 0})
         for m in market:
             self.db.marketingshare_total.update_one({"flag": "#comSum", "currentPeriod": m['currentPeriod'],
@@ -170,6 +174,7 @@ class PerformanceModel():
         self.db.marketingshare_total.find_one({"flag": "#totalSum", "currentPeriod":period},
                                               {"_id": 0})['value'] / companies
         totalvalue = 1 if totalvalue == 0 else totalvalue
+
         niche_cal = self.db.niches_cal.find({"period": period})
         for niche in niche_cal:
             for n in niche['selectedByCompany']:
@@ -179,6 +184,7 @@ class PerformanceModel():
                         {'currentPeriod': niche['period'], 'teamName': n, 'companyName': niche['company'],
                          "flag": "#comSum"}, {"_id": 0})
                     if companyValue != None:
+                        # print n,companyValue['value']/totalvalue
                         self.db.marketingshare_niche.update_one(
                             {"niche": niche['niche'], 'currentPeriod': niche['period'], 'teamName': n,
                              'companyName': niche['company'], "flag": "#nicheSum"},
@@ -212,12 +218,12 @@ class PerformanceModel():
                                          value=niche['averageRecenuePPPC'] * niche['customersAvailable'] * companyValue[
                                              'value'] / companies / totalvalue, comments='Market Share')
 
-                        Account(teamName=n, companyName=niche['company'], period=niche['period']) \
-                            .bookkeeping(accountDescID=accountDescID2, objectID=niche["_id"],
-                                         value=(niche['averageRecenuePPPC'] * niche[
-                                             'customersAvailable'] * companyValue[
-                                                    'value'] / companies / totalvalue) / 4,
-                                         comments='Market Share')
+                        # Account(teamName=n, companyName=niche['company'], period=niche['period']) \
+                        #     .bookkeeping(accountDescID=accountDescID2, objectID=niche["_id"],
+                        #                  value=(niche['averageRecenuePPPC'] * niche[
+                        #                      'customersAvailable'] * companyValue[
+                        #                             'value'] / companies / totalvalue) / 4,
+                        #                  comments='Market Share')
 
 class InstructionModel():
     def __init__(self):

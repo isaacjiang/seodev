@@ -272,11 +272,11 @@ class TasksService():
             companyName =  data["companyName"] if 'companyName' in data.keys() else None
             teamName = data["teamName"] if 'teamName' in data.keys() else None
             period = data["period"] if 'period' in data.keys() else 0
-
+            result = {"currentPeriod": period}
             tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
             #print companyName
             if companyName== "NewCo":
-                if tModel.get_saved_data()['status'] == 'approved':
+                if tModel.get_saved_data() and tModel.get_saved_data()['status'] == 'approved':
                     tModel.task_complete()
                 else:
                     tModel.save(data)
@@ -391,7 +391,6 @@ class TasksService():
             result = tModel.task_complete()
             return json.dumps(result)
 
-
     def corporateacquisitions(self):
         if request.method =='GET':
             taskID = request.args["taskID"]
@@ -444,9 +443,9 @@ class PeriodicTasksService():
 
 
     def account_sum(self):
-        companys  = self.db.companies.find({"status":"Active"},{"_id":0})
+        companys = self.db.companies.find({"status": {"$in": ["Active", "Init"]}}, {"_id": 0})
         for com in companys:
-            Account(companyName=com['companyName'], teamName=com['teamName'], period=com['currentPeriod']).sum()
+            Account(companyName=com['companyName'], teamName=com['teamName'], period=self.systemCurrentPeriod).sum()
             if com['currentPeriod'] == 1:
                 Account(companyName=com['companyName'], teamName=com['teamName'], period=-2).sum()
                 Account(companyName=com['companyName'], teamName=com['teamName'], period=-1).sum()
@@ -459,7 +458,9 @@ class PeriodicTasksService():
     def marketing_share(self):
         companys  = self.db.companies.find({"status":"Active"},{"_id":0})
         for com in companys:
-            PerformanceModel().marketingShare(companyName=com['companyName'],teamName=com['teamName'],period=com['currentPeriod'])
+            # print com['companyName'],com['teamName']
+            PerformanceModel().marketingShare(companyName=com['companyName'], teamName=com['teamName'],
+                                              period=self.systemCurrentPeriod)
 
     def hiringDecision(self):
         tasks = leadingbase.task_list.find({'taskName': 'Hires', 'period': self.systemCurrentPeriod}, {'_id': 0})
@@ -505,10 +506,14 @@ class PeriodicTasksService():
             if workforce['period'] <= self.systemCurrentPeriod:
                 acc = Account(teamName=workforce['teamName'], companyName=workforce['companyName'],
                               period=self.systemCurrentPeriod)
-                value = int(workforce['adjustmentcost_total'].replace(',', ''))
+                value1 = int(workforce['adjustmentcost_total'].replace(',', ''))
+                # acc.bookkeeping(objectID=workforce["_id"],
+                #                 accountDescID=self.categoryToItem(workforce['functions']),
+                #                 value=value1, comments='Workforce adjustment' + workforce['functions'])
+                value2 = int(workforce['adjustedworkforce_total']) * (workforce['avWage'] + workforce['avExpense'])
                 acc.bookkeeping(objectID=workforce["_id"],
                                 accountDescID=self.categoryToItem(workforce['functions']),
-                                value=value, comments='Workforce ' + workforce['functions'])
+                                value=value1 + value2, comments='Workforce' + workforce['functions'])
 
     def budgetAccountBookkeeping(self):
         budget = self.db.budget_com.find()
@@ -633,12 +638,15 @@ class PeriodicTasksService():
         negotiation1s = self.db.negotiation1_com.find({"status": "approved"})
 
         for negotiation1 in negotiation1s:
+            print negotiation1['teamName']
             expense = 0
             for person in negotiation1['negotiation']['selectedEmployees']:
                 expense += person['avgExpense'] + person['avgWage']
+            print expense
 
-            fundings = negotiation1['negotiation']['funding']['additionalProductDevelopment'] * 170000 + \
-                       negotiation1['negotiation']['funding']['desiredSalesBudget'] * 40000
+            fundings = negotiation1['negotiation']['funding']['additinalProductDeveloperNumber'] * 170000 * 2 + \
+                       negotiation1['negotiation']['funding']['additinalSalesNumber'] * 40000
+            print fundings
 
             Account(teamName=negotiation1['teamName'], companyName='LegacyCo',
                     period=negotiation1['negotiation']['period']) \
@@ -711,5 +719,4 @@ class PeriodicTasksService():
                     .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=expenditure1,
                                  comments='Transfer  from LegacyCo.')
 
-
-                # PeriodicTasksService().account_sum()
+# PeriodicTasksService().marketing_share()

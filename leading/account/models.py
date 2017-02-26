@@ -124,7 +124,7 @@ class Account():
         self.subset_plus(["BB011", "BB012", "BB013", "BB014", "BB015", "BB016"], "BB021", 1)
 
         self.trans_item(["BB031", "BB032"], "BB031", self.period + 1)
-        self.trans_item("BB050", "BB041", self.period + 1)
+        self.trans_item("BB042", "BB042", self.period + 1)
         self.subset_plus(["BB041,""BB042"], "BB050", 1)
         self.subset_plus(["BB031", "BB032", "BB041", "BB042"], "BB060", 1)
         self.trans_item("BB111", "BB111", self.period + 1)
@@ -159,7 +159,7 @@ class Account():
         self.subset_minus("BB016", "CA034", "CA034", 1)
         self.subset_plus(['BB032'], "CA053", 1)
         self.subset_plus(['BB112'], "CA054", 1)
-        self.subset_plus(['BA062'], "CA071", -1)
+        self.subset_plus(['BA061'], "CA071", -1)
         self.subset_plus(['BB042'], "CA081", 1)
 
         # 54
@@ -272,7 +272,9 @@ class AccountBudget():
                 b['companyName'] = self.companyName
                 b['originID'] = str(b['_id'])
                 del b['_id']
-                self.db.account_bookkeeping.insert_one(b)
+                self.db.account_bookkeeping.update_one(
+                    {"teamName": b['teamName'], 'companyName': b['companyName'], "originID": b['originID']},
+                    {"$set": b}, upsert=True)
 
     def account_budget_init(self):
         if self.db.account_budget_com.find(

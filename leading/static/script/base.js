@@ -453,7 +453,9 @@ app.config(function ($mdThemingProvider) {
             }
             if (companyName=='LegacyCo'){
                 if (['01001','03001','04001'].indexOf(taskName)>=0){hiringfn(task);}
-                if (['01003','05003','06003'].indexOf(taskName)>=0){resourcesfn(task);}
+                if (['01003', '02003', '03003', '04003', '05003', '06003'].indexOf(taskName) >= 0) {
+                    resourcesfn(task);
+                }
                 if (['01004','02004','03004','04004','05004','06004','07004'].indexOf(taskName)>=0){budgetfn(task);}
                 if (['02005','04005'].indexOf(taskName)>=0){projectfn(task);}
                 if (['01006','02006','03006','04006','05006','06006','07006'].indexOf(taskName)>=0){actionsfn(task);}
@@ -505,25 +507,25 @@ app.config(function ($mdThemingProvider) {
                         response.data[0].period = parseInt($rootScope.user_info.companyInfo.currentPeriod)
                         console.log(response.data[0])
                         $http({
-                            method: 'POST',
-                            url: "/api/general/instruction",
-                            data: {
-                                file: response.data[0]
-                            }
+                                method: 'POST',
+                                url: "/api/general/instruction",
+                                data: {
+                                    file: response.data[0]
+                                }
                             }
                         ).success(function (list) {
-                            console.log(list)
-                            $scope.instructionMeterial = [[], []]
-                            if (list) {
-                                list.forEach(function (d) {
-                                    if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
-                                        $scope.instructionMeterial[0].push(d)
-                                    }
-                                    // else {
-                                    //     $scope.instructionMeterial[1].push(d)
-                                    // }
-                                })
-                            }
+                        console.log(list)
+                        $scope.instructionMeterial = [[], []]
+                        if (list) {
+                            list.forEach(function (d) {
+                                if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
+                                    $scope.instructionMeterial[0].push(d)
+                                }
+                                // else {
+                                //     $scope.instructionMeterial[1].push(d)
+                                // }
+                            })
+                        }
                             $rootScope.notificationToast('Instruction material uploaded.')
                         })
                     }
@@ -551,7 +553,7 @@ app.config(function ($mdThemingProvider) {
                             // else {
                             //     $scope.instructionMeterial[1].push(d)
                             // }
-                        })
+                    })
                     }
                     $rootScope.notificationToast('Instruction material deleted.')
                 })
@@ -565,25 +567,25 @@ app.config(function ($mdThemingProvider) {
 
                 $http.get("/api/account/accountbudget", {params: {username: $rootScope.current_user.username}})
                     .success(function (res) {
-                    console.log(res)
-                    $scope.current_budget = res
-                })
+                        console.log(res)
+                        $scope.current_budget = res
+                    })
                 $scope.current_index = -1
                 $scope.budget_input = function (index, budget) {
                     console.log(index, budget)
 
                     $scope.current_index = index
-                }
+            }
                 $scope.$watchCollection('current_index', function (newVal, oldVal) {
                     if (oldVal != undefined && newVal != oldVal) {
                         // console.log( oldVal)
                         if (oldVal != -1) {
                             $http.post('/api/account/accountbudget', $scope.current_budget[oldVal]).success(function (res) {
                                 //    console.log(res)
-                            })
-                        }
-
+                        })
                     }
+
+                }
                 })
 
             }
@@ -1106,8 +1108,11 @@ app.config(function ($mdThemingProvider) {
                     .success(function(d){
                         console.log(d)
                     if (d){
-                        var forecast =d.forecast.b2b+d.forecast.b2c+d.forecast.newoffering
-
+                        d.forecast.b2b = d.forecast.b2b ? d.forecast.b2b : 0
+                        d.forecast.b2c = d.forecast.b2c ? d.forecast.b2c : 0
+                        d.forecast.newoffering = d.forecast.newoffering ? d.forecast.newoffering : 0
+                        var forecast = d.forecast.b2b + d.forecast.b2c + d.forecast.newoffering
+                        console.log(forecast)
                         d.workforce_def.forEach(function (dv) {
 
 
@@ -1116,16 +1121,17 @@ app.config(function ($mdThemingProvider) {
                                 })
 
                             if (v.length > 0) {
-                                    dv.valueatstart_core = parseInt(v[0].adjustment_core)
-                                    dv.valueatstart_contract = parseInt(v[0].adjustment_contract)
-                                    dv.valueatstart_total = parseInt(v[0].adjustment_total)
+                                dv.valueatstart_core = parseInt(v[0].adjustedworkforce_core)
+                                dv.valueatstart_contract = parseInt(v[0].adjustedworkforce_contract)
+                                dv.valueatstart_total = parseInt(v[0].adjustedworkforce_total)
                                 }
                                 else {
                                     dv.valueatstart_core = 0
                                     dv.valueatstart_contract = 0
                                     dv.valueatstart_total = 0
 
-                                if (task.period == 1) {
+
+                                if (task.period == 1 && task.companyName == 'LegacyCo') {
                                     if (dv.functions == 'Leadship') {
                                         dv.valueatstart_total = 10, dv.valueatstart_core = 10, dv.valueatstart_contract = 0
                                     }
@@ -1145,8 +1151,21 @@ app.config(function ($mdThemingProvider) {
                                         dv.valueatstart_total = 35, dv.valueatstart_core = 24, dv.valueatstart_contract = 11
                                     }
                                 }
+                                if (task.period == 2 && task.companyName == 'NewCo') {
+                                    var pd = d['negotiation']['negotiation']['funding']['additinalProductDeveloperNumber']
+                                    pd = pd ? pd : 0
+                                    var sl = d['negotiation']['negotiation']['funding']['additinalSalesNumber']
+                                    sl = sl ? sl : 0
+
+                                    if (dv.functions == 'Sales') {
+                                        dv.valueatstart_total = sl, dv.valueatstart_core = parseInt(sl / 2), dv.valueatstart_contract = parseInt(sl / 2)
+                                    }
+                                    if (dv.functions == 'Product Development') {
+                                        dv.valueatstart_total = pd, dv.valueatstart_core = pd, dv.valueatstart_contract = 0
+                                    }
 
                                 }
+                            }
 
 
                         })
@@ -2261,6 +2280,8 @@ app.config(function ($mdThemingProvider) {
                         $scope.estimatedIncome= data.negotiation.estimatedIncome
                         $scope.Costs = data.negotiation.costs
                         $scope.expenditure =data.negotiation.expenditure
+                        $scope.workforce = data.workforce
+                        // console.log($scope.workforce['Product Development'].adjustedworkforce_total)
                     }
 
                     else{
@@ -2271,15 +2292,32 @@ app.config(function ($mdThemingProvider) {
 
                     }
                 })
-                //$scope.selectedIndex=1
-                // $http.get('/server/queryworkforceatstart?username='+$rootScope.current_user.username).success(function(d){
-                //     // console.log(d)
-                //     $scope.workforce={"marketing": {"valueatstart": d.marketing.adjustment+d.marketing.valueatstart, "valuebyhr": d.marketing.adjustment+d.marketing.valueatstart+100, "adjustment": 0},
-                //         "sales": {"valueatstart": d.sales.adjustment+d.sales.valueatstart, "valuebyhr": d.sales.adjustment+d.sales.valueatstart+100, "adjustment": 0},
-                //         "support": {"valueatstart": d.support.adjustment+d.support.valueatstart, "valuebyhr": d.support.adjustment+d.support.valueatstart+100, "adjustment": 0},
-                //         "logisticsit": {"valueatstart": d.logisticsit.adjustment+d.logisticsit.valueatstart, "valuebyhr": d.logisticsit.adjustment+d.logisticsit.valueatstart+100, "adjustment": 0},
-                //         "productdevelopment": {"valueatstart": d.productdevelopment.adjustment+d.productdevelopment.valueatstart, "valuebyhr": d.productdevelopment.adjustment+d.productdevelopment.valueatstart+100, "adjustment": 0}}
-                // })
+
+                $scope.$watch('Costs', function (nVal, oVal) {
+                    console.log(nVal)
+                    if (nVal != undefined) {
+                        $scope.Costs.forEach(function (c) {
+                            // "development" : 650,
+                            //     "logisticsit" : 670,
+                            //     "support" : 670,
+                            //     "sales" : 620,
+                            //     "period" : 4,
+                            //     "marketing" : 660
+                            c.hirecost_development = formatNum((wf.avWage + wf.avExpense) * wf.adjustment_core *
+                                (wf.adjustment_core > 0 ? wf.costOfHire : (wf.costOfFire * (-1))))
+
+                            wf.adjustwages_core = formatNum(wf.avWage * wf.adjustment_core)
+
+
+                            wf.adjustexpenses_core = formatNum(wf.avExpense * wf.adjustment_core)
+
+                        })
+
+                    }
+
+
+                }, true)
+
 
                 $scope.submit = function (estimatedIncome,Costs,expenditure,action) {
 
@@ -2299,17 +2337,14 @@ app.config(function ($mdThemingProvider) {
                         }
                     )
 
-                        .success(function(d){
+                        .success(function (d) {
                             // $window.location.reload();
+                            $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                         console.log(d)})
-                    $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
                     $mdDialog.cancel();
                     $mdSidenav('taskslist').close()
                     $rootScope.notificationToast("Submitted application.")
                 };
-                $timeout(function () {
-                    timer('2016-09-16 01:01:38')
-                },1000)
 
                 $scope.fileSelected=function(file) {
                     // var fileID =  fileUpload(file)

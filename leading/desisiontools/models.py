@@ -3,6 +3,7 @@ from leading.config import leadingdb, leadingbase
 from bson import ObjectId
 from leading.entities.models import EntitiesModel
 from leading.syssetting.models import SystemSetting, DatabaseBackup
+from datetime import datetime
 
 class TasksModel():
     def __init__(self, taskID=None,companyName=None,teamName=None,period=0):
@@ -185,6 +186,9 @@ class WorkforceModel(TasksModel):
             result["forecast"] = forecast["forecast"]
         else:
             result["forecast"] = {}
+        if self.companyName == 'NewCo' and self.period == 2:
+            result['negotiation'] = self.db.negotiation1_com.find_one({'teamName': self.teamName, "status": "approved"},
+                                                                      {"_id": 0})
 
         workforce_def = leadingbase.workforce_def.find({"period": self.period}, {"_id": 0})
         result['workforce_def']=[]
@@ -370,18 +374,34 @@ class Negotiate1Model(TasksModel):
         return id
 
 class Negotiate2Model(TasksModel):
-    # def get_init(self):
-    #     result = {}
-    #     negotiationhr=[]
-    #     cursor = leadingbase.negotiation_def.find({}, {"_id": 0})
-    #     for item in cursor:
-    #         negotiationhr.append(item)
-    #     result["data"]=negotiationhr
-    #     return result
+    def get_init_workforce(self):
+        result = {}
+        valueatstart = self.db.workforce_com.find({"teamName": self.teamName, "companyName": self.companyName,
+                                                   "period": self.period}, {'_id': 0})
+        print valueatstart.count(), 'tttt'
+        if valueatstart.count() > 0:
+            for value in valueatstart:
+                result[value['functions']] = value
+
+        else:
+            valueatstart2 = self.db.workforce_com.find({"teamName": self.teamName, "companyName": self.companyName,
+                                                        "period": self.period - 1}, {'_id': 0})
+            if valueatstart2:
+                for value in valueatstart2:
+                    result[value['functions']] = value
+
+            if self.companyName == 'NewCo' and valueatstart2.count() == 0:
+                res = self.db.negotiation1_com.find_one({'teamName': self.teamName, "status": "approved"}, {"_id": 0})
+                result["Product Development"] = {
+                    "adjustedworkforce_total": res['negotiation']['funding']['additinalProductDeveloperNumber']}
+                result["Sales"] = {"adjustedworkforce_total": res['negotiation']['funding']['additinalSalesNumber']}
+
+        return result
 
     def get_saved_data(self):
         taskdata = self.db.negotiation2_com.find_one({"teamName":self.teamName,
                                                       "currentPeriod":self.period},{"_id":0})
+        taskdata['workforce'] = self.get_init_workforce()
         return taskdata
 
     def save(self,data):
@@ -398,12 +418,31 @@ class VisionaryCompetitionModel(TasksModel):
     def get_init(self):
         conditions = {"teamName": self.teamName}
         result = {}
-        print self.teamName
         negotiation = self.db.negotiation1_com.find_one(conditions, {"_id": 0})
         if negotiation is not None:
             result = negotiation
         result["keyword"] = "newCoNegotiation"
+        # vcStatus = self.db.visionarycompetitionStatus.find_one({},{"_id":0})
+        # if vcStatus == None:
+        #     self.db.visionarycompetitionStatus.insert_one({'vsStatus':'Round 1',"startTime":datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+        #     vcStatus = self.db.visionarycompetitionStatus.find_one({},{"_id":0})
+        # result['vcStatus'] = vcStatus
+        result['vcStatus'] = self.get_status()['vcStatus']
+        return result
 
+    def get_status(self):
+        # conditions = {"teamName": self.teamName}
+        result = {}
+        # negotiation = self.db.negotiation1_com.find_one(conditions, {"_id": 0})
+        # if negotiation is not None:
+        #     result = negotiation
+        # result["keyword"] = "newCoNegotiation"
+        vcStatus = self.db.visionarycompetitionStatus.find_one({}, {"_id": 0})
+        if vcStatus == None:
+            self.db.visionarycompetitionStatus.insert_one(
+                {'vsStatus': 'Round 1', "startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+            vcStatus = self.db.visionarycompetitionStatus.find_one({}, {"_id": 0})
+        result['vcStatus'] = vcStatus
         return result
 
     def save(self, data):
