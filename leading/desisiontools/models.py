@@ -378,7 +378,6 @@ class Negotiate2Model(TasksModel):
         result = {}
         valueatstart = self.db.workforce_com.find({"teamName": self.teamName, "companyName": self.companyName,
                                                    "period": self.period}, {'_id': 0})
-        print valueatstart.count(), 'tttt'
         if valueatstart.count() > 0:
             for value in valueatstart:
                 result[value['functions']] = value
@@ -396,12 +395,17 @@ class Negotiate2Model(TasksModel):
                     "adjustedworkforce_total": res['negotiation']['funding']['additinalProductDeveloperNumber']}
                 result["Sales"] = {"adjustedworkforce_total": res['negotiation']['funding']['additinalSalesNumber']}
 
+
         return result
 
     def get_saved_data(self):
         taskdata = self.db.negotiation2_com.find_one({"teamName":self.teamName,
                                                       "currentPeriod":self.period},{"_id":0})
         taskdata['workforce'] = self.get_init_workforce()
+        workforce_def = leadingbase.workforce_def.find({"period": self.period}, {"_id": 0})
+        taskdata['workforce_def'] = []
+        for w in workforce_def:
+            taskdata['workforce_def'].append(w)
         return taskdata
 
     def save(self,data):

@@ -2281,6 +2281,7 @@ app.config(function ($mdThemingProvider) {
                         $scope.Costs = data.negotiation.costs
                         $scope.expenditure =data.negotiation.expenditure
                         $scope.workforce = data.workforce
+                        $scope.workforce_def = data.workforce_def
                         // console.log($scope.workforce['Product Development'].adjustedworkforce_total)
                     }
 
@@ -2294,30 +2295,110 @@ app.config(function ($mdThemingProvider) {
                 })
 
                 $scope.$watch('Costs', function (nVal, oVal) {
-                    console.log(nVal)
                     if (nVal != undefined) {
+                        //console.log( $scope.workforce_def)
                         $scope.Costs.forEach(function (c) {
-                            // "development" : 650,
-                            //     "logisticsit" : 670,
-                            //     "support" : 670,
-                            //     "sales" : 620,
-                            //     "period" : 4,
-                            //     "marketing" : 660
-                            c.hirecost_development = formatNum((wf.avWage + wf.avExpense) * wf.adjustment_core *
-                                (wf.adjustment_core > 0 ? wf.costOfHire : (wf.costOfFire * (-1))))
-
-                            wf.adjustwages_core = formatNum(wf.avWage * wf.adjustment_core)
-
-
-                            wf.adjustexpenses_core = formatNum(wf.avExpense * wf.adjustment_core)
-
+                            c.total_wage = 0
+                            c.hiring_costs = 0
+                            c.associated_expenses = 0
+                            Object.keys(c).forEach(function (k) {
+                                if (k == 'development') {
+                                    var worker_cost = $scope.workforce_def.filter(function (worker) {
+                                        return worker.functions == "Product Development"
+                                    })[0]
+                                    c.total_wage += c[k] * worker_cost.avWage
+                                    c.associated_expenses += c[k] * worker_cost.avExpense
+                                    var rate = c[k] >= 0 ? worker_cost.costOfHire : worker_cost.costOfFire * (-1)
+                                    c.hiring_costs = c.hiring_costs + rate * c[k] * (worker_cost.avWage + worker_cost.avExpense)
+                                }
+                                if (k == 'logisticsit') {
+                                    var worker_cost = $scope.workforce_def.filter(function (worker) {
+                                        return worker.functions == "Logistics"
+                                    })[0]
+                                    c.total_wage += c[k] * worker_cost.avWage
+                                    c.associated_expenses += c[k] * worker_cost.avExpense
+                                    var rate = c[k] >= 0 ? worker_cost.costOfHire : worker_cost.costOfFire * (-1)
+                                    c.hiring_costs = c.hiring_costs + rate * c[k] * (worker_cost.avWage + worker_cost.avExpense)
+                                }
+                                if (k == 'marketing') {
+                                    var worker_cost = $scope.workforce_def.filter(function (worker) {
+                                        return worker.functions == "Marketing"
+                                    })[0]
+                                    c.associated_expenses += c[k] * worker_cost.avExpense
+                                    var rate = c[k] >= 0 ? worker_cost.costOfHire : worker_cost.costOfFire * (-1)
+                                    c.hiring_costs = c.hiring_costs + rate * c[k] * (worker_cost.avWage + worker_cost.avExpense)
+                                    c.total_wage += c[k] * worker_cost.avWage
+                                }
+                                if (k == 'sales') {
+                                    var worker_cost = $scope.workforce_def.filter(function (worker) {
+                                        return worker.functions == "Sales"
+                                    })[0]
+                                    c.associated_expenses += c[k] * worker_cost.avExpense
+                                    var rate = c[k] >= 0 ? worker_cost.costOfHire : worker_cost.costOfFire * (-1)
+                                    c.hiring_costs = c.hiring_costs + rate * c[k] * (worker_cost.avWage + worker_cost.avExpense)
+                                    c.total_wage += c[k] * worker_cost.avWage
+                                }
+                                if (k == 'support') {
+                                    var worker_cost = $scope.workforce_def.filter(function (worker) {
+                                        return worker.functions == "Social Media"
+                                    })[0]
+                                    c.associated_expenses += c[k] * worker_cost.avExpense
+                                    var rate = c[k] >= 0 ? worker_cost.costOfHire : worker_cost.costOfFire * (-1)
+                                    c.hiring_costs = c.hiring_costs + rate * c[k] * (worker_cost.avWage + worker_cost.avExpense)
+                                    c.total_wage += c[k] * worker_cost.avWage
+                                }
+                            })
+                            c.total_cost = c.total_wage + c.hiring_costs + c.associated_expenses
+                            c.total_wage_text = formatNum(c.total_wage)
+                            c.hiring_costs_text = formatNum(c.hiring_costs)
+                            c.associated_expenses_text = formatNum(c.associated_expenses)
+                            c.total_cost_text = formatNum(c.total_cost)
                         })
-
+                        // console.log('$scope.Costs',$scope.Costs)
                     }
-
 
                 }, true)
 
+                $scope.$watch('estimatedIncome', function (nVal, oVal) {
+
+                    if (nVal) {
+                        $scope.estimatedIncome.forEach(function (income) {
+                            income.total_revenue = 0
+                            Object.keys(income).forEach(function (k) {
+                                if (['VREducation', 'VREntertainment', 'VRGovernment'].indexOf(k) >= 0) {
+                                    income[k].revenue = income[k].customers * income[k].share * 25000
+                                    income[k].revenue_text = formatNum(income[k].revenue)
+                                    income.total_revenue += income[k].revenue
+                                }
+
+                            })
+                            income.gross_margin = income.total_revenue * 0.75
+                            income.total_revenue_text = formatNum(income.total_revenue)
+                            income.gross_margin_text = formatNum(income.gross_margin)
+                        })
+                        //console.log('$scope.estimatedIncome',$scope.estimatedIncome)
+                    }
+
+                }, true)
+                $scope.$watch('expenditure', function (nVal, oVal) {
+                    if (nVal) {
+                        console.log(nVal)
+                        Object.keys($scope.expenditure).forEach(function (ek) {
+                            $scope.expenditure[ek].total = 0
+                            Object.keys($scope.expenditure[ek]).forEach(function (k) {
+                                if (['ad', 'dm', 'pd'].indexOf(k) >= 0) {
+                                    $scope.expenditure[ek].total += $scope.expenditure[ek][k]
+                                }
+
+                            })
+
+                            $scope.expenditure[ek].total_text = formatNum($scope.expenditure[ek].total)
+
+                        })
+                        // console.log('$scope.expenditure',$scope.expenditure)
+                    }
+
+                }, true)
 
                 $scope.submit = function (estimatedIncome,Costs,expenditure,action) {
 

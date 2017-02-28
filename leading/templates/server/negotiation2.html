@@ -53,7 +53,8 @@
                     <input flex type="number" ng-model="estimatedIncome[0].VREducation.share" aria-label="VREducation" placeholder="Est.Share">%
                 </div>
                  <div flex="15" layout layout-align="end center">
-                    <label flex type="number" ng-bind="((estimatedIncome[0].VREducation.share)/100*(estimatedIncome[0].VREducation.customers)*250000).toFixed(2)" aria-label="VREducation" placeholder="Est. Revenue" ng-disabled="true"/>
+                     <label flex type="number" ng-bind="estimatedIncome[0].VREducation.revenue_text"
+                            aria-label="VREducation" placeholder="Est. Revenue" ng-disabled="true"/>
                 </div>
             </div>
 
@@ -70,7 +71,8 @@
                     <input flex type="number" ng-model="estimatedIncome[0].VRGovernment.share" aria-label="VRGovernment" placeholder="Est.Share">%
                 </div>
                  <div flex="15" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(estimatedIncome[0].VRGovernment.share/100*estimatedIncome[0].VRGovernment.customers*250000).toFixed(2)" aria-label="VRGovernment" placeholder="Est. Revenue" ng-disabled="true"/>
+                     <label flex type="number" ng-bind="estimatedIncome[0].VRGovernment.revenue_text"
+                            aria-label="VRGovernment" placeholder="Est. Revenue" ng-disabled="true"/>
                 </div>
             </div>
 
@@ -87,7 +89,8 @@
                     <input flex type="number" ng-model="estimatedIncome[0].VREntertainment.share" aria-label="VREntertainment" placeholder="Est.Share">%
                 </div>
                  <div flex="15" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(estimatedIncome[0].VREntertainment.share/100*estimatedIncome[0].VREntertainment.customers*250000).toFixed(2)" aria-label="VREntertainment" placeholder="Est. Revenue" ng-disabled="true"/>
+                     <label flex type="number" ng-bind="estimatedIncome[0].VREntertainment.revenue_text"
+                            aria-label="VREntertainment" placeholder="Est. Revenue" ng-disabled="true"/>
                 </div>
             </div>
 
@@ -99,8 +102,8 @@
                 </div>
 
                 <div flex="20" layout>
-                    <label flex type="number" ng-bind="(((estimatedIncome[0].VREducation.share/100*estimatedIncome[0].VREducation.customers)+(estimatedIncome[0].VRGovernment.share/100*estimatedIncome[0].VRGovernment.customers)
-                    +(estimatedIncome[0].VREntertainment.share/100*estimatedIncome[0].VREntertainment.customers))*250000).toFixed(2)" aria-label="totalestimateddrevenue"/>
+                    <label flex type="number" ng-bind="estimatedIncome[0].total_revenue_text"
+                           aria-label="totalestimateddrevenue"/>
                 </div>
             </div>
 
@@ -110,8 +113,8 @@
                 </div>
 
                 <div flex="20" layout>
-                    <label flex type="number" ng-bind="(((estimatedIncome[0].VREducation.share/100*estimatedIncome[0].VREducation.customers)+(estimatedIncome[0].VRGovernment.share/100*estimatedIncome[0].VRGovernment.customers)
-                    +(estimatedIncome[0].VREntertainment.share/100*estimatedIncome[0].VREntertainment.customers))*0.75*250000).toFixed(2)" aria-label="totalGrossMargin" />
+                    <label flex type="number" ng-bind="estimatedIncome[0].gross_margin_text"
+                           aria-label="totalGrossMargin"/>
                 </div>
             </div>
 
@@ -149,7 +152,8 @@
                     <input flex type="number" ng-model="estimatedIncome[1].VREducation.share" aria-label="VREducation" placeholder="Est.Share">%
                 </div>
                  <div flex="15" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(estimatedIncome[1].VREducation.share/100*estimatedIncome[1].VREducation.customers*250000).toFixed(2)" aria-label="VREducation" placeholder="Est. Revenue" ng-disabled="true"/>
+                     <label flex type="number" ng-bind="estimatedIncome[1].VREducation.revenue_text"
+                            aria-label="VREducation" placeholder="Est. Revenue" ng-disabled="true"/>
                 </div>
             </div>
 
@@ -166,7 +170,8 @@
                     <input flex type="number" ng-model="estimatedIncome[1].VRGovernment.share" aria-label="VRGovernment" placeholder="Est.Share">%
                 </div>
                  <div flex="15" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(estimatedIncome[1].VRGovernment.share/100*estimatedIncome[1].VRGovernment.customers*250000).toFixed(2)" aria-label="VRGovernment" placeholder="Est. Revenue" ng-disabled="true"/>
+                     <label flex type="number" ng-bind="estimatedIncome[1].VRGovernment.revenue_text"
+                            aria-label="VRGovernment" placeholder="Est. Revenue" ng-disabled="true"/>
                 </div>
             </div>
 
@@ -183,7 +188,8 @@
                     <input flex type="number" ng-model="estimatedIncome[1].VREntertainment.share" aria-label="VREntertainment" placeholder="Est.Share">%
                 </div>
                  <div flex="15" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(estimatedIncome[1].VREntertainment.share/100*estimatedIncome[1].VREntertainment.customers*250000).toFixed(2)" aria-label="VREntertainment" placeholder="Est. Revenue" ng-disabled="true"/>
+                     <label flex type="number" ng-bind="estimatedIncome[1].VREntertainment.revenue_text"
+                            aria-label="VREntertainment" placeholder="Est. Revenue" ng-disabled="true"/>
                 </div>
             </div>
 
@@ -195,8 +201,8 @@
                 </div>
 
                 <div flex="20" layout >
-                    <label flex type="number" ng-bind="(((estimatedIncome[1].VREducation.share/100*estimatedIncome[1].VREducation.customers)+(estimatedIncome[1].VRGovernment.share/100*estimatedIncome[1].VRGovernment.customers)
-                    +(estimatedIncome[1].VREntertainment.share/100*estimatedIncome[1].VREntertainment.customers))*250000).toFixed(2)" aria-label="totalestimateddrevenue"/>
+                    <label flex type="number" ng-bind="estimatedIncome[1].total_revenue_text"
+                           aria-label="totalestimateddrevenue"/>
                 </div>
             </div>
 
@@ -206,8 +212,8 @@
                 </div>
 
                 <div flex="20" layout>
-                    <label flex type="number" ng-bind="(((estimatedIncome[1].VREducation.share/100*estimatedIncome[1].VREducation.customers)+(estimatedIncome[1].VRGovernment.share/100*estimatedIncome[1].VRGovernment.customers)
-                    +(estimatedIncome[1].VREntertainment.share/100*estimatedIncome[1].VREntertainment.customers))*0.75*250000).toFixed(2)" aria-label="totalGrossMargin" />
+                    <label flex type="number" ng-bind="estimatedIncome[1].gross_margin_text"
+                           aria-label="totalGrossMargin"/>
                 </div>
             </div>
 
@@ -345,34 +351,38 @@
 
              <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="space-between center">
 
-                <div flex="25" layout layout-align="start center">
+                 <div flex="25" layout-align="start center">
                     <span class="md-body-1">Hiring Costs</span>
                 </div>
-
-                <div flex="20" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(Costs[0].hirecost)" aria-label="totalestimateddrevenue"/>
+                 <div flex="20" layout-align="end center">
+                     <label flex ng-bind="Costs[0].hiring_costs_text" aria-label="totalestimateddrevenue"/>
+                 </div>
+                 <div flex="20" layout-align="end center">
+                     <label flex ng-bind="Costs[1].hiring_costs_text" aria-label="totalestimateddrevenue"/>
                 </div>
             </div>
 
                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="space-between center">
-                <div flex="25" layout layout-align="start center">
+                   <div flex="25" layout-align="start center">
                     <span class="md-body-1">Total Wages</span>
                 </div>
-
-                <div flex="20" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(Costs[0].marketing+Costs[1].marketing)*90000+(Costs[0].sales+Costs[1].sales)*100000+(Costs[0].support+Costs[1].support)*60000
-                    +(Costs[0].logisticsit+Costs[1].logisticsit)*90000+(Costs[0].development+Costs[1].development)*80000" aria-label="totalGrossMargin" />
+                   <div flex="20" layout-align="center center">
+                       <label flex ng-bind="Costs[0].total_wage_text" aria-label="totalGrossMargin"/>
+                   </div>
+                   <div flex="20" layout-align="end center">
+                       <label flex ng-bind="Costs[1].total_wage_text" aria-label="totalGrossMargin"/>
                 </div>
             </div>
 
                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="space-between center">
-                <div flex="25" layout layout-align="start center">
+                   <div flex="25" layout-align="start center">
                     <span class="md-body-1">Associated Expenses</span>
                 </div>
-
-                <div flex="20" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(Costs[0].marketing+Costs[1].marketing)*60000+(Costs[0].sales+Costs[1].sales)*80000+(Costs[0].support+Costs[1].support)*100000
-                    +(Costs[0].logisticsit+Costs[1].logisticsit)*80000+(Costs[0].development+Costs[1].development)*90000" aria-label="totalGrossMargin" />
+                   <div flex="20" layout-align="end center">
+                       <label flex ng-bind="Costs[0].associated_expenses" aria-label="totalGrossMargin"/>
+                   </div>
+                   <div flex="20" layout-align="end center">
+                       <label flex ng-bind="Costs[1].associated_expenses" aria-label="totalGrossMargin"/>
                 </div>
             </div>
 
@@ -381,10 +391,11 @@
                 <div flex="25" layout layout-align="start center">
                     <span class="md-body-1">Total People Costs</span>
                 </div>
-
-                <div flex="20" layout layout-align="end center">
-                    <label flex type="number" ng-bind="(Costs[0].marketing+Costs[1].marketing)*150000+(Costs[0].sales+Costs[1].sales)*180000+(Costs[0].support+Costs[1].support)*160000
-                    +(Costs[0].logisticsit+Costs[1].logisticsit)*170000+(Costs[0].development+Costs[1].development)*170000" aria-label="totalGrossMargin" />
+                   <div flex="20" layout-align="end center">
+                       <label flex ng-bind="Costs[0].total_cost_text" aria-label="totalGrossMargin"/>
+                   </div>
+                   <div flex="20" layout-align="end center">
+                       <label flex ng-bind="Costs[1].total_cost_text" aria-label="totalGrossMargin"/>
                 </div>
             </div>
 
@@ -413,13 +424,13 @@
                     <span class="md-body-1">Advertising</span>
                 </div>
 
-                <md-slider flex="20" min=0 max=1000000 step="10000" ng-model="expenditure[0].ad" aria-label="ad">
+                <md-slider flex="20" min=0 max=100000000 step="1000000" ng-model="expenditure[0].ad" aria-label="ad">
                 </md-slider>
                 <div flex="10" layout layout-align="end center">
                     <input flex type="number" ng-model="expenditure[0].ad" aria-label="ad" placeholder="Period - 4">
                 </div>
 
-                <md-slider flex="20"min=0 max=1000000 step="10000"  ng-model="expenditure[1].ad" aria-label="ad">
+                <md-slider flex="20" min=0 max=100000000 step="1000000" ng-model="expenditure[1].ad" aria-label="ad">
                 </md-slider>
                 <div flex="10" layout layout-align="end center">
                     <input flex type="number" ng-model="expenditure[1].ad" aria-label="ad" placeholder="Period - 5">
@@ -432,13 +443,13 @@
                     <span class="md-body-1">Digital Media</span>
                 </div>
 
-                <md-slider flex="20" min=0 max=1000000 step="10000"  ng-model="expenditure[0].dm" aria-label="dm">
+                <md-slider flex="20" min=0 max=100000000 step="1000000" ng-model="expenditure[0].dm" aria-label="dm">
                 </md-slider>
                 <div flex="10" layout layout-align="end center">
                     <input flex type="number" ng-model="expenditure[0].dm" aria-label="ad" placeholder="Period - 4">
                 </div>
 
-                <md-slider flex="20" min=0 max=1000000 step="10000"  ng-model="expenditure[1].dm" aria-label="dm">
+                <md-slider flex="20" min=0 max=100000000 step="1000000" ng-model="expenditure[1].dm" aria-label="dm">
                 </md-slider>
                 <div flex="10" layout layout-align="end center">
                     <input flex type="number" ng-model="expenditure[1].dm" aria-label="dm" placeholder="Period - 5">
@@ -451,13 +462,13 @@
                     <span class="md-body-1">Product Development</span>
                 </div>
 
-                <md-slider flex="20" min=0 max=1000000 step="10000"  ng-model="expenditure[0].pd" aria-label="pd">
+                  <md-slider flex="20" min=0 max=100000000 step="1000000" ng-model="expenditure[0].pd" aria-label="pd">
                 </md-slider>
                 <div flex="10" layout layout-align="end center">
                     <input flex type="number" ng-model="expenditure[0].pd" aria-label="pd" placeholder="Period - 4">
                 </div>
 
-                <md-slider flex="20" min=0 max=1000000 step="10000"  ng-model="expenditure[1].pd" aria-label="pd">
+                  <md-slider flex="20" min=0 max=100000000 step="1000000" ng-model="expenditure[1].pd" aria-label="pd">
                 </md-slider>
                 <div flex="10" layout layout-align="end center">
                     <input flex type="number" ng-model="expenditure[1].pd" aria-label="pd" placeholder="Period - 5">
@@ -470,12 +481,14 @@
 
 
                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="start center">
-                <div flex="25" layout >
+                   <div flex="40" layout>
                     <span class="md-body-1">Total Discretionary Expenditure</span>
                 </div>
-
-                <div flex="20" layout>
-                    <label flex type="number" ng-bind="(expenditure[0].ad+expenditure[1].ad+expenditure[0].dm+expenditure[1].dm+expenditure[0].pd+expenditure[0].pd).toFixed(2)" aria-label="totalGrossMargin" />
+                   <div flex="30" layout>
+                       <label flex type="number" ng-bind="expenditure[0].total_text" aria-label="totalGrossMargin"/>
+                   </div>
+                   <div flex="30" layout>
+                       <label flex type="number" ng-bind="expenditure[1].total_text" aria-label="totalGrossMargin"/>
                 </div>
             </div>
 
