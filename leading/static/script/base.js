@@ -2280,9 +2280,6 @@ app.config(function ($mdThemingProvider) {
                         $scope.estimatedIncome= data.negotiation.estimatedIncome
                         $scope.Costs = data.negotiation.costs
                         $scope.expenditure =data.negotiation.expenditure
-                        $scope.workforce = data.workforce
-                        $scope.workforce_def = data.workforce_def
-                        // console.log($scope.workforce['Product Development'].adjustedworkforce_total)
                     }
 
                     else{
@@ -2292,10 +2289,20 @@ app.config(function ($mdThemingProvider) {
                             {"period":5,"marketing":0,"sales":0,"support":0,"logisticsit":0,"development":0}]
 
                     }
+                        $scope.workforce = data.workforce
+                        $scope.workforce_def = data.workforce_def
+                        // console.log($scope.workforce['Product Development'].adjustedworkforce_total)
                 })
+                $scope.grand_total = 0
+                $scope.Costs = [{total_cost: 0}, {total_cost: 0}]
 
+                $scope.expenditure = [{total: 0}, {total: 0}]
+
+                $scope.estimatedIncome = [{gross_margin: 0}, {gross_margin: 0}]
+
+                $scope.grand_total_text = formatNum($scope.grand_total)
                 $scope.$watch('Costs', function (nVal, oVal) {
-                    if (nVal != undefined) {
+                    if (nVal != undefined && $scope.workforce_def != undefined) {
                         //console.log( $scope.workforce_def)
                         $scope.Costs.forEach(function (c) {
                             c.total_wage = 0
@@ -2355,6 +2362,10 @@ app.config(function ($mdThemingProvider) {
                             c.total_cost_text = formatNum(c.total_cost)
                         })
                         // console.log('$scope.Costs',$scope.Costs)
+                        $scope.grand_total = $scope.Costs[0].total_cost + $scope.Costs[1].total_cost +
+                            $scope.expenditure[0].total + $scope.expenditure[1].total -
+                            $scope.estimatedIncome[0].gross_margin - $scope.estimatedIncome[1].gross_margin
+                        $scope.grand_total_text = formatNum($scope.grand_total)
                     }
 
                 }, true)
@@ -2377,6 +2388,10 @@ app.config(function ($mdThemingProvider) {
                             income.gross_margin_text = formatNum(income.gross_margin)
                         })
                         //console.log('$scope.estimatedIncome',$scope.estimatedIncome)
+                        $scope.grand_total = $scope.Costs[0].total_cost + $scope.Costs[1].total_cost +
+                            $scope.expenditure[0].total + $scope.expenditure[1].total -
+                            $scope.estimatedIncome[0].gross_margin - $scope.estimatedIncome[1].gross_margin
+                        $scope.grand_total_text = formatNum($scope.grand_total)
                     }
 
                 }, true)
@@ -2396,11 +2411,15 @@ app.config(function ($mdThemingProvider) {
 
                         })
                         // console.log('$scope.expenditure',$scope.expenditure)
+                        $scope.grand_total = $scope.Costs[0].total_cost + $scope.Costs[1].total_cost +
+                            $scope.expenditure[0].total + $scope.expenditure[1].total -
+                            $scope.estimatedIncome[0].gross_margin - $scope.estimatedIncome[1].gross_margin
+                        $scope.grand_total_text = formatNum($scope.grand_total)
                     }
 
                 }, true)
 
-                $scope.submit = function (estimatedIncome,Costs,expenditure,action) {
+                $scope.submit = function (action) {
 
                     // $http.post('server/negotiation2',data={username:$rootScope.current_user.username,
                     //     estimatedIncome:estimatedIncome,costs:Costs,expenditure:expenditure,action:action})
@@ -2413,7 +2432,10 @@ app.config(function ($mdThemingProvider) {
                                 companyName :task.companyName,
                                 teamName : task.teamName,
                                 period:task.period,
-                                estimatedIncome:estimatedIncome,costs:Costs,expenditure:expenditure,action:action
+                                estimatedIncome: $scope.estimatedIncome,
+                                costs: $scope.Costs,
+                                expenditure: $scope.expenditure,
+                                action: action
                             }
                         }
                     )

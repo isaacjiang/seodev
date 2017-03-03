@@ -23,8 +23,9 @@
             </div>
         </md-toolbar>
 
-    <md-tabs class="md-primary md-hue-2" md-selected="selectedIndex" md-dynamic-height>
-      <md-tab id="tab1" >
+    <md-tabs class="md-primary md-hue-2" md-dynamic-height>
+
+        <md-tab id="tab1">
         <md-tab-label>ESTIMATED INCOME PERIOD 4</md-tab-label>
         <md-tab-body>
             <div layout style="margin-right:20px;margin-left:20px;margin-top: 10px"  layout-align="space-between center">
@@ -222,7 +223,7 @@
         </md-tab-body>
 
       </md-tab>
-      <md-tab id="tab3" >
+        <md-tab id="tab3">
         <md-tab-label>PEOPLE AND ASSOCIATED COSTS</md-tab-label>
         <md-tab-body>
          <div layout style="margin-right:60px;margin-left:20px;margin-top: 10px"  layout-align="space-between center">
@@ -404,7 +405,7 @@
         </md-tab-body>
 
       </md-tab>
-    <md-tab id="tab4" >
+        <md-tab id="tab4">
         <md-tab-label>DISCRETIONARY EXPENDITURE</md-tab-label>
         <md-tab-body>
       <div layout style="margin-right:60px;margin-left:20px;margin-top: 10px"  layout-align="space-between center">
@@ -497,103 +498,124 @@
         </md-tab-body>
 
       </md-tab>
-        <md-tab id="tab0" >
-        <md-tab-label>SUMMARY</md-tab-label>
-        <md-tab-body>
+        <md-tab id="tab5">
+            <md-tab-label>SUMMARY</md-tab-label>
+            <md-tab-body>
+                <md-divider md-inset></md-divider>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout>
+                        <span class="md-body-1">Total Estimated Revenue P4</span>
+                    </div>
 
-
-
-            <md-divider md-inset></md-divider>
-             <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="start center">
-                <div flex="25" layout>
-                    <span class="md-body-1">Total Estimated Revenue P4</span>
+                    <div flex="20" layout>
+                        <label flex ng-bind="estimatedIncome[0].total_revenue_text"
+                               aria-label="totalestimateddrevenue"/>
+                    </div>
                 </div>
 
-                <div flex="20" layout>
-                    <label flex type="number" ng-bind="(((estimatedIncome[0].VREducation.share/100*estimatedIncome[0].VREducation.customers)+(estimatedIncome[0].VRGovernment.share/100*estimatedIncome[0].VRGovernment.customers)
-                    +(estimatedIncome[0].VREntertainment.share/100*estimatedIncome[0].VREntertainment.customers))*250000).toFixed(2)" aria-label="totalestimateddrevenue"/>
-                </div>
-            </div>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout>
+                        <span class="md-body-1">Estimated Gross Margin P4</span>
+                    </div>
 
-               <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="start center">
-                <div flex="25" layout>
-                    <span class="md-body-1">Estimated Gross Margin P4</span>
+                    <div flex="20" layout>
+                        <label flex ng-bind="estimatedIncome[0].gross_margin_text" aria-label="totalGrossMargin"/>
+                    </div>
                 </div>
+                <md-divider md-inset></md-divider>
 
-                <div flex="20" layout>
-                    <label flex type="number" ng-bind="(((estimatedIncome[0].VREducation.share/100*estimatedIncome[0].VREducation.customers)+(estimatedIncome[0].VRGovernment.share/100*estimatedIncome[0].VRGovernment.customers)
-                    +(estimatedIncome[0].VREntertainment.share/100*estimatedIncome[0].VREntertainment.customers))*0.75*250000).toFixed(2)" aria-label="totalGrossMargin" />
-                </div>
-            </div>
-<md-divider md-inset></md-divider>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout>
+                        <span class="md-body-1">Total Estimated Revenue P5</span>
+                    </div>
 
-             <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="start center">
-                <div flex="25" layout >
-                    <span class="md-body-1">Total Estimated Revenue P5</span>
-                </div>
-
-                <div flex="20" layout >
-                    <label flex type="number" ng-bind="(((estimatedIncome[1].VREducation.share/100*estimatedIncome[1].VREducation.customers)+(estimatedIncome[1].VRGovernment.share/100*estimatedIncome[1].VRGovernment.customers)
-                    +(estimatedIncome[1].VREntertainment.share/100*estimatedIncome[1].VREntertainment.customers))*250000).toFixed(2)" aria-label="totalestimateddrevenue"/>
-                </div>
-            </div>
-
-               <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="start center">
-                <div flex="25" layout >
-                    <span class="md-body-1">Estimated Gross Margin P5</span>
+                    <div flex="20" layout>
+                        <label flex ng-bind="estimatedIncome[1].total_revenue_text"
+                               aria-label="totalestimateddrevenue"/>
+                    </div>
                 </div>
 
-                <div flex="20" layout>
-                    <label flex type="number" ng-bind="(((estimatedIncome[1].VREducation.share/100*estimatedIncome[1].VREducation.customers)+(estimatedIncome[1].VRGovernment.share/100*estimatedIncome[1].VRGovernment.customers)
-                    +(estimatedIncome[1].VREntertainment.share/100*estimatedIncome[1].VREntertainment.customers))*0.75*250000).toFixed(2)" aria-label="totalGrossMargin" />
-                </div>
-            </div>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout>
+                        <span class="md-body-1">Estimated Gross Margin P5</span>
+                    </div>
 
-            <md-divider md-inset="true"></md-divider>
-
-
-               <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="start center">
-                <div flex="25" layout >
-                    <span class="md-body-1">Total Discretionary Expenditure</span>
+                    <div flex="20" layout>
+                        <label flex ng-bind="estimatedIncome[1].gross_margin_text" aria-label="totalGrossMargin"/>
+                    </div>
                 </div>
 
-                <div flex="20" layout>
-                    <label flex type="number" ng-bind="(expenditure[0].ad+expenditure[1].ad+expenditure[0].dm+expenditure[1].dm+expenditure[0].pd+expenditure[0].pd).toFixed(2)" aria-label="totalGrossMargin" />
+                <md-divider md-inset="true"></md-divider>
+
+
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout>
+                        <span class="md-body-1">Total Discretionary Expenditure P4</span>
+                    </div>
+                    <div flex="20" layout>
+                        <label flex ng-bind="expenditure[0].total_text" aria-label="totalGrossMargin"/>
+                    </div>
+
                 </div>
-            </div>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout>
+                        <span class="md-body-1">Total Discretionary Expenditure P5</span>
+                    </div>
 
-            <md-divider md-inset="true"></md-divider>
-               <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px" layout-align="space-between center">
-                <div flex="25" layout layout-align="start center">
-                    <span class="md-body-1">Total People Costs</span>
+                    <div flex="20" layout>
+                        <label flex ng-bind="expenditure[1].total_text" aria-label="totalGrossMargin"/>
+                    </div>
+                </div>
+                <md-divider md-inset="true"></md-divider>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout layout-align="start center">
+                        <span class="md-body-1">Total People Costs P4</span>
+                    </div>
+
+                    <div flex="20" layout layout-align="start center">
+                        <label flex ng-bind="Costs[0].total_cost_text" aria-label="totalGrossMargin"/>
+                    </div>
+
+                </div>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout layout-align="start center">
+                        <span class="md-body-1">Total People Costs P5</span>
+                    </div>
+
+                    <div flex="20" layout layout-align="start center">
+                        <label flex ng-bind="Costs[1].total_cost_text" aria-label="totalGrossMargin"/>
+                    </div>
                 </div>
 
-                <div flex="20" layout layout-align="start center">
-                    <label flex type="number" ng-bind="(Costs[0].marketing+Costs[1].marketing)*150000+(Costs[0].sales+Costs[1].sales)*180000+(Costs[0].support+Costs[1].support)*160000
-                    +(Costs[0].logisticsit+Costs[1].logisticsit)*170000+(Costs[0].development+Costs[1].development)*170000" aria-label="totalGrossMargin" />
-                </div>
-            </div>
+                <md-divider md-inset="true"></md-divider>
+            </md-tab-body>
 
-            <md-divider md-inset="true"></md-divider>
-        </md-tab-body>
-
-      </md-tab>
+        </md-tab>
     </md-tabs>
 
         <div class="md-actions" layout="row" layout-align="end end">
-            <div layout-align="center center"><span ng-bind="message"></span></div>
+            <div layout-align="center center"><span
+                    flex> Total ($) :  {% raw %}{{ grand_total_text }}{% endraw %}</span></div>
             <span flex></span>
 
             <div>
-                <md-button type="submit" id="submit" value="Submit" ng-click="submit(estimatedIncome,Costs,expenditure,action=true)"  ng-if="companyName=='LegacyCo'">
+                <md-button id="submit" ng-click="submit(true)" ng-if="companyName=='LegacyCo'">
                     Confirm
                 </md-button>
-                 <md-button type="submit" id="submit" value="Submit"
-                       ng-click="submit(selectedEmployees,funding,sumInfluenceSales,calculatedValues,action=false)"
-                       ng-if="companyName=='LegacyCo'">
+                <md-button id="submit"
+                           ng-click="submit(false)"
+                           ng-if="companyName=='LegacyCo'">
                 Return
             </md-button>
-                 <md-button type="submit" id="submit" value="Submit" ng-click="submit(estimatedIncome,Costs,expenditure,action=false)"  ng-if="companyName=='NewCo'">
+                <md-button id="submit" ng-click="submit(false)" ng-if="companyName=='NewCo'">
                     Submit
                 </md-button>
 

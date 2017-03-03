@@ -274,7 +274,7 @@ class TasksService():
             period = data["period"] if 'period' in data.keys() else 0
             result = {"currentPeriod": period}
             tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
-            #print companyName
+
             if companyName== "NewCo":
                 if tModel.get_saved_data() and tModel.get_saved_data()['status'] == 'approved':
                     tModel.task_complete()
@@ -710,7 +710,11 @@ class PeriodicTasksService():
                     #         period=negotiation2['currentPeriod']) \
                     #     .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=expenditure0,
                     #                  comments='Transfer  from LegacyCo.')
-
+                if negotiation2['negotiation']['estimatedIncome']:
+                    for income in negotiation2['negotiation']['estimatedIncome']:
+                        total_amount -= income['gross_margin']
+                if total_amount < 0:
+                    total_amount = 0
                 Account(teamName=negotiation2['teamName'], companyName='LegacyCo',
                         period=negotiation2['currentPeriod']) \
                     .bookkeeping(objectID=negotiation2['_id'], accountDescID='BA061', value=total_amount,
