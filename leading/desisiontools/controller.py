@@ -276,7 +276,8 @@ class TasksService():
             tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
 
             if companyName== "NewCo":
-                if tModel.get_saved_data() and tModel.get_saved_data()['status'] == 'approved':
+                if tModel.get_saved_data() and 'status' in tModel.get_saved_data().keys() and tModel.get_saved_data()[
+                    'status'] == 'approved':
                     tModel.task_complete()
                 else:
                     tModel.save(data)
