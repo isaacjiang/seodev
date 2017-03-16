@@ -126,10 +126,10 @@
                 </div>
 
                   <div flex layout layout-align="start center">
-                    <span class="md-body-1" ng-bind="corporate.developmentCost"></span>
+                      <span class="md-body-1" ng-bind="corporate.developmentCost_text"></span>
                 </div>
                    <div flex layout layout-align="start center">
-                    <span class="md-body-1" ng-bind="corporate.minimumBid"></span>
+                       <span class="md-body-1" ng-bind="corporate.minimumBid_text"></span>
                 </div>
                 <div flex layout layout-align="start center">
                     <md-checkbox ng-checked="exists(corporate, selectedCorporate)" ng-click="toggle(corporate, selectedCorporate)" aria-label="Select"></md-checkbox>
@@ -145,14 +145,14 @@
 
     <md-input-container class="md-block" flex>
         <label> Cash Offer </label>
-        <input ng-model="offer.cash" type="number" step="1" style="width: 90%" aria-label="time">
+        <input ng-model="offer.cash" type="number" step="1000000" style="width: 90%" aria-label="time">
     </md-input-container>
                 </div>
     <div flex layout layout-align="start center">
 
         <md-input-container class="md-block" flex>
             <label># of Shares Offered</label>
-            <input ng-model="offer.shares" type="number" step="1" style="width: 90%" aria-label="time">
+            <input ng-model="offer.shares" type="number" step="1000" style="width: 90%" aria-label="time">
         </md-input-container>
                 </div>
 
@@ -176,7 +176,7 @@
             <span class="md-body-1">Offer Value</span>
         </div>
         <div flex layout layout-align="start center">
-            <span class="md-body-1" ng-bind="offer.cash+offer.shares"></span>
+            <span class="md-body-1" ng-bind="offer.current_share_price*offer.shares+offer.cash"></span>
         </div>
     </div>
     <div class ="totalprogressline" layout-align="end end" style="margin-right:30px;margin-left:30px;margin-top:20px;margin-bottom: 10px">

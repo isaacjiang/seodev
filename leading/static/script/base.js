@@ -445,6 +445,9 @@ app.config(function ($mdThemingProvider) {
                 if (['03003','04003','05003','07003'].indexOf(taskName)>=0){resourcesfn(task);}
                 if (['04004','05004','06004','07004'].indexOf(taskName)>=0){budgetfn(task);}
                 if (['02005'].indexOf(taskName)>=0){visionarycompetitionfn(task);}
+                if (['04005'].indexOf(taskName) >= 0) {
+                    projectfn(task);
+                }
                 if (['04006','05006','06006','07006'].indexOf(taskName)>=0){actionsfn(task);}
                 if (['04008','05008'].indexOf(taskName)>=0){nichesfn(task);}
                 if (['04009'].indexOf(taskName) >= 0) {
@@ -511,23 +514,23 @@ app.config(function ($mdThemingProvider) {
                                 url: "/api/general/instruction",
                                 data: {
                                     file: response.data[0]
-                                }
                             }
-                        ).success(function (list) {
-                        console.log(list)
-                        $scope.instructionMeterial = [[], []]
-                        if (list) {
-                            list.forEach(function (d) {
-                                if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
-                                    $scope.instructionMeterial[0].push(d)
-                                }
-                                // else {
-                                //     $scope.instructionMeterial[1].push(d)
-                                // }
-                            })
                         }
-                            $rootScope.notificationToast('Instruction material uploaded.')
+                        ).success(function (list) {
+                            console.log(list)
+                    $scope.instructionMeterial = [[], []]
+                    if (list) {
+                        list.forEach(function (d) {
+                            if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
+                                $scope.instructionMeterial[0].push(d)
+                            }
+                            // else {
+                            //     $scope.instructionMeterial[1].push(d)
+                            // }
                         })
+                    }
+                            $rootScope.notificationToast('Instruction material uploaded.')
+                    })
                     }
 
 
@@ -540,7 +543,7 @@ app.config(function ($mdThemingProvider) {
                         url: "/api/general/deleteinstruction",
                         data: {
                             file: file
-                        }
+                    }
                     }
                 ).success(function (list) {
                     //console.log(list)
@@ -553,7 +556,7 @@ app.config(function ($mdThemingProvider) {
                             // else {
                             //     $scope.instructionMeterial[1].push(d)
                             // }
-                    })
+                })
                     }
                     $rootScope.notificationToast('Instruction material deleted.')
                 })
@@ -1071,6 +1074,7 @@ app.config(function ($mdThemingProvider) {
 
             function workforceCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
                 $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.legacyco = $rootScope.user_info.companyInfo.companyName == 'LegacyCo'
                 $scope.notpemission = function () {
                     $rootScope.notificationToast("You are not permited.")
                 }
@@ -1106,13 +1110,13 @@ app.config(function ($mdThemingProvider) {
                     }
                 )
                     .success(function(d){
-                        console.log(d)
+                        // console.log(d)
                     if (d){
                         d.forecast.b2b = d.forecast.b2b ? d.forecast.b2b : 0
                         d.forecast.b2c = d.forecast.b2c ? d.forecast.b2c : 0
                         d.forecast.newoffering = d.forecast.newoffering ? d.forecast.newoffering : 0
                         var forecast = d.forecast.b2b + d.forecast.b2c + d.forecast.newoffering
-                        console.log(forecast)
+                        //console.log(forecast)
                         d.workforce_def.forEach(function (dv) {
 
 
@@ -2260,7 +2264,6 @@ app.config(function ($mdThemingProvider) {
                 $scope.currentPeriod = $rootScope.user_info.companyInfo.currentPeriod
                 $scope.companyName = $rootScope.user_info.companyInfo.companyName
 
-                //$http.get('/server/querynewconegotiation2withconditions?teamname='+$rootScope.userAtCompany.teamName)
                 $http({
                         method:'GET',
                         url:"/api/dtools/negotiate2",
@@ -2300,7 +2303,7 @@ app.config(function ($mdThemingProvider) {
 
                 $scope.estimatedIncome = [{gross_margin: 0}, {gross_margin: 0}]
 
-                $scope.grand_total_text = formatNum($scope.grand_total)
+
                 $scope.$watch('Costs', function (nVal, oVal) {
                     if (nVal != undefined && $scope.workforce_def != undefined) {
                         //console.log( $scope.workforce_def)
@@ -2419,6 +2422,12 @@ app.config(function ($mdThemingProvider) {
 
                 }, true)
 
+                $scope.$watch('grand_total', function (nVal, oVal) {
+                    if (nVal) {
+                        $scope.grand_total_text = formatNum($scope.grand_total)
+                    }
+                })
+
                 $scope.submit = function (action) {
 
                     // $http.post('server/negotiation2',data={username:$rootScope.current_user.username,
@@ -2435,6 +2444,7 @@ app.config(function ($mdThemingProvider) {
                                 estimatedIncome: $scope.estimatedIncome,
                                 costs: $scope.Costs,
                                 expenditure: $scope.expenditure,
+                                grand_total: $scope.grand_total,
                                 action: action
                             }
                         }
@@ -2550,32 +2560,61 @@ app.config(function ($mdThemingProvider) {
                     }
                 )
                     .success(function (d) {
-                    console.log(d)
+
                     $scope.niches =[{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''},{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''},{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''}]
                         d.forEach(function (n) {
+
                         if (n.niche == "Education"){
+
                             if(n.period == 4){ $scope.niches[0].niche= "Education",$scope.niches[0].p4 = n;}
                             if(n.period == 5){ $scope.niches[0].niche= "Education",$scope.niches[0].p5 = n;}
-                            if(n.period == 6){ $scope.niches[0].niche= "Education",$scope.niches[0].p6 = n;}
-                            if(n.period == 7){ $scope.niches[0].niche= "Education",$scope.niches[0].p7 = n;}
-                            if(n.period == 8){ $scope.niches[0].niche= "Education",$scope.niches[0].p8 = n;}
+                            if (n.period == 6) {
+                                $scope.niches[0].niche = "Education", $scope.niches[0].p6 = n;
+                                $scope.niches[0].p6.selected = true;
+                            }
+                            if (n.period == 7) {
+                                $scope.niches[0].niche = "Education", $scope.niches[0].p7 = n;
+                                $scope.niches[0].p7.selected = true;
+                            }
+                            if (n.period == 8) {
+                                $scope.niches[0].niche = "Education", $scope.niches[0].p8 = n;
+                                $scope.niches[0].p8.selected = true;
+                            }
                         }
                         if  (n.niche == "Government"){
                             if(n.period == 4){ $scope.niches[1].niche= "Government",$scope.niches[1].p4 = n;}
                             if(n.period == 5){ $scope.niches[1].niche= "Government",$scope.niches[1].p5 = n;}
-                            if(n.period == 6){ $scope.niches[1].niche= "Government",$scope.niches[1].p6 = n;}
-                            if(n.period == 7){ $scope.niches[1].niche= "Government",$scope.niches[1].p7 = n;}
-                            if(n.period == 8){ $scope.niches[1].niche= "Government",$scope.niches[1].p8 = n;}
+                            if (n.period == 6) {
+                                $scope.niches[1].niche = "Government", $scope.niches[1].p6 = n;
+                                $scope.niches[1].p6.selected = true;
+                            }
+                            if (n.period == 7) {
+                                $scope.niches[1].niche = "Government", $scope.niches[1].p7 = n;
+                                $scope.niches[1].p7.selected = true;
+                            }
+                            if (n.period == 8) {
+                                $scope.niches[1].niche = "Government", $scope.niches[1].p8 = n;
+                                $scope.niches[1].p8.selected = true;
+                            }
                         }
                         if  (n.niche == "Entertainment"){
                             if(n.period == 4){ $scope.niches[2].niche= "Entertainment",$scope.niches[2].p4 = n;}
                             if(n.period == 5){ $scope.niches[2].niche= "Entertainment",$scope.niches[2].p5 = n;}
-                            if(n.period == 6){ $scope.niches[2].niche= "Entertainment",$scope.niches[2].p6 = n;}
-                            if(n.period == 7){ $scope.niches[2].niche= "Entertainment",$scope.niches[2].p7 = n;}
-                            if(n.period == 8){ $scope.niches[2].niche= "Entertainment",$scope.niches[2].p8 = n;}
+                            if (n.period == 6) {
+                                $scope.niches[2].niche = "Entertainment", $scope.niches[2].p6 = n;
+                                $scope.niches[2].p6.selected = true;
+                            }
+                            if (n.period == 7) {
+                                $scope.niches[2].niche = "Entertainment", $scope.niches[2].p7 = n;
+                                $scope.niches[2].p7.selected = true;
+                            }
+                            if (n.period == 8) {
+                                $scope.niches[2].niche = "Entertainment", $scope.niches[2].p8 = n;
+                                $scope.niches[2].p8.selected = true;
+                            }
                         }
                     })
-                    //  console.log($scope.niches)
+                        console.log($scope.niches)
                 })
                 $timeout(function () {
                     timer('2016-09-16 01:01:38')
@@ -2680,7 +2719,11 @@ app.config(function ($mdThemingProvider) {
                     }
                 )
                     .success(function (data) {
-                        console.log(data)
+                        // console.log(data)
+                        data.forEach(function (d) {
+                            d.developmentCost_text = formatNum(d.developmentCost)
+                            d.minimumBid_text = formatNum(d.minimumBid)
+                        })
                     $scope.corporates = data
 
                     $scope.progress= 1
@@ -2701,7 +2744,132 @@ app.config(function ($mdThemingProvider) {
 
                 })
 
-                $scope.offer={current_share_price:98,treasury_shares:4900}
+                $http.get('/api/general/querymarketdata', {
+                    params: {username: $rootScope.current_user.username}
+                })
+                    .success(function (res) {
+
+                        var marketValue = res.marketValue
+                        var managementValue = res.managementValue
+                        var financialValue = res.financialValue
+
+
+                        //calculate great value
+
+                        console.log("value", marketValue, managementValue, financialValue)
+                        var total_great_value = {}
+                        Object.keys(marketValue).forEach(function (teamName) {
+                            total_great_value[teamName] = {}
+                            Object.keys(marketValue[teamName]).forEach(function (period) {
+                                if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
+                                    //console.log(financialValue[teamName][period - 1])
+                                    if (financialValue[teamName][period - 1].NOCG <= 0) {
+                                        financialValue[teamName][period - 1].NOCG = 1
+                                    }
+                                    total_great_value[teamName][period] = marketValue[teamName][period] * 0.3 * managementValue[teamName][period] * 0.3 * financialValue[teamName][period - 1].NOCG * 0.4
+                                }
+                            })
+
+
+                        })
+                        // console.log(total_great_value)
+                        var max_total_great_value = {}
+                        //var currentPeriod = $rootScope.userAtCompany.currentPeriod
+                        Object.keys(total_great_value).forEach(function (teamName) {
+                            Object.keys(total_great_value[teamName]).forEach(function (currentPeriod) {
+                                //console.log(total_great_value[teamName][currentPeriod])
+                                if (Object.keys(max_total_great_value).indexOf(currentPeriod) < 0) {
+                                    max_total_great_value[currentPeriod] = 0
+                                }
+                                if (total_great_value[teamName][currentPeriod] > max_total_great_value[currentPeriod]) {
+                                    max_total_great_value[currentPeriod] = total_great_value[teamName][currentPeriod]
+                                }
+                            })
+                        })
+                        // console.log(max_total_great_value)
+                        Object.keys(total_great_value).forEach(function (teamName) {
+                            Object.keys(total_great_value[teamName]).forEach(function (currentPeriod) {
+                                var value = total_great_value[teamName][currentPeriod]
+                                total_great_value[teamName][currentPeriod] = {}
+                                total_great_value[teamName][currentPeriod].value = value
+                                total_great_value[teamName][currentPeriod].percentage = value / max_total_great_value[currentPeriod]
+                                var pe = 0
+                                if ($rootScope.user_info.companyInfo.companyName == 'LegacyCo' && currentPeriod <= 4) {
+                                    pe = 20
+                                }
+                                else if ($rootScope.user_info.companyInfo.companyName == 'LegacyCo' && currentPeriod == 5) {
+                                    pe = 5
+                                }
+                                else if ($rootScope.user_info.companyInfo.companyName == 'LegacyCo' && currentPeriod == 6) {
+                                    pe = 50
+                                }
+                                else if ($rootScope.user_info.companyInfo.companyName == 'LegacyCo' && currentPeriod == 7) {
+                                    pe = 70
+                                }
+                                else if ($rootScope.user_info.companyInfo.companyName == 'LegacyCo' && currentPeriod == 8) {
+                                    pe = 80
+                                }
+                                else if ($rootScope.user_info.companyInfo.companyName == 'NewCo' && currentPeriod == 5) {
+                                    pe = 50
+                                }
+                                else if ($rootScope.user_info.companyInfo.companyName == 'NewCo' && currentPeriod == 6) {
+                                    pe = 70
+                                }
+                                else if ($rootScope.user_info.companyInfo.companyName == 'NewCo' && currentPeriod == 7) {
+                                    pe = 80
+                                }
+                                else if ($rootScope.user_info.companyInfo.companyName == 'NewCo' && currentPeriod == 8) {
+                                    pe = 40
+                                }
+                                else {
+                                    pe = 0
+                                }
+                                total_great_value[teamName][currentPeriod].PE = pe
+                                total_great_value[teamName][currentPeriod].realPE = pe * total_great_value[teamName][currentPeriod].percentage
+                                total_great_value[teamName][currentPeriod].EBITDA = financialValue[teamName][currentPeriod - 1].EBITDA
+                                total_great_value[teamName][currentPeriod].companyValue = financialValue[teamName][currentPeriod - 1].EBITDA * total_great_value[teamName][currentPeriod].realPE / 100
+                                total_great_value[teamName][currentPeriod].sharePrice = total_great_value[teamName][currentPeriod].companyValue / 100000
+                            })
+                        })
+                        console.log(total_great_value)
+                        var great_value = total_great_value[$rootScope.user_info.teamInfo.teamName]
+
+
+                        $scope.great_value = {}
+
+                        var previusCompanyValue = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
+                            great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].companyValue.toFixed(0) : 0
+                        var previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
+                            great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
+                        // $scope.great_value.companyValue = {
+                        //     "key": "Company Value",
+                        //     "Previus": format(previusCompanyValue),
+                        //     "Current": format(great_value[$rootScope.user_info.companyInfo.currentPeriod].companyValue.toFixed(0))
+                        // }
+                        // $scope.great_value.sharePrice = {
+                        //     "key": "Share Price",
+                        //     "Previus": format(previusSharePrice),
+                        //     "Current": format(great_value[$rootScope.user_info.companyInfo.currentPeriod].sharePrice.toFixed(0))
+                        // }
+
+                        // console.log($scope.great_value)
+                        //
+                        // $scope.query = {order: 'niche', page: 1};
+                        // $scope.limit_great_value = {limit: $scope.great_value.length};
+
+                        $scope.offer = {
+                            current_share_price: parseInt(format(great_value[$rootScope.user_info.companyInfo.currentPeriod].sharePrice.toFixed(0))),
+                            treasury_shares: 100000
+                        }
+                    })
+
+                // $scope.$watch('offer',function (nVal,oVal) {
+                //     console.log(nVal,$scope.offer)
+                //     if (nVal != undefined) {
+                //
+                //         $scope.offer.offerValue=$scope.offer.treasury_shares* $scope.offer.current_share_price+$scope.offer.cash
+                //     }
+                // })
 
                 $scope.submit = function (offer) {
 
@@ -2732,7 +2900,7 @@ app.config(function ($mdThemingProvider) {
                     $rootScope.notificationToast("Submitted application.")
                 };
                 $timeout(function () {
-                    timer('2016-12-16 01:01:38')
+                    timer('2017-03-16 21:00:00')
                 },1000)
 
                 $scope.fileSelected=function(file) {

@@ -299,9 +299,9 @@ class ProjectsModel(TasksModel):
     def get_init(self):
         result = {}
         projects=[]
-        cursor = leadingbase.projects_def.find({})
+        cursor = leadingbase.projects_def.find({}, {'_id': 0})
         for item in cursor:
-            item["_id"] = str(item['_id'])
+            # item["_id"] = str(item['_id'])
             projects.append(item)
         result["keyword"] = "allprojects"
         result["data"]=projects

@@ -190,7 +190,8 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     Object.keys(marketValue).forEach(function (teamName) {
                         total_great_value[teamName] = {}
                         Object.keys(marketValue[teamName]).forEach(function (period) {
-                            if (period != 'teamName') {
+                            if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
+                                //console.log(financialValue[teamName][period - 1])
                                 if (financialValue[teamName][period - 1].NOCG <= 0) {
                                     financialValue[teamName][period - 1].NOCG = 1
                                 }
@@ -200,7 +201,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
 
 
                     })
-                    console.log(total_great_value)
+                    // console.log(total_great_value)
                     var max_total_great_value = {}
                     //var currentPeriod = $rootScope.userAtCompany.currentPeriod
                     Object.keys(total_great_value).forEach(function (teamName) {
@@ -264,8 +265,11 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
 
 
                     $scope.great_value = {}
-                    var previusCompanyValue = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ? great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].companyValue.toFixed(0) : 0
-                    var previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ? great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
+
+                    var previusCompanyValue = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
+                        great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].companyValue.toFixed(0) : 0
+                    var previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
+                        great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
                     $scope.great_value.companyValue = {
                         "key": "Company Value",
                         "Previus": format(previusCompanyValue),

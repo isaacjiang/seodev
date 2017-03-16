@@ -714,6 +714,9 @@ class PeriodicTasksService():
                 if negotiation2['negotiation']['estimatedIncome']:
                     for income in negotiation2['negotiation']['estimatedIncome']:
                         total_amount -= income['gross_margin']
+
+                if 'grand_total' in negotiation2['negotiation'].keys():
+                    total_amount = negotiation2['negotiation']['grand_total']
                 if total_amount < 0:
                     total_amount = 0
                 Account(teamName=negotiation2['teamName'], companyName='LegacyCo',

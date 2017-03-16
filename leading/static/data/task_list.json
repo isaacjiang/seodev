@@ -6,6 +6,42 @@
 {"processNo":0,"preProcess":0,"taskID":"10005","period":5,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
 {"processNo":0,"preProcess":0,"taskID":"10006","period":6,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
 {"processNo":0,"preProcess":0,"taskID":"10007","period":7,"companyName":"LegacyCo","taskName":"Forecasting","comment":"account Budget"},
+  {
+    "processNo": 0,
+    "preProcess": 0,
+    "taskID": "10004",
+    "period": 4,
+    "companyName": "NewCo",
+    "taskName": "Forecasting",
+    "comment": "account Budget"
+  },
+  {
+    "processNo": 0,
+    "preProcess": 0,
+    "taskID": "10005",
+    "period": 5,
+    "companyName": "NewCo",
+    "taskName": "Forecasting",
+    "comment": "account Budget"
+  },
+  {
+    "processNo": 0,
+    "preProcess": 0,
+    "taskID": "10006",
+    "period": 6,
+    "companyName": "NewCo",
+    "taskName": "Forecasting",
+    "comment": "account Budget"
+  },
+  {
+    "processNo": 0,
+    "preProcess": 0,
+    "taskID": "10007",
+    "period": 7,
+    "companyName": "NewCo",
+    "taskName": "Forecasting",
+    "comment": "account Budget"
+  },
 
 {"processNo":3,"preProcess":[3],"taskID":"01001","period":1,"companyName":"NewCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
 {"processNo":5,"preProcess":[1,2],"taskID":"01005","period":1,"companyName":"NewCo","taskName":"Start-up Funding","comment":"Negotiation for funds and employees"},
@@ -17,7 +53,6 @@
 
 
 {"processNo":23,"preProcess":[3],"taskID":"03001","period":3,"companyName":"NewCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
-
 {"processNo":25,"preProcess":[4],"taskID":"03003","period":3,"companyName":"NewCo","taskName":"Resource Acquisition","comment":"PLAYERS WILL NEED TO OUTSOURCE PRODUCTION."},
 {"processNo":26,"preProcess":[1,2],"taskID":"03005","period":3,"companyName":"NewCo","taskName":"Growth Funding","comment":"Negotiation for funds and employees"},
 
@@ -66,7 +101,18 @@
 {"processNo":24,"preProcess":[4],"taskID":"03004","period":3,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},
 {"processNo":25,"preProcess":[1,2],"taskID":"03005","period":3,"companyName":"LegacyCo","taskName":"Growth Funding","comment":"Negotiation for funds and employees"},
 {"processNo":27,"preProcess":[1,2],"taskID":"03006","period":3,"companyName":"LegacyCo","taskName":"Actions","comment":"Actions"},
-
+  {
+    "processNo": 22,
+    "preProcess": [
+      1,
+      2
+    ],
+    "taskID": "03002",
+    "period": 4,
+    "companyName": "LegacyCo",
+    "taskName": "Workforce",
+    "comment": "Revise Workforce size"
+  },
 
 {"processNo":33,"preProcess":[3],"taskID":"04001","period":4,"companyName":"LegacyCo","taskName":"Hires","comment":"Select SALESPEOPLE AND TOP PRODUCT DEVELOPERS"},
 {"processNo":34,"preProcess":[4],"taskID":"04004","period":4,"companyName":"LegacyCo","taskName":"Discretionary Expenditure","comment":"Budget for All Periods"},

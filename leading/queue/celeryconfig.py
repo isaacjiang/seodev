@@ -23,12 +23,12 @@ CELERYBEAT_SCHEDULE = {
     },
     'tasks-per-30s': {
         'task': 'leading.queue.taskAccountSum',
-        'schedule': timedelta(seconds=180),
+        'schedule': timedelta(seconds=300),
         'args': ('tasks-per-30s',)
     },
     'tasks-per-30s2': {
         'task': 'leading.queue.taskPerformance',
-        'schedule': timedelta(seconds=180),
+        'schedule': timedelta(seconds=300),
         'args': ('tasks-per-30s2',)
     },
 }
