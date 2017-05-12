@@ -431,22 +431,31 @@ class VisionaryCompetitionModel(TasksModel):
         #     self.db.visionarycompetitionStatus.insert_one({'vsStatus':'Round 1',"startTime":datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
         #     vcStatus = self.db.visionarycompetitionStatus.find_one({},{"_id":0})
         # result['vcStatus'] = vcStatus
-        result['vcStatus'] = self.get_status()['vcStatus']
+        # result['vcStatus'] = self.get_status()['vcStatus']
         return result
 
+    def register(self, teamName, companyName):
+        existedcompanies = self.db.visionarycompetition_companies.find({})
+        if len(list(existedcompanies)) == 0:
+            companies = self.db.companies.find({"status": "Active", "companyName": "NewCo"}, {"_id": 0})
+            for c in companies:
+                self.db.visionarycompetition_companies.update_one(
+                    {"teamName": c['teamName'], "companyName": c['companyName']},
+                    {"$set": {"status": 'unregister'}}, upsert=True)
+            self.db.visionarycompetition_status.update_one({}, {
+                "$set": {"startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}}, upsert=True)
+
+        self.db.visionarycompetition_companies.update_one({"teamName": teamName, "companyName": "NewCo"},
+                                                          {"$set": {'status': 'registered',
+                                                                    "registerTime": datetime.now().strftime(
+                                                                        '%Y-%m-%d %H:%M:%S')}}, upsert=True)
+        currentCompanies = list(self.db.visionarycompetition_companies.find({}, {'_id': 0}).sort('teamName'))
+        self.db.visionarycompetition_status.update_one({}, {"$set": {"companies": currentCompanies}})
+
+
     def get_status(self):
-        # conditions = {"teamName": self.teamName}
-        result = {}
-        # negotiation = self.db.negotiation1_com.find_one(conditions, {"_id": 0})
-        # if negotiation is not None:
-        #     result = negotiation
-        # result["keyword"] = "newCoNegotiation"
-        vcStatus = self.db.visionarycompetitionStatus.find_one({}, {"_id": 0})
-        if vcStatus == None:
-            self.db.visionarycompetitionStatus.insert_one(
-                {'vsStatus': 'Round 1', "startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-            vcStatus = self.db.visionarycompetitionStatus.find_one({}, {"_id": 0})
-        result['vcStatus'] = vcStatus
+        vcStatus = self.db.visionarycompetition_status.find_one({}, {"_id": 0})
+        result = vcStatus
         return result
 
     def save(self, data):

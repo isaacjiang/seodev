@@ -122,11 +122,17 @@ class PerformanceModel():
 
             condition2 = {"period": period, "accDescID": item, "companyName": companyName}
             index_value = self.db.index_bookkeeping.find(condition2, {"_id": 0})
-
+            XXX = 1
             for c in index_value:
                 # print "index",c['indexName'],c['category'],c['value']
                 if c['indexName'] == "competenceIndex":
-                    # print c['value']
+                    # if c['value']>1.8:
+
+                    if c['period'] == 2 and c['accDescID'] == 'AB014' and c['companyName'] == 'LegacyCo' and c[
+                        'teamName'] == 'Team C':
+                        XXX = XXX * c['value']
+                        print XXX, c['value']
+                    # print c['teamName'],'  ',c['companyName'],":",c['value']
                     self.db.marketingshare_com.update_one({"flag": "#comSum", "currentPeriod": c['period'],
                                                            "accountDescID": c['accDescID'],
                                                            "teamName": c['teamName'],

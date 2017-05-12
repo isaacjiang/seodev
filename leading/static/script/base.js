@@ -1072,7 +1072,7 @@ app.config(function ($mdThemingProvider) {
                 locals:{func:instructionFn,timer:timerFn}
             });
 
-            function workforceCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
+            function workforceCtrl($scope, $rootScope, $mdDialog, $http, $timeout, func, timer, Upload) {
                 $scope.superuser = $rootScope.current_user.permission == '0'
                 $scope.legacyco = $rootScope.user_info.companyInfo.companyName == 'LegacyCo'
                 $scope.notpemission = function () {
@@ -2084,12 +2084,11 @@ app.config(function ($mdThemingProvider) {
                 }
                 $scope.close = function () {
                     $mdDialog.cancel();
+                    $rootScope.ipc.off('visionarycompetition')
                 };
-
 
                 $scope.selectedNiches = [];
                 $scope.toggle = function (item, list) {
-
                     var idx = list.indexOf(item);
                     if (idx > -1) list.splice(idx, 1);
                     else list.push(item);
@@ -2164,6 +2163,23 @@ app.config(function ($mdThemingProvider) {
                         }
                 })
 
+                var vcStatus = {
+                    companyName: $rootScope.user_info.companyInfo.companyName,
+                    teamName: $rootScope.user_info.companyInfo.teamName,
+                }
+                $rootScope.ipc.emit('vcregister', vcStatus)
+
+                $rootScope.ipc.on('visionarycompetition', function (d) {
+                    console.log(d)
+                    updateTimer(d.startTime)
+                    $scope.companiesStatus = d.companies
+
+
+                    $timeout(function () {
+                        $rootScope.ipc.emit('visionarycompetition', vcStatus)
+                    }, 1000)
+
+                })
 
                 $scope.submit = function (selectedNiches,event) {
 
@@ -2196,8 +2212,70 @@ app.config(function ($mdThemingProvider) {
 
                 };
                 $timeout(function () {
-                    timer('2016-09-16 01:01:38')
+                    drawTimer()
                 },1000)
+
+                function drawTimer() {
+                    var svgUnderlay = d3.select(".clock svg"),
+                        svgOverlay = d3.select(".clock").append(function () {
+                            return svgUnderlay.node().cloneNode(true);
+                        })
+                    svgUnderlay.attr("id", "underlay");
+                    svgOverlay.attr("id", "overlay");
+
+                }
+
+                function updateTimer(endtime) {
+                    svg = d3.selectAll(".clock svg");
+                    var dt = endtime.split(' ')[0].split('-')
+                    var tm = endtime.split(' ')[1].split(':')
+                    var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], tm[0], parseInt(tm[1]) + 5, tm[2])
+                    var digit = svg.selectAll(".digit"),
+                        separator = svg.selectAll(".separator circle");
+                    var digitPattern = [
+                        [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
+                        [1, 0, 0, 0, 1, 1, 1, 0, 1, 1],
+                        [1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
+                        [0, 0, 1, 1, 1, 1, 1, 0, 1, 1],
+                        [1, 0, 1, 0, 0, 0, 1, 0, 1, 0],
+                        [1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 0, 1, 1, 0, 1, 1, 0, 1, 1]
+                    ];
+
+                    // (function tick() {
+                    var now = new Date();
+                    var time_left = parseInt(Math.abs(endtime_obj - now) / 1000)
+                    var hours = parseInt(parseInt(time_left / 3600) % 24),
+                        minutes = parseInt(parseInt(time_left / 60) % 60),
+                        seconds = parseInt(time_left % 60);
+
+                    digit = digit.data([hours / 10 | 0, hours % 10, minutes / 10 | 0, minutes % 10, seconds / 10 | 0, seconds % 10]);
+                    digit.select("path:nth-child(1)").classed("lit", function (d) {
+                        return digitPattern[0][d];
+                    });
+                    digit.select("path:nth-child(2)").classed("lit", function (d) {
+                        return digitPattern[1][d];
+                    });
+                    digit.select("path:nth-child(3)").classed("lit", function (d) {
+                        return digitPattern[2][d];
+                    });
+                    digit.select("path:nth-child(4)").classed("lit", function (d) {
+                        return digitPattern[3][d];
+                    });
+                    digit.select("path:nth-child(5)").classed("lit", function (d) {
+                        return digitPattern[4][d];
+                    });
+                    digit.select("path:nth-child(6)").classed("lit", function (d) {
+                        return digitPattern[5][d];
+                    });
+                    digit.select("path:nth-child(7)").classed("lit", function (d) {
+                        return digitPattern[6][d];
+                    });
+                    separator.classed("lit", seconds & 1);
+
+                    // setTimeout(tick, 1000 - now % 1000);
+                    // })();
+                }
 
                 $scope.fileSelected=function(file) {
                     // var fileID =  fileUpload(file)
@@ -2283,6 +2361,7 @@ app.config(function ($mdThemingProvider) {
                         $scope.estimatedIncome= data.negotiation.estimatedIncome
                         $scope.Costs = data.negotiation.costs
                         $scope.expenditure =data.negotiation.expenditure
+                        $scope.grand_total1 = data.negotiation.grand_total1
                     }
 
                     else{
@@ -2296,6 +2375,9 @@ app.config(function ($mdThemingProvider) {
                         $scope.workforce_def = data.workforce_def
                         // console.log($scope.workforce['Product Development'].adjustedworkforce_total)
                 })
+                if ($scope.grand_total1 == undefined) {
+                    $scope.grand_total1 = 0
+                }
                 $scope.grand_total = 0
                 $scope.Costs = [{total_cost: 0}, {total_cost: 0}]
 
@@ -2422,9 +2504,9 @@ app.config(function ($mdThemingProvider) {
 
                 }, true)
 
-                $scope.$watch('grand_total', function (nVal, oVal) {
+                $scope.$watch('grand_total1', function (nVal, oVal) {
                     if (nVal) {
-                        $scope.grand_total_text = formatNum($scope.grand_total)
+                        $scope.grand_total_text = formatNum($scope.grand_total1)
                     }
                 })
 
@@ -2444,7 +2526,7 @@ app.config(function ($mdThemingProvider) {
                                 estimatedIncome: $scope.estimatedIncome,
                                 costs: $scope.Costs,
                                 expenditure: $scope.expenditure,
-                                grand_total: $scope.grand_total,
+                                grand_total1: $scope.grand_total1,
                                 action: action
                             }
                         }

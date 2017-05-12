@@ -460,7 +460,8 @@ class PeriodicTasksService():
         companys  = self.db.companies.find({"status":"Active"},{"_id":0})
         for com in companys:
             # print com['companyName'],com['teamName']
-            PerformanceModel().marketingShare(companyName=com['companyName'], teamName=com['teamName'],
+            if com['teamName'] == 'Team C':
+                PerformanceModel().marketingShare(companyName=com['companyName'], teamName=com['teamName'],
                                               period=self.systemCurrentPeriod)
 
     def hiringDecision(self):
