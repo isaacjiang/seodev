@@ -49,3 +49,8 @@ def handle_visionarycompetition(data):
     print "visionarycompetition" + str(data)
     status = VisionaryCompetitionModel().get_status()
     emit('visionarycompetition', status)
+
+
+@socketio.on('vcbid', namespace='/ipc')
+def handle_vcbid(data):
+    print "bid" + str(data)

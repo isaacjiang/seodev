@@ -2113,7 +2113,7 @@ app.config(function ($mdThemingProvider) {
                     .success(function (data) {
                     console.log(data)
                         if (data) {
-                            var visionaries = [{
+                            $scope.visionaries = [{
                                 name: 'VRKidEd',
                                 infuenceUnits: data.negotiation.sumInfluenceSales.VRKidEd,
                                 pitchCost: 40000
@@ -2149,17 +2149,17 @@ app.config(function ($mdThemingProvider) {
                             $scope.uncommittedTime = data.negotiation.funding.additinalProductDeveloperNumber * 120
                             $scope.uncommittedSales = data.negotiation.funding.additinalSalesNumber * 40000
 
-                            $scope.visionary = visionaries[0]
+                            $scope.visionary = $scope.visionaries[0]
                             $scope.progress = 0
-                            setInterval(function () {
-                                //console.log($scope.progress)
-                                $scope.progress += 1
-                                if ($scope.progress >= 100) {
-                                    $scope.progress = 0
-                                    $scope.visionary = visionaries[Math.floor((Math.random() * 6))]
-                                    $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
-                                }
-                            }, 1000)
+                            // setInterval(function () {
+                            //     //console.log($scope.progress)
+                            //     $scope.progress += 1
+                            //     if ($scope.progress >= 100) {
+                            //         $scope.progress = 0
+                            //         $scope.visionary = visionaries[Math.floor((Math.random() * 6))]
+                            //         $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
+                            //     }
+                            // }, 1000)
                         }
                 })
 
@@ -2174,12 +2174,23 @@ app.config(function ($mdThemingProvider) {
                     updateTimer(d.startTime)
                     $scope.companiesStatus = d.companies
 
+                    $scope.progress += 1
+                    if ($scope.progress >= 100) {
+                        $scope.progress = 0
+                        $scope.visionary = $scope.visionaries[Math.floor((Math.random() * 6))]
+                        $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
+                    }
 
                     $timeout(function () {
                         $rootScope.ipc.emit('visionarycompetition', vcStatus)
                     }, 1000)
 
                 })
+
+                $scope.bid = function () {
+                    var bidInfo = {vsStatus: vcStatus, visionary: $scope.visionary,}
+                    $rootScope.ipc.emit('vcbid', bidInfo)
+                }
 
                 $scope.submit = function (selectedNiches,event) {
 

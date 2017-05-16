@@ -22,6 +22,8 @@
                 </md-button>
             </div>
         </md-toolbar>
+
+
     <div layout-align="center center" class="clock">
         <svg class="clocksvg" width="375" height="96" viewBox="0 0 375 96" >
             <g transform="translate(17,0)">
@@ -90,9 +92,8 @@
             </g>
         </svg>
     </div>
-    <div class="totalprogressline" layout-align="end end">
-         <md-progress-linear md-mode="determinate" class="md-warn" value="{% raw %}{{ progress }}{% endraw %}"></md-progress-linear>
-    </div>
+    {#    <div  layout-align="end end">#}
+    {#           </div>#}
 
     <md-grid-list
             md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3"
@@ -118,67 +119,80 @@
 
         </md-grid-tile>
 
-        <md-grid-tile class="green" md-rowspan="1" md-colspan="2">
-            <md-grid-tile-footer>
-                <h3>#2: (1r x 1c)</h3>
-            </md-grid-tile-footer>
+        <md-grid-tile md-rowspan="1" md-colspan="2">
+            <md-grid-tile-header>
+                <h3>Current Visionary</h3>
+            </md-grid-tile-header>
+            <div style="height: 100%;width: 100%;margin-top: 90px;">
+                <div layout="row">
+                    <md-progress-linear md-mode="determinate" class="md-warn" style="height: 4px;"
+                                        value="{% raw %}{{ progress }}{% endraw %}"></md-progress-linear>
+                </div>
+                <div layout="row" style="margin-top: 5%;margin-bottom: 5%">
+                    <div flex="35">
+                        <span class="md-body-1" style="font-size: 3em"> Visionary: </span>
+                    </div>
+                    <div flex>
+                        <span class="md-body-1" style="font-size: 3em">{% raw %}{{ visionary.name }}{% endraw %}</span>
+                    </div>
+                    <div flex>
+                        <div layout style="margin-bottom: 1%">
+                            <div flex>
+                                <span class="md-body-1" style="font-size: 1.2em">Infuence Units: </span>
+
+                            </div>
+                            <div flex>
+                                <span class="md-body-1"
+                                      style="font-size: 1.2em">{% raw %}{{ visionary.infuenceUnits }}{% endraw %}</span>
+                            </div>
+                        </div>
+                        <div layout style="margin-top: 1%;">
+                            <div flex>
+                                <span class="md-body-1" style="font-size: 1.2em">Pitch Cost: </span>
+                            </div>
+                            <div flex>
+                                <span class="md-body-1"
+                                      style="font-size: 1.2em">{% raw %}{{ visionary.pitchCost }}{% endraw %}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </md-grid-tile>
 
         <md-grid-tile class="yellow" md-rowspan="2" md-colspan="1">
-            <md-grid-tile-footer>
-                <h3>#3: (1r x 1c)</h3>
-            </md-grid-tile-footer>
+            <md-grid-tile-header>
+                <h3>Bid </h3>
+            </md-grid-tile-header>
+            <div layout>
+                <div>
+                    <span class="md-body-1" style="font-size: 1.2em">Please Enter Time Commitment: </span>
+                </div>
+                <div layout>
+                    <md-input-container class="md-block" flex>
+                        <input ng-model="visionary.timecommitment" type="number" step="1" style="width: 90%"
+                               aria-label="time">
+                    </md-input-container>
+                </div>
+            </div>
+
+
         </md-grid-tile>
 
         <md-grid-tile class="blue"
                       md-rowspan="2" md-colspan="1">
-            <md-grid-tile-footer>
-                <h3>#4: (2r x 1c)</h3>
-            </md-grid-tile-footer>
+            <md-grid-tile-header>
+                <h3>Result</h3>
+            </md-grid-tile-header>
         </md-grid-tile>
 
 
     </md-grid-list>
 
 
-    {##}
-    {#            <div layout style="margin-right:50px;margin-left:100px;margin-top:30px" layout-align="space-between center">#}
-    {#                <div flex="35" layout layout-align="start center">#}
-    {#                    <span class="md-body-1"> Visionary </span>#}
-    {#                </div>#}
-    {#                <div flex layout layout-align="center center">#}
-    {#                           <span class="md-body-1"> Time Commitment </span>    </div>#}
-    {#                  <div flex layout layout-align="start center">#}
-    {#                    <span class="md-body-1">infuenceUnits: </span>#}
-    {##}
-    {#                </div>#}
-    {#                <div flex layout layout-align="start center">#}
-    {#                    <span class="md-body-1">Pitch Cost: </span>#}
-    {##}
-    {#                </div>#}
-    {##}
-    {#            </div>#}
-    {##}
-    {##}
-    {#            <div layout style="margin-right:100px;margin-left:100px" layout-align="space-between center">#}
-    {#                <div flex layout layout-align="start center">#}
-    {#                    <span class="md-body-1" ng-bind="visionary.name"></span>#}
-    {#                </div>#}
-    {#                          <div flex layout layout-align="center center">#}
-    {#                             <md-checkbox ng-checked="exists(visionary, selectedNiches)" ng-click="toggle(visionary, selectedNiches)" aria-label="Select"></md-checkbox>#}
-    {#                    </div>#}
-    {#                <div flex layout layout-align="center center">#}
-    {#                   <md-input-container class="md-block" flex>#}
-    {#                        <input ng-model="visionary.timecommitment" type="number" step="1" style="width: 90%" aria-label="time">#}
-    {#                    </md-input-container>#}
-    {#                            </div>#}
-    {#                  <div flex layout layout-align="start center">#}
-    {#                    <span class="md-body-1" ng-bind="visionary.infuenceUnits"></span>#}
-    {#                </div>#}
-    {#                   <div flex layout layout-align="start center">#}
-    {#                    <span class="md-body-1" ng-bind="visionary.pitchCost"></span>#}
-    {#                </div>#}
-    {#            </div>#}
+
     {##}
     {##}
     {#            <md-divider ></md-divider>#}
@@ -207,8 +221,8 @@
             <div layout-align="center center"><span ng-bind="message"></span></div>
             <span flex></span>
             <div>
-                <md-button type="button" id="submit" value="Submit" ng-click="submit(selectedNiches,$event)">
-                    Submit
+                <md-button type="button" id="submit" value="Submit" ng-click="bid()">
+                    Bid
                 </md-button>
 
                 <md-button type="button" ng-click="close()" style="margin-right:20px;">
