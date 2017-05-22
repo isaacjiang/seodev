@@ -16,10 +16,10 @@
                     </div>
                 </md-button>
 
-                <md-button class="md-icon-button" type="button" ng-click="close()">
-                    <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_clear_white_48px.svg') }}"
-                             aria-label="Close dialog"></md-icon>
-                </md-button>
+                {#                <md-button class="md-icon-button" type="button" ng-click="close()">#}
+                {#                    <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_clear_white_48px.svg') }}"#}
+                {#                             aria-label="Close dialog"></md-icon>#}
+                {#                </md-button>#}
             </div>
         </md-toolbar>
 
@@ -100,22 +100,31 @@
             md-row-height-gt-md="2:1" md-row-height="2:1"
             md-gutter="12px" md-gutter-gt-sm="8px">
 
-        <md-grid-tile md-rowspan="3" md-colspan="1" style="margin-left: 10px;">
-            <md-content>
+        <md-grid-tile md-rowspan="3" md-colspan="1">
+            <div style="height: 100%;width: 100%;margin-top: 90px;">
+                <md-grid-tile-header>
+                    <h3 style="font-size: 1.5em">Current Round: {% raw %}{{ currentRound }}{% endraw %}</h3>
+                </md-grid-tile-header>
                 <md-list-item class="md-2-line" ng-repeat="com in companiesStatus">
                     <img aria-label="Task" class="md-avatar"
                          ng-src="{{ url_for('static', filename='icon/ic_check_green_48px.svg') }}"
-                         ng-if="com.status =='registered'"/>
+                         ng-if="com.status =='registered' || com.status =='biding'"/>
                     <img aria-label="Task" class="md-avatar"
                          ng-src="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"
                          ng-if="com.status =='unregister'"/>
-
+                    <img aria-label="Task" class="md-avatar"
+                         ng-src="{{ url_for('static', filename='icon/ic_flag_red_48px.svg') }}"
+                         ng-if="com.status =='win'"/>
                     <div class="md-list-item-text">
                         <h3> {% raw %}{{com.teamName }}{% endraw %}</h3>
                     </div>
+
+                    <img aria-label="Task" class="md-avatar"
+                         ng-src="{{ url_for('static', filename='icon/ic_star_red_48px.svg') }}"
+                         ng-if="com.status =='biding' || com.status =='win'" ng-repeat="round in com.biddedRound"/>
                     <md-divider></md-divider>
                 </md-list-item>
-            </md-content>
+            </div>
 
         </md-grid-tile>
 
@@ -133,7 +142,8 @@
                         <span class="md-body-1" style="font-size: 3em"> Visionary: </span>
                     </div>
                     <div flex>
-                        <span class="md-body-1" style="font-size: 3em">{% raw %}{{ visionary.name }}{% endraw %}</span>
+                        <span class="md-body-1"
+                              style="font-size: 3em">{% raw %}{{ visionary.visionary }}{% endraw %}</span>
                     </div>
                     <div flex>
                         <div layout style="margin-bottom: 1%">
@@ -143,7 +153,7 @@
                             </div>
                             <div flex>
                                 <span class="md-body-1"
-                                      style="font-size: 1.2em">{% raw %}{{ visionary.infuenceUnits }}{% endraw %}</span>
+                                      style="font-size: 1.2em">{% raw %}{{ infuenceUnits }}{% endraw %}</span>
                             </div>
                         </div>
                         <div layout style="margin-top: 1%;">
@@ -166,15 +176,38 @@
             <md-grid-tile-header>
                 <h3>Bid </h3>
             </md-grid-tile-header>
-            <div layout>
-                <div>
+            <div layout="column" style="height: 100%;width: 100%;margin-top: 90px;">
+                <div layout style="height: 10%;margin-top: 5%;">
+                    <div flex>
+                        <span class="md-body-1" style="font-size: 1.2em">Uncommitted Time: </span>
+                    </div>
+                    <div flex>
+                                <span class="md-body-1"
+                                      style="font-size: 1.2em"
+                                      ng-bind="uncommittedTime">{% raw %}{{ uncommittedTime }}{% endraw %}</span>
+                    </div>
+
+                </div>
+                <div layout style="height: 10%;margin-top: 5%;">
+                    <div flex>
+                        <span class="md-body-1" style="font-size: 1.2em">uncommitted Sales: </span>
+                    </div>
+                    <div flex>
+                                <span class="md-body-1"
+                                      style="font-size: 1.2em">{% raw %}{{ uncommittedSales }}{% endraw %}</span>
+                    </div>
+
+                </div>
+                <div style="height: 10%;margin-top: 5%;">
                     <span class="md-body-1" style="font-size: 1.2em">Please Enter Time Commitment: </span>
                 </div>
-                <div layout>
+                <div style="height: 20%;margin-top: 5%;">
                     <md-input-container class="md-block" flex>
-                        <input ng-model="visionary.timecommitment" type="number" step="1" style="width: 90%"
-                               aria-label="time">
+                        <input ng-model="bidtimecommitment.value" type="number" step="1"
+                               max="{% raw %}{{ uncommittedTime }}{% endraw %}" style="width: 90%"
+                               name="bidtimecommitment" aria-label="time">
                     </md-input-container>
+
                 </div>
             </div>
 
@@ -183,9 +216,25 @@
 
         <md-grid-tile class="blue"
                       md-rowspan="2" md-colspan="1">
-            <md-grid-tile-header>
-                <h3>Result</h3>
-            </md-grid-tile-header>
+            <div style="height: 100%;width: 100%;margin-top: 90px;">
+                <md-grid-tile-header>
+                    <h3 style="font-size: 1.5em">Results</h3>
+                </md-grid-tile-header>
+                <md-list-item class="md-2-line" ng-repeat="result in lastRoundResult">
+                    <div class="md-list-item-text">
+                        <h3> {% raw %}{{result.round }}{% endraw %}</h3>
+                    </div>
+                    <div class="md-list-item-text">
+                        <h3> {% raw %}{{result.teamName }}{% endraw %} - {% raw %}{{result.companyName
+                            }}{% endraw %}</h3>
+                    </div>
+                    <div class="md-list-item-text">
+                        <h3> {% raw %}{{result.winVisonary.visionary }}{% endraw %}</h3>
+                    </div>
+
+                    <md-divider></md-divider>
+                </md-list-item>
+            </div>
         </md-grid-tile>
 
 
@@ -221,13 +270,14 @@
             <div layout-align="center center"><span ng-bind="message"></span></div>
             <span flex></span>
             <div>
-                <md-button type="button" id="submit" value="Submit" ng-click="bid()">
+                <md-button type="button" id="submit" value="Submit" ng-click="bid()" ng-if="permitbidstatus"
+                           style="margin-right:200px;">
                     Bid
                 </md-button>
 
-                <md-button type="button" ng-click="close()" style="margin-right:20px;">
-                    Cancel
-                </md-button>
+                {#                <md-button type="button" ng-click="close()" style="margin-right:20px;">#}
+                {#                    Cancel#}
+                {#                </md-button>#}
             </div>
         </div>
 

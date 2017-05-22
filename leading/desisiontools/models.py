@@ -4,6 +4,7 @@ from bson import ObjectId
 from leading.entities.models import EntitiesModel
 from leading.syssetting.models import SystemSetting, DatabaseBackup
 from datetime import datetime
+from random import randint
 
 class TasksModel():
     def __init__(self, taskID=None,companyName=None,teamName=None,period=0):
@@ -434,29 +435,147 @@ class VisionaryCompetitionModel(TasksModel):
         # result['vcStatus'] = self.get_status()['vcStatus']
         return result
 
+    def getRadomVisionaries(self):
+        result = {}
+        visionaries = list(self.db.visionarycompetition_visionaries.find({'status': 'Init'}, {"_id": 0}))
+        if len(visionaries) > 0:
+            result = visionaries[randint(0, len(visionaries) - 1)]
+        else:
+            if len(list(self.db.visionarycompetition_visionaries.find({}, {"_id": 0}))) == 0:
+                visionaries = [{'visionary': 'VRKidEd', 'pitchCost': 40000},
+                               {'visionary': 'GovVR', 'pitchCost': 30000},
+                               {'visionary': 'VRGames', 'pitchCost': 50000},
+                               {'visionary': 'MilitaryVR', 'pitchCost': 40000},
+                               {'visionary': 'AdEdVR', 'pitchCost': 35000},
+                               {'visionary': 'VRCinema', 'pitchCost': 25000}
+                               ]
+                for visionary in visionaries:
+                    self.db.visionarycompetition_visionaries.update_one({'visionary': visionary['visionary']}, {
+                        "$set": {'pitchCost': visionary['pitchCost'], 'status': 'Init'}}, upsert=True)
+                result = visionaries[randint(0, len(visionaries) - 1)]
+            else:
+                result = {}
+        return result
+
     def register(self, teamName, companyName):
+        # first time
         existedcompanies = self.db.visionarycompetition_companies.find({})
         if len(list(existedcompanies)) == 0:
+
             companies = self.db.companies.find({"status": "Active", "companyName": "NewCo"}, {"_id": 0})
             for c in companies:
                 self.db.visionarycompetition_companies.update_one(
                     {"teamName": c['teamName'], "companyName": c['companyName']},
                     {"$set": {"status": 'unregister'}}, upsert=True)
-            self.db.visionarycompetition_status.update_one({}, {
-                "$set": {"startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}}, upsert=True)
+            randomVisionary = self.getRadomVisionaries()
+            self.db.visionarycompetition_status.update_one({'currentRound': 1}, {
+                "$set": {'status': 'Biding', 'currentVisionary': randomVisionary,
+                         "startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}}, upsert=True)
 
-        self.db.visionarycompetition_companies.update_one({"teamName": teamName, "companyName": "NewCo"},
+        # check if company exist
+        unregister = self.db.visionarycompetition_companies.find_one(
+            {"teamName": teamName, "companyName": "NewCo", 'status': 'unregister'})
+        if unregister:
+            # add influence unit for company
+            negotiation = self.db.negotiation1_com.find_one({"teamName": teamName}, {"_id": 0})
+            if negotiation is not None:
+                infuluenceUnit = negotiation['negotiation']['sumInfluenceSales']
+                uncommittedTime = negotiation['negotiation']['funding']['additinalProductDeveloperNumber'] * 120
+                uncommittedSales = negotiation['negotiation']['funding']['additinalSalesNumber'] * 40000
+            else:
+                infuluenceUnit = 1
+                uncommittedTime = 120
+                uncommittedSales = 40000
+            self.db.visionarycompetition_companies.update_one({"teamName": teamName, "companyName": "NewCo"},
                                                           {"$set": {'status': 'registered',
+                                                                    'infuluenceUnit': infuluenceUnit,
+                                                                    'uncommittedTime': uncommittedTime,
+                                                                    'uncommittedSales': uncommittedSales,
                                                                     "registerTime": datetime.now().strftime(
                                                                         '%Y-%m-%d %H:%M:%S')}}, upsert=True)
+
         currentCompanies = list(self.db.visionarycompetition_companies.find({}, {'_id': 0}).sort('teamName'))
-        self.db.visionarycompetition_status.update_one({}, {"$set": {"companies": currentCompanies}})
+        self.db.visionarycompetition_status.update_one({'status': 'Biding'}, {"$set": {"companies": currentCompanies}})
 
 
     def get_status(self):
-        vcStatus = self.db.visionarycompetition_status.find_one({}, {"_id": 0})
-        result = vcStatus
+        result = self.db.visionarycompetition_status.find_one({'status': 'Biding'}, {"_id": 0})
         return result
+
+    def bid(self, bidInfo):
+        if 'vsStatus' in bidInfo.keys():
+            self.db.visionarycompetition_bid.update_one({"teamName": bidInfo['vsStatus']['teamName'],
+                                                         "companyName": "NewCo",
+                                                         'currentRound': bidInfo['currentRound']},
+                                                        {"$set": {'bidtimecommitment': bidInfo['bidtimecommitment'],
+                                                                  'visionary': bidInfo['visionary'],
+                                                                  "uncommittedTime": bidInfo['uncommittedTime'],
+                                                                  "uncommittedSales": bidInfo['uncommittedSales']}},
+                                                        upsert=True)
+            self.db.visionarycompetition_companies.update_one({"teamName": bidInfo['vsStatus']['teamName'],
+                                                               "companyName": "NewCo"},
+                                                              {"$set": {'status': 'biding',
+                                                                        "uncommittedTime": bidInfo['uncommittedTime'] -
+                                                                                           bidInfo['bidtimecommitment'],
+                                                                        "uncommittedSales": bidInfo[
+                                                                                                'uncommittedSales'] -
+                                                                                            bidInfo['visionary'][
+                                                                                                'pitchCost']},
+                                                               "$addToSet": {"biddedRound": bidInfo['currentRound']}})
+            currentCompanies = list(self.db.visionarycompetition_companies.find({}, {'_id': 0}).sort('teamName'))
+            self.db.visionarycompetition_status.update_one({'currentRound': bidInfo['currentRound']},
+                                                           {"$set": {"companies": currentCompanies}})
+
+            if self.checkBids(bidInfo['currentRound']) == False:
+                self.upgradeRound(bidInfo['currentRound'])
+
+    def checkBids(self, currentRound):
+        currentCompanies = list(self.db.visionarycompetition_companies.find({}, {'_id': 0}))
+        result = list(self.db.visionarycompetition_bid.find({'currentRound': currentRound}, {'_id': 0}))
+        return len(result) == len(currentCompanies)
+
+    def upgradeRound(self, currentRound):
+        bids = self.db.visionarycompetition_bid.find({'currentRound': currentRound}, {'_id': 0}).limit(1).sort(
+            'bidtimecommitment', -1)
+        winbids = list(bids)
+        if len(winbids) > 0:
+            # winbids[0]['teamName']
+            # winbids[0]['companyName']
+            # winbids[0]['visionary']['name']
+            # winbids[0]['bidtimecommitment']
+            # winbids[0]['currentRound']
+            print winbids
+            self.db.visionarycompetition_result.update_one({
+                'round': winbids[0]['currentRound']},
+                {"$set": {'status': 'win',
+                          "teamName": winbids[0]['teamName'],
+                          "companyName": winbids[0]['companyName'],
+                          'bidtimecommitment': winbids[0]['bidtimecommitment'],
+                          "winVisonary": winbids[0]['visionary']},
+                 }, upsert=True)
+            self.db.visionarycompetition_visionaries.update_one({'visionary': winbids[0]['visionary']['visionary']}, {
+                "$set": {'status': 'Done'}})
+            result = {'round': winbids[0]['currentRound'],
+                      'status': 'win',
+                      "teamName": winbids[0]['teamName'],
+                      "companyName": winbids[0]['companyName'],
+                      'bidtimecommitment': winbids[0]['bidtimecommitment'],
+                      "winVisonary": winbids[0]['visionary']}
+
+            self.db.visionarycompetition_status.update_one({'currentRound': currentRound}, {"$set": {
+                'status': 'Done', "result": result}})
+
+            # self.db.visionarycompetition_status.update_one({}, {"$inc":{"currentRound":1}})
+            randomVisionary = self.getRadomVisionaries()
+            if randomVisionary != {}:
+                currentCompanies = list(self.db.visionarycompetition_companies.find({}, {'_id': 0}).sort('teamName'))
+                bidResults = list(self.db.visionarycompetition_result.find({}, {'_id': 0}).sort('round'))
+                self.db.visionarycompetition_status.update_one({'currentRound': currentRound + 1}, {
+                    "$set": {'status': 'Biding', 'currentVisionary': randomVisionary, "companies": currentCompanies,
+                             'lastRoundResult': bidResults,
+                             "startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}}, upsert=True)
+
+
 
     def save(self, data):
         # print selectniches

@@ -46,11 +46,18 @@ def handle_vcregister(data):
 
 @socketio.on('visionarycompetition', namespace='/ipc')
 def handle_visionarycompetition(data):
-    print "visionarycompetition" + str(data)
+    # print "visionarycompetition" + str(data)
     status = VisionaryCompetitionModel().get_status()
-    emit('visionarycompetition', status)
-
+    if len(status) > 0:
+        emit('visionarycompetition', status)
 
 @socketio.on('vcbid', namespace='/ipc')
 def handle_vcbid(data):
-    print "bid" + str(data)
+    # print "bid" + str(data)
+    VisionaryCompetitionModel().bid(data)
+
+
+@socketio.on('vcbidtimeout', namespace='/ipc')
+def handle_vcbidtimeout(data):
+    # print "bidtimeout" + str(data)
+    VisionaryCompetitionModel().bid(data)

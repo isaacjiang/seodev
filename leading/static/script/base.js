@@ -2098,86 +2098,132 @@ app.config(function ($mdThemingProvider) {
                     return list.indexOf(item) > -1;
                 };
 
-                $http({
-                        method: 'GET',
-                        url: "/api/dtools/visionarycompetition",
-                        params: {
-                            username: $rootScope.current_user.username,
-                            taskID: task.taskID,
-                            companyName: task.companyName,
-                            teamName: task.teamName,
-                            period: task.period
-                        }
-                    }
-                )
-                    .success(function (data) {
-                    console.log(data)
-                        if (data) {
-                            $scope.visionaries = [{
-                                name: 'VRKidEd',
-                                infuenceUnits: data.negotiation.sumInfluenceSales.VRKidEd,
-                                pitchCost: 40000
-                            },
-                                {
-                                    name: 'GovVR',
-                                    infuenceUnits: data.negotiation.sumInfluenceSales.GovVR,
-                                    pitchCost: 30000
-                                },
-                                {
-                                    name: 'VRGames',
-                                    infuenceUnits: data.negotiation.sumInfluenceSales.VRGames,
-                                    pitchCost: 50000
-                                },
-                                {
-                                    name: 'MilitaryVR',
-                                    infuenceUnits: data.negotiation.sumInfluenceSales.MilitaryVR,
-                                    pitchCost: 40000
-                                },
-                                {
-                                    name: 'AdEdVR',
-                                    infuenceUnits: data.negotiation.sumInfluenceSales.AdEdVR,
-                                    pitchCost: 35000
-                                },
-                                {
-                                    name: 'VRCinema',
-                                    infuenceUnits: data.negotiation.sumInfluenceSales.VRCinema,
-                                    pitchCost: 25000
-                                }
-                            ].sort(function () {
-                                return Math.random() * 3 - 1
-                            })
-                            $scope.uncommittedTime = data.negotiation.funding.additinalProductDeveloperNumber * 120
-                            $scope.uncommittedSales = data.negotiation.funding.additinalSalesNumber * 40000
-
-                            $scope.visionary = $scope.visionaries[0]
-                            $scope.progress = 0
-                            // setInterval(function () {
-                            //     //console.log($scope.progress)
-                            //     $scope.progress += 1
-                            //     if ($scope.progress >= 100) {
-                            //         $scope.progress = 0
-                            //         $scope.visionary = visionaries[Math.floor((Math.random() * 6))]
-                            //         $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
-                            //     }
-                            // }, 1000)
-                        }
-                })
+                // $http({
+                //         method: 'GET',
+                //         url: "/api/dtools/visionarycompetition",
+                //         params: {
+                //             username: $rootScope.current_user.username,
+                //             taskID: task.taskID,
+                //             companyName: task.companyName,
+                //             teamName: task.teamName,
+                //             period: task.period
+                //         }
+                //     }
+                // )
+                //     .success(function (data) {
+                //     console.log(data)
+                //         if (data) {
+                //             $scope.visionaries = [{
+                //                 name: 'VRKidEd',
+                //                 infuenceUnits: data.negotiation.sumInfluenceSales.VRKidEd,
+                //                 pitchCost: 40000
+                //             },
+                //                 {
+                //                     name: 'GovVR',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.GovVR,
+                //                     pitchCost: 30000
+                //                 },
+                //                 {
+                //                     name: 'VRGames',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.VRGames,
+                //                     pitchCost: 50000
+                //                 },
+                //                 {
+                //                     name: 'MilitaryVR',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.MilitaryVR,
+                //                     pitchCost: 40000
+                //                 },
+                //                 {
+                //                     name: 'AdEdVR',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.AdEdVR,
+                //                     pitchCost: 35000
+                //                 },
+                //                 {
+                //                     name: 'VRCinema',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.VRCinema,
+                //                     pitchCost: 25000
+                //                 }
+                //             ].sort(function () {
+                //                 return Math.random() * 3 - 1
+                //             })
+                //             $scope.uncommittedTime = data.negotiation.funding.additinalProductDeveloperNumber * 120
+                //             $scope.uncommittedSales = data.negotiation.funding.additinalSalesNumber * 40000
+                //
+                //             $scope.visionary = $scope.visionaries[0]
+                //             $scope.progress = 0
+                //             // setInterval(function () {
+                //             //     //console.log($scope.progress)
+                //             //     $scope.progress += 1
+                //             //     if ($scope.progress >= 100) {
+                //             //         $scope.progress = 0
+                //             //         $scope.visionary = visionaries[Math.floor((Math.random() * 6))]
+                //             //         $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
+                //             //     }
+                //             // }, 1000)
+                //         }
+                // })
 
                 var vcStatus = {
                     companyName: $rootScope.user_info.companyInfo.companyName,
-                    teamName: $rootScope.user_info.companyInfo.teamName,
+                    teamName: $rootScope.user_info.companyInfo.teamName
                 }
+                $scope.progress = 0
+                $scope.bidtimecommitment = {value: 0}
+
                 $rootScope.ipc.emit('vcregister', vcStatus)
 
                 $rootScope.ipc.on('visionarycompetition', function (d) {
-                    console.log(d)
-                    updateTimer(d.startTime)
-                    $scope.companiesStatus = d.companies
+                    //console.log(d)
 
-                    $scope.progress += 1
+                    //calculate progree by time
+                    var dt = d.startTime.split(' ')[0].split('-')
+                    var tm = d.startTime.split(' ')[1].split(':')
+                    var now = new Date();
+
+                    var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], now.getHours(), parseInt(tm[1]) + 5, tm[2])
+
+                    var time_left = parseInt(Math.abs(endtime_obj - now) / 1000)
+                    console.log(time_left)
+                    $scope.progress = endtime_obj - now > 0 ? (1 - time_left / 300) * 100 : time_left / 300 * 100
+                    //console.log(endtime_obj-now,time_left, $scope.progress)
+
+
+                    updateTimer(time_left)
+                    $scope.companiesStatus = d.companies
+                    // console.log(d.companies)
+                    $scope.currentRound = d.currentRound
+                    $scope.visionary = d.currentVisionary
+                    $scope.lastRoundResult = d.lastRoundResult
+
+                    var currentCompany = d.companies.filter(function (com) {
+                        return com.teamName == $rootScope.user_info.companyInfo.teamName
+                    })
+
+                    if (currentCompany.length > 0) {
+                        $scope.infuenceUnits = currentCompany[0].infuluenceUnit[d.currentVisionary.visionary]
+                    }
+                    if (currentCompany.length > 0 && Object.keys(currentCompany[0]).indexOf('uncommittedTime') >= 0) {
+                        $scope.uncommittedTime = currentCompany[0].uncommittedTime
+                        $scope.uncommittedSales = currentCompany[0].uncommittedSales
+                    }
+
+                    if (currentCompany.length > 0 && (currentCompany[0].status == 'biding' || currentCompany[0].status == 'registered')) {
+                        $scope.permitbidstatus = true
+                    }
+
+                    //$scope.progress += 0.333333333333333
                     if ($scope.progress >= 100) {
                         $scope.progress = 0
-                        $scope.visionary = $scope.visionaries[Math.floor((Math.random() * 6))]
+                        var bidInfo = {
+                            vsStatus: vcStatus,
+                            visionary: $scope.visionary,
+                            bidtimecommitment: $scope.bidtimecommitment.value,
+                            currentRound: $scope.currentRound,
+                            uncommittedTime: $scope.uncommittedTime,
+                            uncommittedSales: $scope.uncommittedSales
+                        }
+                        $rootScope.ipc.emit('vcbidtimeout', bidInfo)
+                        // $scope.visionary = $scope.visionaries[Math.floor((Math.random() * 6))]
                         $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
                     }
 
@@ -2187,9 +2233,31 @@ app.config(function ($mdThemingProvider) {
 
                 })
 
+
                 $scope.bid = function () {
-                    var bidInfo = {vsStatus: vcStatus, visionary: $scope.visionary,}
-                    $rootScope.ipc.emit('vcbid', bidInfo)
+
+                    if ($scope.bidtimecommitment.value == undefined || $scope.bidtimecommitment.value == 0) {
+                        $rootScope.notificationToast('Please enter time Commitment Value. ')
+                    }
+                    else if ($scope.bidtimecommitment.value > $scope.uncommittedTime) {
+                        $rootScope.notificationToast('You do not have enough committed time. ')
+                    }
+                    else if ($scope.visionary.uncommittedSales > $scope.visionary.pitchCost) {
+                        $rootScope.notificationToast('You do not have enough funding. ')
+                    }
+                    else {
+                        var bidInfo = {
+                            vsStatus: vcStatus,
+                            visionary: $scope.visionary,
+                            bidtimecommitment: $scope.bidtimecommitment.value,
+                            currentRound: $scope.currentRound,
+                            uncommittedTime: $scope.uncommittedTime,
+                            uncommittedSales: $scope.uncommittedSales
+                        }
+                        $rootScope.ipc.emit('vcbid', bidInfo)
+                    }
+
+
                 }
 
                 $scope.submit = function (selectedNiches,event) {
@@ -2226,6 +2294,7 @@ app.config(function ($mdThemingProvider) {
                     drawTimer()
                 },1000)
 
+
                 function drawTimer() {
                     var svgUnderlay = d3.select(".clock svg"),
                         svgOverlay = d3.select(".clock").append(function () {
@@ -2236,11 +2305,11 @@ app.config(function ($mdThemingProvider) {
 
                 }
 
-                function updateTimer(endtime) {
+                function updateTimer(time_left) {
                     svg = d3.selectAll(".clock svg");
-                    var dt = endtime.split(' ')[0].split('-')
-                    var tm = endtime.split(' ')[1].split(':')
-                    var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], tm[0], parseInt(tm[1]) + 5, tm[2])
+                    // var dt = endtime.split(' ')[0].split('-')
+                    // var tm = endtime.split(' ')[1].split(':')
+                    // var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], tm[0], parseInt(tm[1]) + 5, tm[2])
                     var digit = svg.selectAll(".digit"),
                         separator = svg.selectAll(".separator circle");
                     var digitPattern = [
@@ -2254,8 +2323,8 @@ app.config(function ($mdThemingProvider) {
                     ];
 
                     // (function tick() {
-                    var now = new Date();
-                    var time_left = parseInt(Math.abs(endtime_obj - now) / 1000)
+                    // var now = new Date();
+                    // var time_left = parseInt(Math.abs(endtime_obj - now) / 1000)
                     var hours = parseInt(parseInt(time_left / 3600) % 24),
                         minutes = parseInt(parseInt(time_left / 60) % 60),
                         seconds = parseInt(time_left % 60);
