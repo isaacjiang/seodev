@@ -460,8 +460,8 @@ class PeriodicTasksService():
         companys  = self.db.companies.find({"status":"Active"},{"_id":0})
         for com in companys:
             # print com['companyName'],com['teamName']
-            if com['teamName'] == 'Team C':
-                PerformanceModel().marketingShare(companyName=com['companyName'], teamName=com['teamName'],
+            # if com['teamName'] == 'Team C':
+            PerformanceModel().marketingShare(companyName=com['companyName'], teamName=com['teamName'],
                                               period=self.systemCurrentPeriod)
 
     def hiringDecision(self):
@@ -512,7 +512,8 @@ class PeriodicTasksService():
                 # acc.bookkeeping(objectID=workforce["_id"],
                 #                 accountDescID=self.categoryToItem(workforce['functions']),
                 #                 value=value1, comments='Workforce adjustment' + workforce['functions'])
-                value2 = int(workforce['adjustedworkforce_total']) * (workforce['avWage'] + workforce['avExpense'])
+                value2 = int(workforce['adjustedworkforce_total'].replace(',', '')) * (
+                workforce['avWage'] + workforce['avExpense'])
                 acc.bookkeeping(objectID=workforce["_id"],
                                 accountDescID=self.categoryToItem(workforce['functions']),
                                 value=value1 + value2, comments='Workforce' + workforce['functions'])
@@ -729,4 +730,5 @@ class PeriodicTasksService():
                     .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=total_amount,
                                  comments='Transfer  from LegacyCo.')
 
-# PeriodicTasksService().marketing_share()
+
+PeriodicTasksService().calculte_marketing_share()

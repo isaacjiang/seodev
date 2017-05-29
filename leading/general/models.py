@@ -3,6 +3,7 @@ from leading.config import leadingdb, leadingbase
 from bson import ObjectId
 from leading.account.models import Account
 from leading.syssetting.models import SystemSetting
+from pprint import pprint
 
 class PerformanceModel():
     def __init__(self):
@@ -92,8 +93,8 @@ class PerformanceModel():
                 # selectedNiche['rankedAdaptabilityIndex'] = sorted(selectedNiche['selectedByCompany'],
                 #                                         key=lambda x: selectedNiche['companyValue'][x]['adaptabilityIndex']['subTotal']
                 #                                         , reverse=True)
-                self.db.niches_cal.update_one({"_id": selectedNiche['_id']}, {"$set": selectedNiche})
-                # pprint(selectedNiche)
+                # self.db.niches_cal.update_one({"_id": selectedNiche['_id']}, {"$set": selectedNiche})
+                pprint(selectedNiche)
 
 
     def marketingShare(self, teamName, companyName, period):
