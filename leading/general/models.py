@@ -14,7 +14,7 @@ class PerformanceModel():
         def get_com_acc_value(accountDescID, teamName, companyName, period):
             accValue = 0
             condition = {"$and": [{"period": {"$lte": period}},
-                                  {"period": {"$gt": period - 3}},
+                                  {"period": {"$gte": period - 3}},
                                   {"accountDescID": accountDescID}, {"teamName": teamName},
                                   {"companyName": companyName}]}
             res = self.db.account_bookkeeping.find(condition, {"_id": 0})
@@ -42,59 +42,118 @@ class PerformanceModel():
             if 'selectedByCompany' in selectedNiche.keys():
                 selected_com_total = 0
                 for selectedByCom in selectedNiche['selectedByCompany']:
+
+                    if type(selectedByCom) is dict:
+                        selectedByCom = selectedByCom['teamName']
                     selectedNiche['companyValue'][selectedByCom] = {}
                     #print selectedNiche
                     company_total = 0
-
+                    competenceIndex_total = 1
+                    stressIndex_total = 1
+                    legitimacyIndex_total = 1
+                    adaptabilityIndex_total = 1
+                    selectedNiche['companyValue'][selectedByCom]['accountValue'] = {}
+                    selectedNiche['companyValue'][selectedByCom]['competenceIndex'] = {}
+                    selectedNiche['companyValue'][selectedByCom]['stressIndex'] = {}
+                    selectedNiche['companyValue'][selectedByCom]['legitimacyIndex'] = {}
+                    selectedNiche['companyValue'][selectedByCom]['adaptabilityIndex'] = {}
+                    selectedNiche['companyValue'][selectedByCom]['weight'] = {}
                     for i, accItem in enumerate(accountItem):
-                        nc = selectedNiche['companyValue'][selectedByCom][accItem] = \
+
+                        nc = selectedNiche['companyValue'][selectedByCom]['accountValue'][accItem] = \
                             get_com_acc_value(accItem, selectedByCom, selectedNiche['company'], selectedNiche['period'])
-                        # selectedNiche['companyValue'][selectedByCom]['weight']=weight[i]
-                        competenceIndex = get_com_inx('competenceIndex', selectedByCom, selectedNiche['company'],
+                        selectedNiche['companyValue'][selectedByCom]['weight'][accItem] = weight[i]
+                        competenceIndex = selectedNiche['companyValue'][selectedByCom]['competenceIndex'][accItem] = \
+                            get_com_inx('competenceIndex', selectedByCom, selectedNiche['company'],
                                                       selectedNiche['period'], accItem)
-                        company_total += nc * competenceIndex * weight[i]
-                        # accitemIndex = accItem+'Index'
-                        # # selectedNiche['companyValue'][selectedByCom][accitemIndex] ={}
-                        # for inxItem in indexItem:
-                        #     selectedNiche['companyValue'][selectedByCom][inxItem] ={} if indexItem not in selectedNiche['companyValue'][selectedByCom].keys() else selectedNiche['companyValue'][selectedByCom][inxItem]
-                        #     indecValue =get_com_inx(inxItem, selectedByCom, selectedNiche['company'], selectedNiche['period'],accItem)
-                        #
-                        #     selectedNiche['companyValue'][selectedByCom][inxItem][accItem]={"index":indecValue,"accDescID":accItem,'weight':weight[i]}
-                        #
-                        #     selectedNiche['companyValue'][selectedByCom][inxItem]['subTotal'] = 1 if indexItem not in selectedNiche['companyValue'][selectedByCom][inxItem].keys()\
-                        #         else selectedNiche['companyValue'][selectedByCom][inxItem]['subTotal']
-                        #     selectedNiche['companyValue'][selectedByCom][inxItem]['subTotal'] = selectedNiche['companyValue'][selectedByCom][inxItem]['subTotal'] *indecValue
+                        stressIndex = selectedNiche['companyValue'][selectedByCom]['stressIndex'][accItem] = \
+                            get_com_inx('stressIndex', selectedByCom, selectedNiche['company'],
+                                        selectedNiche['period'], accItem)
+                        legitimacyIndex = selectedNiche['companyValue'][selectedByCom]['legitimacyIndex'][accItem] = \
+                            get_com_inx('legitimacyIndex', selectedByCom, selectedNiche['company'],
+                                        selectedNiche['period'], accItem)
+                        adaptabilityIndex_ = selectedNiche['companyValue'][selectedByCom]['adaptabilityIndex'][
+                            accItem] = \
+                            get_com_inx('adaptabilityIndex_', selectedByCom, selectedNiche['company'],
+                                        selectedNiche['period'], accItem)
+                        # newCo need change to legitmacyIndex
+                        if selectedNiche['company'] == 'NewCo':
+                            company_total += nc * legitimacyIndex * weight[i]
+                        else:
+                            company_total += nc * competenceIndex * weight[i]
+                        competenceIndex_total = competenceIndex_total * competenceIndex
+                        stressIndex_total = stressIndex_total * stressIndex
+                        legitimacyIndex_total = legitimacyIndex_total * legitimacyIndex
+                        adaptabilityIndex_total = adaptabilityIndex_total * adaptabilityIndex_
                     selectedNiche['companyValue'][selectedByCom]['company_total'] = company_total
+                    selectedNiche['companyValue'][selectedByCom]['competenceIndex_total'] = competenceIndex_total
+                    selectedNiche['companyValue'][selectedByCom]['stressIndex_total'] = stressIndex_total
+                    selectedNiche['companyValue'][selectedByCom]['legitimacyIndex_total'] = legitimacyIndex_total
+                    selectedNiche['companyValue'][selectedByCom]['adaptabilityIndex_total'] = adaptabilityIndex_total
                     selected_com_total += company_total
                 selectedNiche['selected_com_total'] = selected_com_total
 
                 for selectedByCom in selectedNiche['selectedByCompany']:
+                    if type(selectedByCom) is dict:
+                        selectedByCom = selectedByCom['teamName']
+                    companiesNumber = len(selectedNiche['selectedByCompany'])
                     selectedNiche['companyValue'][selectedByCom]['shareRate'] = shareRate = \
                         selectedNiche['companyValue'][selectedByCom]['company_total'] / \
                         selectedNiche['selected_com_total'] if selectedNiche['selected_com_total'] != 0 else 1
                     selectedNiche['companyValue'][selectedByCom]['customersTotal'] = \
-                        int(shareRate * selectedNiche['customersAvailable'])
+                        int(shareRate * selectedNiche['customersAvailable'] * companiesNumber)
                     selectedNiche['companyValue'][selectedByCom]['averageRecenuePPPC'] = selectedNiche[
                         'averageRecenuePPPC']
                     selectedNiche['companyValue'][selectedByCom]['sharedMarketValue'] = \
-                        int(shareRate * selectedNiche['customersAvailable']) * selectedNiche['averageRecenuePPPC']
+                        int(shareRate * selectedNiche['customersAvailable'] * companiesNumber) * selectedNiche[
+                            'averageRecenuePPPC']
                 selectedNiche['rankedCompany'] = sorted(selectedNiche['selectedByCompany'],
                                                         key=lambda x: selectedNiche['companyValue'][x]['shareRate']
                                                         , reverse=True)
-                # selectedNiche['rankedCompetenceIndex'] = sorted(selectedNiche['selectedByCompany'],
-                #                                         key=lambda x: selectedNiche['companyValue'][x]['competenceIndex']['subTotal']
-                #                                         , reverse=True)
-                # selectedNiche['rankedStressIndex'] = sorted(selectedNiche['selectedByCompany'],
-                #                                         key=lambda x: selectedNiche['companyValue'][x]['stressIndex']['subTotal']
-                #                                         , reverse=True)
-                # selectedNiche['rankedLegitimacyIndex'] = sorted(selectedNiche['selectedByCompany'],
-                #                                         key=lambda x: selectedNiche['companyValue'][x]['legitimacyIndex']['subTotal']
-                #                                         , reverse=True)
-                # selectedNiche['rankedAdaptabilityIndex'] = sorted(selectedNiche['selectedByCompany'],
-                #                                         key=lambda x: selectedNiche['companyValue'][x]['adaptabilityIndex']['subTotal']
-                #                                         , reverse=True)
-                # self.db.niches_cal.update_one({"_id": selectedNiche['_id']}, {"$set": selectedNiche})
-                pprint(selectedNiche)
+                selectedNiche['rankedCompetenceIndex'] = {}
+                selectedNiche['rankedStressIndex'] = {}
+                selectedNiche['rankedLegitimacyIndex'] = {}
+                selectedNiche['rankedAdaptabilityIndex'] = {}
+                for accItem in accountItem:
+                    selectedNiche['rankedCompetenceIndex'][accItem] = sorted(selectedNiche['selectedByCompany'],
+                                                                             key=lambda x:
+                                                                             selectedNiche['companyValue'][x][
+                                                                                 'competenceIndex'][accItem],
+                                                                             reverse=True)
+                    selectedNiche['rankedStressIndex'][accItem] = sorted(selectedNiche['selectedByCompany'],
+                                                                         key=lambda x: selectedNiche['companyValue'][x][
+                                                                             'stressIndex'][accItem]
+                                                                         , reverse=True)
+                    selectedNiche['rankedLegitimacyIndex'][accItem] = sorted(selectedNiche['selectedByCompany'],
+                                                                             key=lambda x:
+                                                                             selectedNiche['companyValue'][x][
+                                                                                 'legitimacyIndex'][accItem]
+                                                                             , reverse=True)
+                    selectedNiche['rankedAdaptabilityIndex'][accItem] = sorted(selectedNiche['selectedByCompany'],
+                                                                               key=lambda x:
+                                                                               selectedNiche['companyValue'][x][
+                                                                                   'adaptabilityIndex'][accItem]
+                                                                               , reverse=True)
+                self.db.niches_cal.update_one({"_id": selectedNiche['_id']}, {"$set": selectedNiche})
+            # pprint(selectedNiche)
+            # account system
+            for team in selectedNiche['companyValue'].keys():
+                tValue = selectedNiche['companyValue'][team]
+                print selectedNiche['niche']
+                if selectedNiche['niche'] == "B2B":
+                    accountDescID = 'AA011'
+                elif selectedNiche['niche'] == "B2C":
+                    accountDescID = 'AA012'
+                elif selectedNiche['niche'] == "Education":
+                    accountDescID = 'AA031'
+                elif selectedNiche['niche'] == "Government":
+                    accountDescID = 'AA032'
+                else:
+                    accountDescID = 'AA033'
+
+                Account(teamName=team, companyName=selectedNiche['company'], period=selectedNiche['period']) \
+                    .bookkeeping(accountDescID=accountDescID, objectID=selectedNiche["_id"],
+                                 value=tValue['sharedMarketValue'], comments='Market Share')
 
 
     def marketingShare(self, teamName, companyName, period):

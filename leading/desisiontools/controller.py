@@ -183,7 +183,7 @@ class TasksService():
 
         if request.method == 'POST':
             data= json.loads(request.data)
-            #print data
+            print data
             taskID = data["taskID"]
             companyName =  data["companyName"] if 'companyName' in data.keys() else None
             teamName = data["teamName"] if 'teamName' in data.keys() else None
@@ -592,13 +592,12 @@ class PeriodicTasksService():
         for niche in niches:
             for period in periods:
                 if niche[period] != '' and 'selected' in niche[period].keys() and niche[period]['selected'] == True:
-                    niche[period]['selectedCompany'] = [] if 'selectedCompany' not in niche[period].keys() else \
-                    niche[period]['selectedCompany']
+                    # niche[period]['selectedByCompany'] = [] if 'selectedByCompany' not in niche[period].keys() else \
+                    # niche[period]['selectedByCompany']
                     self.db.niches_cal.update_one(
-                        {"company": niche[period]['company'], "period": niche[period]['period'],
+                        {"company": niche['companyName'], "period": niche[period]['period'],
                          "niche": niche[period]['niche']},
-                        {"$addToSet": {
-                            "selectedByCompany": {"teamName": niche['teamName'], "companyName": niche['companyName']}}},
+                        {"$set": niche[period], "$addToSet": {"selectedByCompany": niche['teamName']}},
                         upsert=True)
 
     def resourcesComplete(self):
@@ -730,5 +729,5 @@ class PeriodicTasksService():
                     .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=total_amount,
                                  comments='Transfer  from LegacyCo.')
 
-
-PeriodicTasksService().calculte_marketing_share()
+# PeriodicTasksService().nichesCalculation()
+# PeriodicTasksService().calculte_marketing_share()

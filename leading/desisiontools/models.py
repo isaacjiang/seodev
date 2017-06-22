@@ -574,7 +574,8 @@ class VisionaryCompetitionModel(TasksModel):
                     "$set": {'status': 'Biding', 'currentVisionary': randomVisionary, "companies": currentCompanies,
                              'lastRoundResult': bidResults,
                              "startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}}, upsert=True)
-
+            else:
+                self.task_complete()
 
 
     def save(self, data):

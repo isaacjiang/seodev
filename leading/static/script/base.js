@@ -2725,53 +2725,65 @@ app.config(function ($mdThemingProvider) {
 
                     $scope.niches =[{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''},{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''},{'niche':'',p4:'',p5:'',p6:'',p7:'',p8:''}]
                         d.forEach(function (n) {
+                            console.log(n)
+                            if (n.niche == "Education" || n.niche == "Creatives") {
 
-                        if (n.niche == "Education"){
-
-                            if(n.period == 4){ $scope.niches[0].niche= "Education",$scope.niches[0].p4 = n;}
-                            if(n.period == 5){ $scope.niches[0].niche= "Education",$scope.niches[0].p5 = n;}
+                                if (n.period == 4) {
+                                    $scope.niches[0].niche = n.niche, $scope.niches[0].p4 = n;
+                                }
+                                if (n.period == 5) {
+                                    $scope.niches[0].niche = n.niche, $scope.niches[0].p5 = n;
+                                }
                             if (n.period == 6) {
-                                $scope.niches[0].niche = "Education", $scope.niches[0].p6 = n;
+                                $scope.niches[0].niche = n.niche, $scope.niches[0].p6 = n;
                                 $scope.niches[0].p6.selected = true;
                             }
                             if (n.period == 7) {
-                                $scope.niches[0].niche = "Education", $scope.niches[0].p7 = n;
+                                $scope.niches[0].niche = n.niche, $scope.niches[0].p7 = n;
                                 $scope.niches[0].p7.selected = true;
                             }
                             if (n.period == 8) {
-                                $scope.niches[0].niche = "Education", $scope.niches[0].p8 = n;
+                                $scope.niches[0].niche = n.niche, $scope.niches[0].p8 = n;
                                 $scope.niches[0].p8.selected = true;
                             }
                         }
-                        if  (n.niche == "Government"){
-                            if(n.period == 4){ $scope.niches[1].niche= "Government",$scope.niches[1].p4 = n;}
-                            if(n.period == 5){ $scope.niches[1].niche= "Government",$scope.niches[1].p5 = n;}
+                            if (n.niche == "Government" || n.niche == "Viewers") {
+                                if (n.period == 4) {
+                                    $scope.niches[1].niche = n.niche, $scope.niches[1].p4 = n;
+                                }
+                                if (n.period == 5) {
+                                    $scope.niches[1].niche = n.niche, $scope.niches[1].p5 = n;
+                                }
                             if (n.period == 6) {
-                                $scope.niches[1].niche = "Government", $scope.niches[1].p6 = n;
+                                $scope.niches[1].niche = n.niche, $scope.niches[1].p6 = n;
                                 $scope.niches[1].p6.selected = true;
                             }
                             if (n.period == 7) {
-                                $scope.niches[1].niche = "Government", $scope.niches[1].p7 = n;
+                                $scope.niches[1].niche = n.niche, $scope.niches[1].p7 = n;
                                 $scope.niches[1].p7.selected = true;
                             }
                             if (n.period == 8) {
-                                $scope.niches[1].niche = "Government", $scope.niches[1].p8 = n;
+                                $scope.niches[1].niche = n.niche, $scope.niches[1].p8 = n;
                                 $scope.niches[1].p8.selected = true;
                             }
                         }
-                        if  (n.niche == "Entertainment"){
-                            if(n.period == 4){ $scope.niches[2].niche= "Entertainment",$scope.niches[2].p4 = n;}
-                            if(n.period == 5){ $scope.niches[2].niche= "Entertainment",$scope.niches[2].p5 = n;}
+                            if (n.niche == "Entertainment" || n.niche == "Subscribers") {
+                                if (n.period == 4) {
+                                    $scope.niches[2].niche = n.niche, $scope.niches[2].p4 = n;
+                                }
+                                if (n.period == 5) {
+                                    $scope.niches[2].niche = n.niche, $scope.niches[2].p5 = n;
+                                }
                             if (n.period == 6) {
-                                $scope.niches[2].niche = "Entertainment", $scope.niches[2].p6 = n;
+                                $scope.niches[2].niche = n.niche, $scope.niches[2].p6 = n;
                                 $scope.niches[2].p6.selected = true;
                             }
                             if (n.period == 7) {
-                                $scope.niches[2].niche = "Entertainment", $scope.niches[2].p7 = n;
+                                $scope.niches[2].niche = n.niche, $scope.niches[2].p7 = n;
                                 $scope.niches[2].p7.selected = true;
                             }
                             if (n.period == 8) {
-                                $scope.niches[2].niche = "Entertainment", $scope.niches[2].p8 = n;
+                                $scope.niches[2].niche = n.niche, $scope.niches[2].p8 = n;
                                 $scope.niches[2].p8.selected = true;
                             }
                         }

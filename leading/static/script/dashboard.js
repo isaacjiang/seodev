@@ -56,7 +56,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                 params: {username: $rootScope.current_user.username}
             })
                 .success(function (res) {
-                    console.log(res)
+                    // console.log(res)
                     var marketPerformance = res.marketPerformance
                     var managementPerformance = res.managementPerformance
                     var financialPerformance = res.financialPerformance
@@ -171,13 +171,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     $scope.limit_financialPerformance_value = {limit: $scope.financialPerformance_value.length};
 
 
-                })
-
-            $http.get('/api/general/querymarketdata', {
-                params: {username: $rootScope.current_user.username}
-            })
-                .success(function (res) {
-                    console.log('market', res)
+                    //console.log('market', res)
                     var marketValue = res.marketValue
                     var managementValue = res.managementValue
                     var financialValue = res.financialValue
@@ -185,7 +179,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
 
                     //calculate great value
 
-                    console.log("value", marketValue, managementValue, financialValue)
+                    //console.log("value", marketValue, managementValue, financialValue)
                     var total_great_value = {}
                     Object.keys(marketValue).forEach(function (teamName) {
                         total_great_value[teamName] = {}
@@ -201,7 +195,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
 
 
                     })
-                    // console.log(total_great_value)
+                    console.log(total_great_value)
                     var max_total_great_value = {}
                     //var currentPeriod = $rootScope.userAtCompany.currentPeriod
                     Object.keys(total_great_value).forEach(function (teamName) {
