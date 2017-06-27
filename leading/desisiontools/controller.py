@@ -268,6 +268,7 @@ class TasksService():
 
         if request.method == 'POST':
             data= json.loads(request.data)
+            print data
             taskID = data["taskID"]
             companyName =  data["companyName"] if 'companyName' in data.keys() else None
             teamName = data["teamName"] if 'teamName' in data.keys() else None
@@ -276,19 +277,19 @@ class TasksService():
             tModel = models.Negotiate2Model(taskID=taskID,companyName=companyName,teamName=teamName,period=period)
 
             if companyName== "NewCo":
-                if tModel.get_saved_data() and 'status' in tModel.get_saved_data().keys() and tModel.get_saved_data()[
-                    'status'] == 'approved':
-                    tModel.task_complete()
-                else:
-                    tModel.save(data)
+                # if tModel.get_saved_data() and 'status' in tModel.get_saved_data().keys() and tModel.get_saved_data()[
+                #     'status'] == 'approved':
+                #     tModel.task_complete()
+                # else:
+                tModel.save(data)
             else:
                 if data['action']:
                     tModel.update_status('approved')
 
                     tModel.task_data_save(data)
                     result = tModel.task_complete()
-                    # models.Negotiate2Model(taskID=taskID, companyName='NewCo', teamName=teamName,
-                    #                        period=period).task_complete()
+                    models.Negotiate2Model(taskID=taskID, companyName='NewCo', teamName=teamName,
+                                           period=period).task_complete()
                 else:
                     tModel.update_status('returned')
                     result = {"currentPeriod": data["period"]}
@@ -446,7 +447,7 @@ class PeriodicTasksService():
     def account_sum(self):
         companys = self.db.companies.find({"status": {"$in": ["Active", "Init"]}}, {"_id": 0})
         for com in companys:
-            Account(companyName=com['companyName'], teamName=com['teamName'], period=self.systemCurrentPeriod).sum()
+            Account(companyName=com['companyName'], teamName=com['teamName'], period=1).sum()
             if com['currentPeriod'] == 1:
                 Account(companyName=com['companyName'], teamName=com['teamName'], period=-2).sum()
                 Account(companyName=com['companyName'], teamName=com['teamName'], period=-1).sum()
@@ -730,4 +731,4 @@ class PeriodicTasksService():
                                  comments='Transfer  from LegacyCo.')
 
 # PeriodicTasksService().nichesCalculation()
-# PeriodicTasksService().calculte_marketing_share()
+PeriodicTasksService().account_sum()

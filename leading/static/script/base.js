@@ -465,7 +465,6 @@ app.config(function ($mdThemingProvider) {
                 if (['04008','05008'].indexOf(taskName)>=0){nichesfn(task);}
                 if (['05009','06009','07009'].indexOf(taskName)>=0){corporateacquisitionsfn(task);}
             }
-
             $mdSidenav('taskslist').close()
         }
         // }
@@ -2173,18 +2172,18 @@ app.config(function ($mdThemingProvider) {
                 $rootScope.ipc.emit('vcregister', vcStatus)
 
                 $rootScope.ipc.on('visionarycompetition', function (d) {
-                    //console.log(d)
+                    console.log(d)
 
                     //calculate progree by time
                     var dt = d.startTime.split(' ')[0].split('-')
                     var tm = d.startTime.split(' ')[1].split(':')
                     var now = new Date();
 
-                    var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], now.getHours(), parseInt(tm[1]) + 5, tm[2])
+                    var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], now.getHours(), parseInt(tm[1]) + 1, tm[2])
 
                     var time_left = parseInt(Math.abs(endtime_obj - now) / 1000)
                     console.log(time_left)
-                    $scope.progress = endtime_obj - now > 0 ? (1 - time_left / 300) * 100 : time_left / 300 * 100
+                    $scope.progress = endtime_obj - now > 0 ? (1 - time_left / 60) * 100 : time_left / 60 * 100
                     //console.log(endtime_obj-now,time_left, $scope.progress)
 
 
@@ -2224,7 +2223,7 @@ app.config(function ($mdThemingProvider) {
                         }
                         $rootScope.ipc.emit('vcbidtimeout', bidInfo)
                         // $scope.visionary = $scope.visionaries[Math.floor((Math.random() * 6))]
-                        $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
+                        $rootScope.notificationToast('Visionary ' + $scope.visionary.visionary + 'Completed. ')
                     }
 
                     $timeout(function () {
@@ -2233,6 +2232,14 @@ app.config(function ($mdThemingProvider) {
 
                 })
 
+
+                $rootScope.ipc.on('stopVisionarycompetition', function (d) {
+                    console.log(d)
+                    $mdDialog.cancel();
+                    $rootScope.notificationToast("Visionary Competition Completed.")
+                    $rootScope.ipc.off('visionarycompetition')
+                    $rootScope.ipc.off('stopVisionarycompetition')
+                })
 
                 $scope.bid = function () {
 
@@ -2441,7 +2448,7 @@ app.config(function ($mdThemingProvider) {
                         $scope.estimatedIncome= data.negotiation.estimatedIncome
                         $scope.Costs = data.negotiation.costs
                         $scope.expenditure =data.negotiation.expenditure
-                        $scope.grand_total1 = data.negotiation.grand_total1
+                        // $scope.grand_total1 = data.negotiation.grand_total1
                     }
 
                     else{
@@ -2455,9 +2462,9 @@ app.config(function ($mdThemingProvider) {
                         $scope.workforce_def = data.workforce_def
                         // console.log($scope.workforce['Product Development'].adjustedworkforce_total)
                 })
-                if ($scope.grand_total1 == undefined) {
-                    $scope.grand_total1 = 0
-                }
+                // if ($scope.grand_total1 == undefined) {
+                //     $scope.grand_total1 = 0
+                // }
                 $scope.grand_total = 0
                 $scope.Costs = [{total_cost: 0}, {total_cost: 0}]
 
@@ -2584,11 +2591,11 @@ app.config(function ($mdThemingProvider) {
 
                 }, true)
 
-                $scope.$watch('grand_total1', function (nVal, oVal) {
-                    if (nVal) {
-                        $scope.grand_total_text = formatNum($scope.grand_total1)
-                    }
-                })
+                // $scope.$watch('grand_total1', function (nVal, oVal) {
+                //     if (nVal) {
+                //         $scope.grand_total_text = formatNum($scope.grand_total1)
+                //     }
+                // })
 
                 $scope.submit = function (action) {
 
@@ -2611,7 +2618,6 @@ app.config(function ($mdThemingProvider) {
                             }
                         }
                     )
-
                         .success(function (d) {
                             // $window.location.reload();
                             $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod

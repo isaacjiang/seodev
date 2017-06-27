@@ -77,6 +77,7 @@ class Account():
 
     def trans_item(self, sourceItem, destItem, destPeriod, rate=None):
         value = Account(self.teamName, self.companyName, destPeriod - 1).get_item_sum(sourceItem)
+
         if rate is None:
             rate = 1
         Account(self.teamName, self.companyName, destPeriod).bookkeeping(accountDescID=destItem, value=value * rate,
@@ -110,10 +111,11 @@ class Account():
         self.subset_plus(["AA026"], "BA016", 0.1)
         self.subset_plus(["AA141"], "BA017", 0.1)
         self.trans_item(["BA040", "BA041"], "BA040", self.period + 1)
-        # self.subset_plus(["BA040", 'BA041'], "BA042", 1)
+        self.subset_plus(["BA040", 'BA041'], "BA042", 1)
 
         self.trans_item(["BA061", "BA062"], "BA061", self.period + 1)
         # self.subset_minus("BA061", "BA062", "BA061", 1)
+        self.subset_plus(["BA061", 'BA062'], "BA063", 1)
 
         self.subset_plus(["AA025"], "BB011", 0.1)
         self.subset_plus(["AA026"], "BB012", 0.1)
@@ -125,7 +127,7 @@ class Account():
 
         self.trans_item(["BB031", "BB032"], "BB031", self.period + 1)
         self.trans_item("BB042", "BB042", self.period + 1)
-        self.subset_plus(["BB041,""BB042"], "BB050", 1)
+        self.subset_plus(["BB041", "BB042"], "BB050", 1)
         self.subset_plus(["BB031", "BB032", "BB041", "BB042"], "BB060", 1)
         self.trans_item("BB111", "BB111", self.period + 1)
 
@@ -184,7 +186,7 @@ class Account():
         self.subset_plus(['BA011', 'BA012', 'BA013', 'BA014', 'BA015', 'BA016', 'BA017'], "BA021", 1)
 
         # 68
-        self.trans_item("BA043", "BA043", self.period)
+        self.trans_item("BA043", "BA043", self.period + 1)  # todo
         self.subset_plus(["AB061", "BA043"], "BA043", 1)
         self.subset_minus("BA042", "BA043", "BA051", 1)
         self.subset_minus("AB051", "AB061", "AB071", 1)

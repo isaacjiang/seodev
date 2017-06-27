@@ -26,6 +26,8 @@ class TasksModel():
                 r['_id'] = str(r['_id'])
                 if r["taskName"] == "Forecasting":
                     result.insert(0, r)
+                elif r["taskName"] == "Niches":
+                    result.insert(0, r)
                 else:
                     result.append(r)
         return result

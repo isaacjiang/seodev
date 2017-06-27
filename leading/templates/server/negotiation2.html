@@ -502,17 +502,32 @@
             <md-tab-label>SUMMARY</md-tab-label>
             <md-tab-body>
                 <md-divider md-inset></md-divider>
-                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                <div layout="row" style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
                      layout-align="start center">
-                    <div flex="25" layout>
+                    <div flex="25">
                         <span class="md-body-1">Total Estimated Revenue P4</span>
                     </div>
 
-                    <div flex="20" layout>
+                    <div flex="20">
                         <label flex ng-bind="estimatedIncome[0].total_revenue_text"
                                aria-label="totalestimateddrevenue"/>
                     </div>
+                    {#                </div>#}
+                    {##}
+                    {#                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"#}
+                    {#                     layout-align="start center">#}
+                    <div flex="25" layout>
+                        <span class="md-body-1">Total Estimated Revenue P5</span>
+                    </div>
+
+                    <div flex="20" layout>
+                        <label flex ng-bind="estimatedIncome[1].total_revenue_text"
+                               aria-label="totalestimateddrevenue"/>
+                    </div>
+
+
                 </div>
+                <md-divider md-inset></md-divider>
 
                 <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
                      layout-align="start center">
@@ -523,23 +538,10 @@
                     <div flex="20" layout>
                         <label flex ng-bind="estimatedIncome[0].gross_margin_text" aria-label="totalGrossMargin"/>
                     </div>
-                </div>
-                <md-divider md-inset></md-divider>
-
-                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
-                     layout-align="start center">
-                    <div flex="25" layout>
-                        <span class="md-body-1">Total Estimated Revenue P5</span>
-                    </div>
-
-                    <div flex="20" layout>
-                        <label flex ng-bind="estimatedIncome[1].total_revenue_text"
-                               aria-label="totalestimateddrevenue"/>
-                    </div>
-                </div>
-
-                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
-                     layout-align="start center">
+                    {#                </div>#}
+                    {##}
+                    {#                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"#}
+                    {#                     layout-align="start center">#}
                     <div flex="25" layout>
                         <span class="md-body-1">Estimated Gross Margin P5</span>
                     </div>
@@ -561,9 +563,9 @@
                         <label flex ng-bind="expenditure[0].total_text" aria-label="totalGrossMargin"/>
                     </div>
 
-                </div>
-                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
-                     layout-align="start center">
+                    {#                </div>#}
+                    {#                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"#}
+                    {#                     layout-align="start center">#}
                     <div flex="25" layout>
                         <span class="md-body-1">Total Discretionary Expenditure P5</span>
                     </div>
@@ -583,9 +585,9 @@
                         <label flex ng-bind="Costs[0].total_cost_text" aria-label="totalGrossMargin"/>
                     </div>
 
-                </div>
-                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
-                     layout-align="start center">
+                    {#                </div>#}
+                    {#                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"#}
+                    {#                     layout-align="start center">#}
                     <div flex="25" layout layout-align="start center">
                         <span class="md-body-1">Total People Costs P5</span>
                     </div>
@@ -605,10 +607,10 @@
             <div flex="25" layout-align="center center"><span
                     flex> Total ($) :  {% raw %}{{ grand_total_text }}{% endraw %}</span>
             </div>
-            <div flex="25" layout layout-align="center center">
-                <input flex type="number" step="1000000" ng-model="grand_total1" aria-label="Grand Total"
-                       placeholder="Grand Total">
-            </div>
+            {#            <div flex="25" layout layout-align="center center">#}
+            {#                <input flex type="number" step="1000000" ng-model="grand_total1" aria-label="Grand Total"#}
+            {#                       placeholder="Grand Total">#}
+            {#            </div>#}
             <span flex></span>
 
             <div>

@@ -48,8 +48,11 @@ def handle_vcregister(data):
 def handle_visionarycompetition(data):
     # print "visionarycompetition" + str(data)
     status = VisionaryCompetitionModel().get_status()
-    if len(status) > 0:
+    if status:
         emit('visionarycompetition', status)
+    else:
+        print('emit stop.')
+        emit('stopVisionarycompetition')
 
 @socketio.on('vcbid', namespace='/ipc')
 def handle_vcbid(data):
