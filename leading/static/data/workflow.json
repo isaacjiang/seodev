@@ -137,8 +137,8 @@
     "proviousTasks": [],
     "status": "normal",
     "taskKey": "kpi",
-    "description": "KPI",
-    "taskName": "KPI",
+    "description": "DECISION RECORD (1) ",
+    "taskName": "DECISION RECORD (1) ",
     "startFlag": true,
     "endFlag": false
   },
@@ -148,8 +148,8 @@
     "proviousTasks": [],
     "status": "normal",
     "taskKey": "analysis",
-    "description": "Analysis.",
-    "taskName": "Analysis",
+    "description": "DECISION RECORD (2) .",
+    "taskName": "DECISION RECORD (2) ",
     "startFlag": false,
     "endFlag": true
   }

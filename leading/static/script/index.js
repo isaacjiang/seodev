@@ -4,11 +4,13 @@
 
 app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", "$rootScope", "$timeout", '$mdDialog', 'Upload',
     function ($scope, $http, windowsize, current_user, $rootScope, $timeout, $mdDialog, Upload) {
-        //$scope.stopvideo = true
-        $timeout(function () {
-            $scope.stopvideo = true
-            console.log($scope.stopvideo)
-        }, 2000)
+
+        // $timeout(function () {
+        //     $scope.stopvideo = true
+        //     console.log($scope.stopvideo)
+        // }, 2000)
+
+
 
         $scope.setTableHeight = function (n) {
             if (n == 1) {
@@ -34,6 +36,9 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
             $rootScope.current_user.username = current_user.username()
             $rootScope.current_user.permission = current_user.permission()
             $rootScope.current_user.status = current_user.status()
+
+            $scope.stopvideo = $rootScope.current_user.status.is_active
+
             $http.get('/api/workflow/queryworkflow', {
                 params: {
                     processName: 'mainpage'
@@ -44,11 +49,11 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
                     $scope.tasks = []
                     // $scope.functions = []
                     res.forEach(function (t) {
-
+                        $scope.tasks.push(t)
                         //$scope.functions.push(t)
                         if (t.taskKey == "kpi") {
                             t.icon = 'ic_flag_black_48px.svg'
-                            $scope.tasks.push(t)
+
                             // t.colspan = 5
                             // t.rowspan = 5
                             $rootScope.toggleFunction(t)

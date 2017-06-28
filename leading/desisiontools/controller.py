@@ -731,4 +731,4 @@ class PeriodicTasksService():
                                  comments='Transfer  from LegacyCo.')
 
 # PeriodicTasksService().nichesCalculation()
-PeriodicTasksService().account_sum()
+# PeriodicTasksService().account_sum()
