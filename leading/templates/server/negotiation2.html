@@ -596,7 +596,34 @@
                         <label flex ng-bind="Costs[1].total_cost_text" aria-label="totalGrossMargin"/>
                     </div>
                 </div>
+                <md-divider md-inset="true"></md-divider>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="20" layout layout-align="start center">
+                        <span class="md-body-1">Total ($) P4:  </span>
+                    </div>
+                    <div flex="25" layout-align="start center"><span
+                            flex> {% raw %}{{ grand_total_text[0] }}{% endraw %}</span>
+                    </div>
+                    <div flex="20" layout layout-align="start center">
+                        <span class="md-body-1">Total ($) P5:  </span>
+                    </div>
+                    <div flex="25" layout-align="start center"><span
+                            flex> {% raw %}{{ grand_total_text[1] }}{% endraw %}</span>
+                    </div>
+                </div>
 
+                <md-divider md-inset="true"></md-divider>
+                <div layout style="margin-right:20px;margin-left:20px;margin-top:10px;margin-bottom: 10px"
+                     layout-align="start center">
+                    <div flex="25" layout layout-align="start center">
+                        <span class="md-body-1">Total fundings request:</span>
+                    </div>
+                    <div flex="50" layout layout-align="start center">
+                        <input flex type="number" step="1000000" ng-model="grand_total1" aria-label="Grand Total"
+                               placeholder="Grand Total">
+                    </div>
+                </div>
                 <md-divider md-inset="true"></md-divider>
             </md-tab-body>
 
@@ -604,9 +631,7 @@
     </md-tabs>
 
         <div class="md-actions" layout="row" layout-align="end end">
-            <div flex="25" layout-align="center center"><span
-                    flex> Total ($) :  {% raw %}{{ grand_total_text }}{% endraw %}</span>
-            </div>
+
             {#            <div flex="25" layout layout-align="center center">#}
             {#                <input flex type="number" step="1000000" ng-model="grand_total1" aria-label="Grand Total"#}
             {#                       placeholder="Grand Total">#}

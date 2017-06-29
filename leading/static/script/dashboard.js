@@ -118,7 +118,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     $scope.limit_managementPerformance_value = {limit: $scope.managementPerformance_value.length};
 
 
-                    //console.log(financialValue)
+                    console.log(financialPerformance)
                     $scope.financialPerformance_value = {}
                     financialItem.forEach(function (fi, i) {
 
@@ -126,8 +126,6 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                         var value_return_on_sales = {}
                         var value_return_on_assest = {}
                         periods.forEach(function (p, j) {
-
-
                             if (financialPerformance != undefined && financialPerformance.length > 0) {
                                 financialPerformance.forEach(function (m) {
 
@@ -169,7 +167,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     //console.log($scope.financialPerformance_value)
                     $scope.query_mp = {order: 'Item', page: 1};
                     $scope.limit_financialPerformance_value = {limit: $scope.financialPerformance_value.length};
-
+                    console.log('222', $scope.financialPerformance_value)
 
                     //console.log('market', res)
                     var marketValue = res.marketValue
@@ -184,6 +182,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     Object.keys(marketValue).forEach(function (teamName) {
                         total_great_value[teamName] = {}
                         Object.keys(marketValue[teamName]).forEach(function (period) {
+
                             if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
                                 //console.log(financialValue[teamName][period - 1])
                                 if (financialValue[teamName][period - 1].NOCG <= 0) {
@@ -195,7 +194,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
 
 
                     })
-                    console.log(total_great_value)
+                    // console.log(total_great_value)
                     var max_total_great_value = {}
                     //var currentPeriod = $rootScope.userAtCompany.currentPeriod
                     Object.keys(total_great_value).forEach(function (teamName) {
@@ -209,7 +208,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                             }
                         })
                     })
-                    console.log(max_total_great_value)
+                    // console.log(max_total_great_value)
                     Object.keys(total_great_value).forEach(function (teamName) {
                         Object.keys(total_great_value[teamName]).forEach(function (currentPeriod) {
                             var value = total_great_value[teamName][currentPeriod]
@@ -254,16 +253,27 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                             total_great_value[teamName][currentPeriod].sharePrice = total_great_value[teamName][currentPeriod].companyValue / 100000
                         })
                     })
-                    console.log(total_great_value)
+                    // console.log($rootScope.user_info.companyInfo)
                     var great_value = total_great_value[$rootScope.user_info.teamInfo.teamName]
 
 
                     $scope.great_value = {}
+                    var previusCompanyValue = 0
+                    var previusSharePrice = 0
+                    if ($rootScope.user_info.companyInfo.companyName == "NewCo") {
+                        previusCompanyValue = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 3 ?
+                            great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].companyValue.toFixed(0) : 0
+                        previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 3 ?
+                            great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
+                    }
+                    else {
+                        previusCompanyValue = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
+                            great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].companyValue.toFixed(0) : 0
+                        previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
+                            great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
+                    }
 
-                    var previusCompanyValue = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
-                        great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].companyValue.toFixed(0) : 0
-                    var previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
-                        great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
+
                     $scope.great_value.companyValue = {
                         "key": "Company Value",
                         "Previus": format(previusCompanyValue),
@@ -283,12 +293,11 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
         })
         $scope.query = {
             order: '_id',
-            limit: 5,
+            limit: 10,
             page: 1
         };
         $rootScope.toggleFunction = function (func) {
 
-            console.log(func)
             $scope.selectedFunc = func
 
         }

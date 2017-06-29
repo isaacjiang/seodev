@@ -40,4 +40,5 @@ def taskAccountSum(params):
 def taskPerformance(params):
     from leading.desisiontools.controller import PeriodicTasksService
     PeriodicTasksService().calculte_marketing_share()
+    PeriodicTasksService().calculte_account_performance()
     print "Executed Task taskPerformance @ " + params

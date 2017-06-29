@@ -9,7 +9,7 @@ class PerformanceModel():
     def __init__(self):
         self.db = leadingdb
 
-    # Does not use
+
     def calculateMarketShare(self, systemCurrentPeriod):
         def get_com_acc_value(accountDescID, teamName, companyName, period):
             accValue = 0
@@ -139,14 +139,14 @@ class PerformanceModel():
             # account system
             for team in selectedNiche['companyValue'].keys():
                 tValue = selectedNiche['companyValue'][team]
-                print selectedNiche['niche']
+                # print selectedNiche['niche']
                 if selectedNiche['niche'] == "B2B":
                     accountDescID = 'AA011'
                 elif selectedNiche['niche'] == "B2C":
                     accountDescID = 'AA012'
-                elif selectedNiche['niche'] == "Education":
+                elif selectedNiche['niche'] == "Education" or selectedNiche['niche'] == "Creatives":
                     accountDescID = 'AA031'
-                elif selectedNiche['niche'] == "Government":
+                elif selectedNiche['niche'] == "Government" or selectedNiche['niche'] == "Viewers":
                     accountDescID = 'AA032'
                 else:
                     accountDescID = 'AA033'
@@ -155,7 +155,68 @@ class PerformanceModel():
                     .bookkeeping(accountDescID=accountDescID, objectID=selectedNiche["_id"],
                                  value=tValue['sharedMarketValue'], comments='Market Share')
 
+    def calculteAccountPerformance(self, systemCurrentPeriod):
+        # Account system
+        accounts_desc = ['AB031', 'AA200', 'BA100', 'CA041']
 
+        for acc in accounts_desc:
+            value = self.db.account_bookkeeping.aggregate(
+                [{"$match": {"period": systemCurrentPeriod, "accountDescID": acc}},
+                 {"$group": {"_id": {"teamName": "$teamName",
+                                     "companyName": "$companyName",
+                                     "period": "$period",
+                                     "accountDescID": "$accountDescID"},
+                             "value": {"$sum": "$value"}}}
+                 ])
+
+            for v in value:
+                self.db.account_ranking.update_one(
+                    {'teamName': v['_id']['teamName'], 'companyName': v['_id']['companyName'],
+                     'period': v['_id']['period']}, {"$set": {acc: v['value']}}, upsert=True)
+
+        account_ranking = self.db.account_ranking.find({'period': systemCurrentPeriod}, {"_id": 0})
+        ROSrank = []
+        ROArank = []
+        NOCGrank = []
+        for acc_r in account_ranking:
+            print(acc_r)
+            ROS = 0 if acc_r['AA200'] == 0 else acc_r['AB031'] / acc_r['AA200']
+            ROA = 0 if acc_r['AA200'] == 0 else acc_r['BA100'] / acc_r['AA200']
+            CA041_previdous = self.db.account_ranking.find_one(
+                {'period': systemCurrentPeriod - 1, 'teamName': acc_r['teamName'], 'companyName': acc_r['companyName']},
+                {"_id": 0})
+
+            NOCG = (acc_r['CA041'] - CA041_previdous['CA041']) if CA041_previdous != None else acc_r['CA041']
+            NOCG = 0 if NOCG < 0 else NOCG
+
+            print(ROS, ROA, NOCG)
+            ROSrank.append({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'], "ROS": ROS})
+            ROArank.append({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'], "ROA": ROA})
+            NOCGrank.append({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'], "NOCG": NOCG})
+            self.db.account_ranking.update({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'],
+                                            'period': acc_r['period']},
+                                           {"$set": {'ROS': ROS, 'ROA': ROA, "NOCG": NOCG}},
+                                           upsert=True)
+        sortedROSrank = sorted(ROSrank, key=lambda x: x['ROS'], reverse=True)
+        sortedROArank = sorted(ROArank, key=lambda x: x['ROA'], reverse=True)
+        sortedNOCGrank = sorted(NOCGrank, key=lambda x: x['NOCG'], reverse=True)
+
+        for index, acc_rank in enumerate(sortedROSrank):
+            self.db.account_ranking.update({'teamName': acc_rank['teamName'], 'companyName': acc_rank['companyName'],
+                                            'period': systemCurrentPeriod},
+                                           {"$set": {'ROSrank': index + 1}})
+
+        for index, acc_rank in enumerate(sortedROArank):
+            self.db.account_ranking.update({'teamName': acc_rank['teamName'], 'companyName': acc_rank['companyName'],
+                                            'period': systemCurrentPeriod},
+                                           {"$set": {'ROArank': index + 1}})
+
+        for index, acc_rank in enumerate(sortedNOCGrank):
+            self.db.account_ranking.update({'teamName': acc_rank['teamName'], 'companyName': acc_rank['companyName'],
+                                            'period': systemCurrentPeriod},
+                                           {"$set": {'NOCGrank': index + 1}})
+
+            # Do not use
     def marketingShare(self, teamName, companyName, period):
 
         accountItem = ['AB010', 'AB011', 'AB012', 'AB013', 'AB014', 'AB015']

@@ -76,6 +76,7 @@ class Account():
                          comments='sum' + destItem)
 
     def trans_item(self, sourceItem, destItem, destPeriod, rate=None):
+        destPeriod = 1 if destPeriod == 0 else destPeriod
         value = Account(self.teamName, self.companyName, destPeriod - 1).get_item_sum(sourceItem)
 
         if rate is None:

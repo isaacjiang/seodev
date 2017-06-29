@@ -35,7 +35,8 @@
 
             <div layout style="margin-right:100px;margin-left:100px" layout-align="space-between center">
                 <div flex="25" layout layout-align="start center">
-                    <span class="md-body-1">B2B</span>
+                    <span class="md-body-1" ng-if="LegacyCo">B2B</span>
+                    <span class="md-body-1" ng-if="!LegacyCo">Niche 1</span>
                 </div>
                 <md-slider flex="45" min=0 max=1000000000 step="1000000" ng-model="forecast.b2b" aria-label="b2b"
                            id="b2b-slider" class>
@@ -47,7 +48,8 @@
 
             <div layout style="margin-right:100px;margin-left:100px" layout-align="space-between center">
                 <div flex="25" layout layout-align="start center">
-                    <span class="md-body-1">B2C</span>
+                    <span class="md-body-1" ng-if="LegacyCo">B2C</span>
+                    <span class="md-body-1" ng-if="!LegacyCo">Niche 2</span>
                 </div>
                             <md-slider flex="45" min=0 max=1000000000 step="1000000" ng-model="forecast.b2c"
                                        aria-label="b2c" id="b2c-slider" class>
@@ -59,7 +61,8 @@
 
                <div layout style="margin-right:100px;margin-left:100px" layout-align="space-between center">
                 <div flex="25" layout layout-align="start center">
-                    <span class="md-body-1">New Offering</span>
+                    <span class="md-body-1" ng-if="LegacyCo">New Offering</span>
+                    <span class="md-body-1" ng-if="!LegacyCo">Niche 3</span>
                 </div>
                    <md-slider flex="45" min=0 max=1000000000 step="1000000" ng-model="forecast.newoffering"
                               aria-label="newoffering" id="newoffering-slider" class>

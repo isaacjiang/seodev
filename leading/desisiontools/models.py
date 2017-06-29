@@ -555,8 +555,7 @@ class VisionaryCompetitionModel(TasksModel):
                           'bidtimecommitment': winbids[0]['bidtimecommitment'],
                           "winVisonary": winbids[0]['visionary']},
                  }, upsert=True)
-            self.db.visionarycompetition_visionaries.update_one({'visionary': winbids[0]['visionary']['visionary']}, {
-                "$set": {'status': 'Done'}})
+
             result = {'round': winbids[0]['currentRound'],
                       'status': 'win',
                       "teamName": winbids[0]['teamName'],
@@ -567,6 +566,8 @@ class VisionaryCompetitionModel(TasksModel):
             self.db.visionarycompetition_status.update_one({'currentRound': currentRound}, {"$set": {
                 'status': 'Done', "result": result}})
 
+            self.db.visionarycompetition_visionaries.update_one({'visionary': winbids[0]['visionary']['visionary']}, {
+                "$set": {'status': 'Done'}})
             # self.db.visionarycompetition_status.update_one({}, {"$inc":{"currentRound":1}})
             randomVisionary = self.getRadomVisionaries()
             if randomVisionary != {}:
@@ -577,7 +578,7 @@ class VisionaryCompetitionModel(TasksModel):
                              'lastRoundResult': bidResults,
                              "startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}}, upsert=True)
             else:
-                self.task_complete()
+                self.task_complete()  # todo
 
 
     def save(self, data):

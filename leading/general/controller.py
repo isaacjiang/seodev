@@ -183,161 +183,170 @@ class PerformanceService():
                     period = 'Current'
                 else:
                     period = 'Previous'
-                rankedCompanyValue = niche_v['rankedCompany'].index(currentPeriod['teamName']) + 1
-                marketPerformance.append(
-                    {"teamName": currentPeriod['teamName'], "companyName": currentPeriod['companyName'],
-                     "period": period, "periodNumber": niche_v['period'],
-                     "niche": niche_v['niche'],
-                     "shareRate": niche_v['companyValue'][currentPeriod['teamName']]['shareRate'],
-                     "ranking": rankedCompanyValue,
-                     "customerNum": niche_v['totalCustomers'],
-                     "sharedMarketValue": niche_v['companyValue'][currentPeriod['teamName']]['sharedMarketValue']})
 
-                for teamName in niche_v['companyValue'].keys():
-                    niche_v['period'] = str(niche_v['period'])
-                    if teamName not in marketValue.keys():
-                        marketValue[teamName] = {'teamName': teamName}
-                    if niche_v['period'] not in marketValue[teamName].keys():
-                        marketValue[teamName][niche_v['period']] = 1
-
-                    if niche_v['period'] <= 4 and currentPeriod['companyName'] == 'LegacyCo':
-                        if niche_v['niche'] == 'B2B':
-                            marketValue[teamName][niche_v['period']] = marketValue[teamName][niche_v['period']] * \
-                                                                       niche_v['companyValue'][teamName][
-                                                                           'shareRate'] * 0.7
-                        elif niche_v['niche'] == 'B2C':
-                            marketValue[teamName][niche_v['period']] = marketValue[teamName][niche_v['period']] * \
-                                                                       niche_v['companyValue'][teamName][
-                                                                           'shareRate'] * 0.7
-                    else:
-                        marketValue[teamName][niche_v['period']] = marketValue[teamName][niche_v['period']] * \
-                                                                   niche_v['companyValue'][teamName]['customersTotal']
-
-                        # Management
-                competenceIndexTotal = 1
-                stressIndexTotal = 1
-                adaptabilityIndexTotal = 1
-                legitimacyIndexTotal = 1
-
-                for accItem in niche_v['companyValue'][currentPeriod['teamName']]['accountValue'].keys():
-                    competenceIndexRank = niche_v['rankedCompetenceIndex'][accItem].index(currentPeriod['teamName']) + 1
-                    legitimacyIndexRank = niche_v['rankedLegitimacyIndex'][accItem].index(currentPeriod['teamName']) + 1
-                    stressIndexRank = niche_v['rankedStressIndex'][accItem].index(currentPeriod['teamName']) + 1
-                    adaptabilityIndexRank = niche_v['rankedAdaptabilityIndex'][accItem].index(
-                        currentPeriod['teamName']) + 1
-
-                    managementPerformance.append(
+                if currentPeriod['teamName'] in niche_v['rankedCompany']:
+                    rankedCompanyValue = niche_v['rankedCompany'].index(currentPeriod['teamName']) + 1
+                    marketPerformance.append(
                         {"teamName": currentPeriod['teamName'], "companyName": currentPeriod['companyName'],
                          "period": period, "periodNumber": niche_v['period'],
-                         "accountDescID": accItem,
-                         "legitimacyIndex": niche_v['companyValue'][currentPeriod['teamName']]['legitimacyIndex'][
-                             accItem],
-                         "stressIndex": niche_v['companyValue'][currentPeriod['teamName']]['stressIndex'][accItem],
-                         "competenceIndex": niche_v['companyValue'][currentPeriod['teamName']]['competenceIndex'][
-                             accItem],
-                         "adaptabilityIndex": niche_v['companyValue'][currentPeriod['teamName']]['adaptabilityIndex'][
-                             accItem],
-                         "legitimacyIndexRank": legitimacyIndexRank,
-                         "stressIndexRank": stressIndexRank,
-                         "competenceIndexRank": competenceIndexRank,
-                         "adaptabilityIndexRank": adaptabilityIndexRank
-                         })
+                         "niche": niche_v['niche'],
+                         "shareRate": niche_v['companyValue'][currentPeriod['teamName']]['shareRate'],
+                         "ranking": rankedCompanyValue,
+                         "customerNum": niche_v['totalCustomers'],
+                         "sharedMarketValue": niche_v['companyValue'][currentPeriod['teamName']]['sharedMarketValue']})
 
-                for teamName in niche_v['companyValue'].keys():
-                    if teamName not in managementValue.keys():
-                        managementValue[teamName] = {'teamName': teamName}
-                    if str(niche_v['period']) not in managementValue[teamName].keys():
-                        managementValue[teamName][str(niche_v['period'])] = 1
+                    for teamName in niche_v['companyValue'].keys():
+                        niche_v['period'] = str(niche_v['period'])
+                        if teamName not in marketValue.keys():
+                            marketValue[teamName] = {'teamName': teamName}
+                        if niche_v['period'] not in marketValue[teamName].keys():
+                            marketValue[teamName][niche_v['period']] = 1
 
-                    for accItem in niche_v['companyValue'][teamName]['accountValue'].keys():
-                        competenceIndexTotal = competenceIndexTotal * \
-                                               niche_v['companyValue'][teamName]['competenceIndex'][accItem] * \
+                        if niche_v['period'] <= 4 and currentPeriod['companyName'] == 'LegacyCo':
+                            if niche_v['niche'] == 'B2B':
+                                marketValue[teamName][niche_v['period']] = marketValue[teamName][niche_v['period']] * \
+                                                                           niche_v['companyValue'][teamName][
+                                                                               'shareRate'] * 0.7
+                            elif niche_v['niche'] == 'B2C':
+                                marketValue[teamName][niche_v['period']] = marketValue[teamName][niche_v['period']] * \
+                                                                           niche_v['companyValue'][teamName][
+                                                                               'shareRate'] * 0.7
+                        else:
+                            marketValue[teamName][niche_v['period']] = marketValue[teamName][niche_v['period']] * \
+                                                                       niche_v['companyValue'][teamName][
+                                                                           'customersTotal']
+
+                            # Management
+                    competenceIndexTotal = 1
+                    stressIndexTotal = 1
+                    adaptabilityIndexTotal = 1
+                    legitimacyIndexTotal = 1
+
+                    for accItem in niche_v['companyValue'][currentPeriod['teamName']]['accountValue'].keys():
+                        competenceIndexRank = niche_v['rankedCompetenceIndex'][accItem].index(
+                            currentPeriod['teamName']) + 1
+                        legitimacyIndexRank = niche_v['rankedLegitimacyIndex'][accItem].index(
+                            currentPeriod['teamName']) + 1
+                        stressIndexRank = niche_v['rankedStressIndex'][accItem].index(currentPeriod['teamName']) + 1
+                        adaptabilityIndexRank = niche_v['rankedAdaptabilityIndex'][accItem].index(
+                            currentPeriod['teamName']) + 1
+
+                        managementPerformance.append(
+                            {"teamName": currentPeriod['teamName'], "companyName": currentPeriod['companyName'],
+                             "period": period, "periodNumber": niche_v['period'],
+                             "accountDescID": accItem,
+                             "legitimacyIndex": niche_v['companyValue'][currentPeriod['teamName']]['legitimacyIndex'][
+                                 accItem],
+                             "stressIndex": niche_v['companyValue'][currentPeriod['teamName']]['stressIndex'][accItem],
+                             "competenceIndex": niche_v['companyValue'][currentPeriod['teamName']]['competenceIndex'][
+                                 accItem],
+                             "adaptabilityIndex":
+                                 niche_v['companyValue'][currentPeriod['teamName']]['adaptabilityIndex'][
+                                     accItem],
+                             "legitimacyIndexRank": legitimacyIndexRank,
+                             "stressIndexRank": stressIndexRank,
+                             "competenceIndexRank": competenceIndexRank,
+                             "adaptabilityIndexRank": adaptabilityIndexRank
+                             })
+
+                    for teamName in niche_v['companyValue'].keys():
+                        if teamName not in managementValue.keys():
+                            managementValue[teamName] = {'teamName': teamName}
+                        if str(niche_v['period']) not in managementValue[teamName].keys():
+                            managementValue[teamName][str(niche_v['period'])] = 1
+
+                        for accItem in niche_v['companyValue'][teamName]['accountValue'].keys():
+                            competenceIndexTotal = competenceIndexTotal * \
+                                                   niche_v['companyValue'][teamName]['competenceIndex'][accItem] * \
+                                                   niche_v['companyValue'][teamName]['weight'][accItem]
+
+                            stressIndexTotal = stressIndexTotal * niche_v['companyValue'][teamName]['stressIndex'][
+                                accItem] * \
                                                niche_v['companyValue'][teamName]['weight'][accItem]
+                            adaptabilityIndexTotal = adaptabilityIndexTotal * \
+                                                     niche_v['companyValue'][teamName]['adaptabilityIndex'][accItem] * \
+                                                     niche_v['companyValue'][teamName]['weight'][accItem]
+                            legitimacyIndexTotal = legitimacyIndexTotal * \
+                                                   niche_v['companyValue'][teamName]['legitimacyIndex'][accItem] * \
+                                                   niche_v['companyValue'][teamName]['weight'][accItem]
 
-                        stressIndexTotal = stressIndexTotal * niche_v['companyValue'][teamName]['stressIndex'][
-                            accItem] * \
-                                           niche_v['companyValue'][teamName]['weight'][accItem]
-                        adaptabilityIndexTotal = adaptabilityIndexTotal * \
-                                                 niche_v['companyValue'][teamName]['adaptabilityIndex'][accItem] * \
-                                                 niche_v['companyValue'][teamName]['weight'][accItem]
-                        legitimacyIndexTotal = legitimacyIndexTotal * \
-                                               niche_v['companyValue'][teamName]['legitimacyIndex'][accItem] * \
-                                               niche_v['companyValue'][teamName]['weight'][accItem]
-
-                managementValue[teamName][str(niche_v['period'])] = managementValue[teamName][str(niche_v[
-                                                                                                      'period'])] * competenceIndexTotal * 0.5 * stressIndexTotal * 0.3 * adaptabilityIndexTotal * 0.2
+                    managementValue[teamName][str(niche_v['period'])] = managementValue[teamName][str(niche_v[
+                                                                                                          'period'])] * competenceIndexTotal * 0.5 * stressIndexTotal * 0.3 * adaptabilityIndexTotal * 0.2
 
             result["managementPerformance"] = managementPerformance
             result["marketPerformance"] = marketPerformance
             result['managementValue'] = managementValue
             result['marketValue'] = marketValue
-            pprint(managementValue)
+            # pprint(managementValue)
 
-            accounts_desc = ['AB031', 'AA200', 'BA100', 'CA041']
+            # accounts_desc = ['AB031', 'AA200', 'BA100', 'CA041']
             financialPerformance = []
 
-            for period in [currentPeriod['currentPeriod'] - 1, currentPeriod['currentPeriod']]:
-                for acc in accounts_desc:
-                    value = self.db.account_bookkeeping.aggregate(
-                        [{"$match": {"period": period, "companyName": currentPeriod["companyName"],
-                                     "accountDescID": acc}},
-                         {"$group": {"_id": {"teamName": "$teamName",
-                                             "companyName": "$companyName",
-                                             "period": "$period",
-                                             "accountDescID": "$accountDescID"},
-                                     "value": {"$sum": "$value"}}}
-                         ])
+            # for period in [currentPeriod['currentPeriod'] - 1, currentPeriod['currentPeriod']]:
+            #     for acc in accounts_desc:
+            #         value = self.db.account_bookkeeping.aggregate(
+            #             [{"$match": {"period": period, "companyName": currentPeriod["companyName"],
+            #                          "accountDescID": acc}},
+            #              {"$group": {"_id": {"teamName": "$teamName",
+            #                                  "companyName": "$companyName",
+            #                                  "period": "$period",
+            #                                  "accountDescID": "$accountDescID"},
+            #                          "value": {"$sum": "$value"}}}
+            #              ])
+            #
+            #         self.db.account_ranking.update(
+            #             {'teamName': currentPeriod["teamName"], 'companyName': currentPeriod["companyName"],
+            #              'period': period}, {"$set": {acc: 0}}, upsert=True)
+            #         for v in value:
+            #             self.db.account_ranking.update(
+            #                 {'teamName': v['_id']['teamName'], 'companyName': v['_id']['companyName'],
+            #                  'period': v['_id']['period']}, {"$set": {acc: v['value']}})
+            #
+            #     account_ranking = self.db.account_ranking.find(
+            #         {'period': period, "companyName": currentPeriod["companyName"]}, {"_id": 0})
+            #     for acc_r in account_ranking:
+            #         ROS = 0 if acc_r['AA200'] == 0 else acc_r['AB031'] / acc_r['AA200']
+            #         ROA = 0 if acc_r['AA200'] == 0 else acc_r['BA100'] / acc_r['AA200']
+            #         CA041_previdous = self.db.account_ranking.find_one(
+            #             {'period': period - 1, 'teamName': acc_r['teamName'], 'companyName': acc_r['companyName']},
+            #             {"_id": 0})
+            #
+            #         NOCG = (acc_r['CA041'] - CA041_previdous['CA041']) if CA041_previdous != None else acc_r['CA041']
+            #
+            #         NOCG = 0 if NOCG < 0 else NOCG
+            #         self.db.account_ranking.update({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'],
+            #                                         'period': acc_r['period']},
+            #                                        {"$set": {'ROS': ROS, 'ROA': ROA, "NOCG": NOCG}},
+            #                                        upsert=True)
+            #     acc_ranking = self.db.account_ranking.find(
+            #         {'period': period, "companyName": currentPeriod["companyName"]}).sort([("ROS", pymongo.DESCENDING)])
+            #     for index, acc_rank in enumerate(acc_ranking):
+            #         self.db.account_ranking.update({"_id": acc_rank['_id']},
+            #                                        {"$set": {'ROSrank': index + 1}})
+            #     acc_ranking2 = self.db.account_ranking.find(
+            #         {'period': period, "companyName": currentPeriod["companyName"]}).sort([("ROA", pymongo.DESCENDING)])
+            #     for index, acc_rank in enumerate(acc_ranking2):
+            #         self.db.account_ranking.update({"_id": acc_rank['_id']},
+            #                                        {"$set": {'ROArank': index + 1}})
+            #     acc_ranking3 = self.db.account_ranking.find(
+            #         {'period': period, "companyName": currentPeriod["companyName"]}, ).sort(
+            #         [("NOCG", pymongo.DESCENDING)])
+            #     for index, acc_rank in enumerate(acc_ranking3):
+            #         self.db.account_ranking.update({"_id": acc_rank['_id']},
+            #                                        {"$set": {'NOCGrank': index + 1}})
+            #
+            acc_ranking_com = self.db.account_ranking.find_one(
+                {'period': currentPeriod['currentPeriod'], "teamName": currentPeriod["teamName"],
+                 "companyName": currentPeriod["companyName"]}, {"_id": 0})
+            financialPerformance.append(
+                {"period": 'Current', "periodNumber": currentPeriod['currentPeriod'], 'values': acc_ranking_com})
 
-                    self.db.account_ranking.update(
-                        {'teamName': currentPeriod["teamName"], 'companyName': currentPeriod["companyName"],
-                         'period': period}, {"$set": {acc: 0}}, upsert=True)
-                    for v in value:
-                        self.db.account_ranking.update(
-                            {'teamName': v['_id']['teamName'], 'companyName': v['_id']['companyName'],
-                             'period': v['_id']['period']}, {"$set": {acc: v['value']}})
-
-                account_ranking = self.db.account_ranking.find(
-                    {'period': period, "companyName": currentPeriod["companyName"]}, {"_id": 0})
-                for acc_r in account_ranking:
-                    ROS = 0 if acc_r['AA200'] == 0 else acc_r['AB031'] / acc_r['AA200']
-                    ROA = 0 if acc_r['AA200'] == 0 else acc_r['BA100'] / acc_r['AA200']
-                    CA041_previdous = self.db.account_ranking.find_one(
-                        {'period': period - 1, 'teamName': acc_r['teamName'], 'companyName': acc_r['companyName']},
-                        {"_id": 0})
-
-                    NOCG = (acc_r['CA041'] - CA041_previdous['CA041']) if CA041_previdous != None else acc_r['CA041']
-
-                    NOCG = 0 if NOCG < 0 else NOCG
-                    self.db.account_ranking.update({'teamName': acc_r['teamName'], 'companyName': acc_r['companyName'],
-                                                    'period': acc_r['period']},
-                                                   {"$set": {'ROS': ROS, 'ROA': ROA, "NOCG": NOCG}},
-                                                   upsert=True)
-                acc_ranking = self.db.account_ranking.find(
-                    {'period': period, "companyName": currentPeriod["companyName"]}).sort([("ROS", pymongo.DESCENDING)])
-                for index, acc_rank in enumerate(acc_ranking):
-                    self.db.account_ranking.update({"_id": acc_rank['_id']},
-                                                   {"$set": {'ROSrank': index + 1}})
-                acc_ranking2 = self.db.account_ranking.find(
-                    {'period': period, "companyName": currentPeriod["companyName"]}).sort([("ROA", pymongo.DESCENDING)])
-                for index, acc_rank in enumerate(acc_ranking2):
-                    self.db.account_ranking.update({"_id": acc_rank['_id']},
-                                                   {"$set": {'ROArank': index + 1}})
-                acc_ranking3 = self.db.account_ranking.find(
-                    {'period': period, "companyName": currentPeriod["companyName"]}, ).sort(
-                    [("NOCG", pymongo.DESCENDING)])
-                for index, acc_rank in enumerate(acc_ranking3):
-                    self.db.account_ranking.update({"_id": acc_rank['_id']},
-                                                   {"$set": {'NOCGrank': index + 1}})
-
-                acc_ranking_com = self.db.account_ranking.find_one(
-                    {'period': period, "teamName": currentPeriod["teamName"],
+            if currentPeriod['currentPeriod'] > 1:
+                acc_ranking_com0 = self.db.account_ranking.find_one(
+                    {'period': currentPeriod['currentPeriod'] - 1, "teamName": currentPeriod["teamName"],
                      "companyName": currentPeriod["companyName"]}, {"_id": 0})
-
-                if period == currentPeriod['currentPeriod']:
-                    period_alt = 'Current'
-                else:
-                    period_alt = 'Previous'
-                financialPerformance.append({"period": period_alt, "periodNumber": period, 'values': acc_ranking_com})
+                financialPerformance.append({"period": 'Previous', "periodNumber": currentPeriod['currentPeriod'] - 1,
+                                             'values': acc_ranking_com0})
 
             financialValue = {}
 
@@ -360,7 +369,7 @@ class PerformanceService():
                 if acc_com['period'] not in financialValue[acc_com['teamName']].keys():
                     financialValue[acc_com['teamName']][acc_com['period']] = {"NOCG": acc_com['NOCG'],
                                                                               "EBITDA": acc_com['AB031']}
-
+            print(financialValue)
             result['financialPerformance'] = financialPerformance
             result['financialValue'] = financialValue
             # print result

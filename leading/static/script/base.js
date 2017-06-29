@@ -1318,7 +1318,7 @@ app.config(function ($mdThemingProvider) {
                 }
                 //console.log($rootScope.userAtCompany.companyName,$rootScope.userAtCompany.currentPeriod )
                 $scope.if_show = function(company){
-                    return $rootScope.user_info.companyInfo.companyName==company || ($rootScope.user_info.companyInfo.companyName =='LegacyCo' && $rootScope.user_info.companyInfo.currentPeriod == 5)
+                    return $rootScope.user_info.companyInfo.companyName == company || ($rootScope.user_info.companyInfo.companyName == 'LegacyCo' && $rootScope.user_info.companyInfo.currentPeriod >= 5)
                 }
                 //if ($rootScope.userAtCompany.companyName=='NewCo'){$scope.newco_show = true }
                 //if ($rootScope.userAtCompany.companyName=='LegacyCo'){$scope.legacyco_show = true }
@@ -2448,7 +2448,7 @@ app.config(function ($mdThemingProvider) {
                         $scope.estimatedIncome= data.negotiation.estimatedIncome
                         $scope.Costs = data.negotiation.costs
                         $scope.expenditure =data.negotiation.expenditure
-                        // $scope.grand_total1 = data.negotiation.grand_total1
+                        $scope.grand_total1 = data.negotiation.grand_total1
                     }
 
                     else{
@@ -2462,10 +2462,10 @@ app.config(function ($mdThemingProvider) {
                         $scope.workforce_def = data.workforce_def
                         // console.log($scope.workforce['Product Development'].adjustedworkforce_total)
                 })
-                // if ($scope.grand_total1 == undefined) {
-                //     $scope.grand_total1 = 0
-                // }
-                $scope.grand_total = 0
+                if ($scope.grand_total1 == undefined) {
+                    $scope.grand_total1 = 0
+                }
+                $scope.grand_total = [0, 0]
                 $scope.Costs = [{total_cost: 0}, {total_cost: 0}]
 
                 $scope.expenditure = [{total: 0}, {total: 0}]
@@ -2534,10 +2534,13 @@ app.config(function ($mdThemingProvider) {
                             c.total_cost_text = formatNum(c.total_cost)
                         })
                         // console.log('$scope.Costs',$scope.Costs)
-                        $scope.grand_total = $scope.Costs[0].total_cost + $scope.Costs[1].total_cost +
-                            $scope.expenditure[0].total + $scope.expenditure[1].total -
-                            $scope.estimatedIncome[0].gross_margin - $scope.estimatedIncome[1].gross_margin
-                        $scope.grand_total_text = formatNum($scope.grand_total)
+                        $scope.grand_total[0] = $scope.Costs[0].total_cost +
+                            $scope.expenditure[0].total -
+                            $scope.estimatedIncome[0].gross_margin
+                        $scope.grand_total[1] = $scope.Costs[1].total_cost +
+                            $scope.expenditure[1].total -
+                            $scope.estimatedIncome[1].gross_margin
+                        $scope.grand_total_text = [formatNum($scope.grand_total[0]), formatNum($scope.grand_total[1])]
                     }
 
                 }, true)
@@ -2545,25 +2548,43 @@ app.config(function ($mdThemingProvider) {
                 $scope.$watch('estimatedIncome', function (nVal, oVal) {
 
                     if (nVal) {
+
                         $scope.estimatedIncome.forEach(function (income) {
+                            // console.log(income)
                             income.total_revenue = 0
                             Object.keys(income).forEach(function (k) {
+
                                 if (['VREducation', 'VREntertainment', 'VRGovernment'].indexOf(k) >= 0) {
-                                    income[k].revenue = income[k].customers * income[k].share * 25000
+                                    var revenuePerCustomer = 0
+                                    console.log(k)
+                                    if (k == 'VREducation') {
+                                        revenuePerCustomer = 450
+                                    }
+                                    else if (k == 'VREntertainment') {
+                                        revenuePerCustomer = 500
+                                    }
+                                    else {
+                                        revenuePerCustomer = 550
+                                    }
+                                    income[k].revenue = income[k].customers * income[k].share * revenuePerCustomer
                                     income[k].revenue_text = formatNum(income[k].revenue)
                                     income.total_revenue += income[k].revenue
                                 }
+
 
                             })
                             income.gross_margin = income.total_revenue * 0.75
                             income.total_revenue_text = formatNum(income.total_revenue)
                             income.gross_margin_text = formatNum(income.gross_margin)
                         })
-                        //console.log('$scope.estimatedIncome',$scope.estimatedIncome)
-                        $scope.grand_total = $scope.Costs[0].total_cost + $scope.Costs[1].total_cost +
-                            $scope.expenditure[0].total + $scope.expenditure[1].total -
-                            $scope.estimatedIncome[0].gross_margin - $scope.estimatedIncome[1].gross_margin
-                        $scope.grand_total_text = formatNum($scope.grand_total)
+                        // console.log('$scope.Costs',$scope.Costs)
+                        $scope.grand_total[0] = $scope.Costs[0].total_cost +
+                            $scope.expenditure[0].total -
+                            $scope.estimatedIncome[0].gross_margin
+                        $scope.grand_total[1] = $scope.Costs[1].total_cost +
+                            $scope.expenditure[1].total -
+                            $scope.estimatedIncome[1].gross_margin
+                        $scope.grand_total_text = [formatNum($scope.grand_total[0]), formatNum($scope.grand_total[1])]
                     }
 
                 }, true)
@@ -2582,11 +2603,15 @@ app.config(function ($mdThemingProvider) {
                             $scope.expenditure[ek].total_text = formatNum($scope.expenditure[ek].total)
 
                         })
-                        // console.log('$scope.expenditure',$scope.expenditure)
-                        $scope.grand_total = $scope.Costs[0].total_cost + $scope.Costs[1].total_cost +
-                            $scope.expenditure[0].total + $scope.expenditure[1].total -
-                            $scope.estimatedIncome[0].gross_margin - $scope.estimatedIncome[1].gross_margin
-                        $scope.grand_total_text = formatNum($scope.grand_total)
+
+                        // console.log('$scope.Costs',$scope.Costs)
+                        $scope.grand_total[0] = $scope.Costs[0].total_cost +
+                            $scope.expenditure[0].total -
+                            $scope.estimatedIncome[0].gross_margin
+                        $scope.grand_total[1] = $scope.Costs[1].total_cost +
+                            $scope.expenditure[1].total -
+                            $scope.estimatedIncome[1].gross_margin
+                        $scope.grand_total_text = [formatNum($scope.grand_total[0]), formatNum($scope.grand_total[1])]
                     }
 
                 }, true)
@@ -2613,6 +2638,7 @@ app.config(function ($mdThemingProvider) {
                                 estimatedIncome: $scope.estimatedIncome,
                                 costs: $scope.Costs,
                                 expenditure: $scope.expenditure,
+                                grand_total: $scope.grand_total,
                                 grand_total1: $scope.grand_total1,
                                 action: action
                             }
@@ -2924,11 +2950,126 @@ app.config(function ($mdThemingProvider) {
 
                 })
 
-                $http.get('/api/general/querymarketdata', {
+                $http.get('/api/general/querydashboarddata', {
                     params: {username: $rootScope.current_user.username}
                 })
                     .success(function (res) {
+                        // console.log(res)
+                        var marketPerformance = res.marketPerformance
+                        var managementPerformance = res.managementPerformance
+                        var financialPerformance = res.financialPerformance
 
+                        var niches = ['B2B', 'B2C', 'Education', 'Government', 'Entertainment']
+                        var periods = ['Previous', 'Current']
+                        var accountDescID = ['AB010', 'AB011', 'AB012', 'AB013', 'AB014', 'AB015']
+                        var accountDesc = ['Leadership', 'Marketing & Sales', 'Digital Marketing', 'Offering Suppport', 'Product development', 'Logistics & IT']
+                        var financialItem = ['Return on Sales', 'Return on Assets', 'Net Operating Cash Generated']
+
+                        $scope.marketPerformance_value = {}
+                        niches.forEach(function (n, i) {
+                            var value = {}
+                            periods.forEach(function (p) {
+                                if (marketPerformance != undefined && marketPerformance.length > 0) {
+                                    var mp = marketPerformance.filter(function (m) {
+                                        return m.niche == n && m.period == p
+                                    })
+                                    value[p] = mp.length > 0 ? (mp[0].shareRate * 100).toFixed(0) + '%' : 0
+                                    value['rank' + p] = mp.length > 0 ? '#' + mp[0].ranking : '#'
+
+                                }
+
+
+                            })
+
+                            $scope.marketPerformance_value[n] = {"niche": n, "values": value}
+                        })
+
+
+                        $scope.query = {order: 'niche', page: 1};
+                        $scope.limit_marketPerformance_value = {limit: $scope.marketPerformance_value.length};
+//console.log($scope.marketPerformance_value)
+
+
+                        //console.log(managementValue)
+                        $scope.managementPerformance_value = {}
+                        accountDescID.forEach(function (acc, i) {
+
+                            var value = {}
+                            periods.forEach(function (p) {
+                                if (managementPerformance != undefined && managementPerformance.length > 0) {
+                                    var mp = managementPerformance.filter(function (m) {
+                                        return m.accountDescID == acc && m.period == p
+                                    })
+
+                                    value['competenceIndex' + p] = mp.length > 0 ? (mp[0].competenceIndex * 100).toFixed(0) : 100
+                                    value['competenceIndexRank' + p] = mp.length > 0 ? "#" + mp[0].competenceIndexRank : '#'
+                                    value['stressIndex' + p] = mp.length > 0 ? (mp[0].stressIndex * 100).toFixed(0) : 100
+                                    value['stressIndexRank' + p] = mp.length > 0 ? "#" + mp[0].stressIndexRank : '#'
+                                    value['adaptabilityIndex' + p] = mp.length > 0 ? (mp[0].adaptabilityIndex * 100).toFixed(0) : 100
+                                    value['adaptabilityIndexRank' + p] = mp.length > 0 ? "#" + mp[0].adaptabilityIndexRank : '#'
+                                }
+                            })
+
+                            $scope.managementPerformance_value[acc] = {"function": accountDesc[i], "values": value}
+                        })
+                        $scope.query_mp = {order: 'Item', page: 1};
+                        $scope.limit_managementPerformance_value = {limit: $scope.managementPerformance_value.length};
+
+
+                        //console.log(financialValue)
+                        $scope.financialPerformance_value = {}
+                        financialItem.forEach(function (fi, i) {
+
+                            var value = {}
+                            var value_return_on_sales = {}
+                            var value_return_on_assest = {}
+                            periods.forEach(function (p, j) {
+
+
+                                if (financialPerformance != undefined && financialPerformance.length > 0) {
+                                    financialPerformance.forEach(function (m) {
+
+                                        if (i == 0 && m.period == p) {
+                                            value_return_on_sales[p] = (m.values.ROS * 100).toFixed(0) + '%'
+                                            value_return_on_sales['rank' + p] = "#" + m.values.ROSrank
+                                        }
+                                        if (i == 1 && m.period == p) {
+                                            value_return_on_assest[p] = (m.values.ROA * 100).toFixed(0) + '%'
+                                            value_return_on_assest['rank' + p] = "#" + m.values.ROArank
+                                        }
+                                        if (i == 2 && m.period == p) {
+
+                                            value[p] = format(m.values.NOCG.toFixed(0))
+                                            value['rank' + p] = "#" + m.values.NOCGrank
+                                        }
+                                    })
+                                }
+                            })
+                            if (i == 0) {
+                                $scope.financialPerformance_value[fi] = {
+                                    "financialItem": fi,
+                                    "values": value_return_on_sales
+                                }
+                            }
+                            else if (i == 1) {
+                                $scope.financialPerformance_value[fi] = {
+                                    "financialItem": fi,
+                                    "values": value_return_on_assest
+                                }
+                            }
+                            else {
+                                $scope.financialPerformance_value[fi] = {"financialItem": fi, "values": value}
+                            }
+
+
+                            //$scope.financialPerformance_value[acc] = {"function":accountDesc[i],"values":value}
+                        })
+                        //console.log($scope.financialPerformance_value)
+                        $scope.query_mp = {order: 'Item', page: 1};
+                        $scope.limit_financialPerformance_value = {limit: $scope.financialPerformance_value.length};
+
+
+                        //console.log('market', res)
                         var marketValue = res.marketValue
                         var managementValue = res.managementValue
                         var financialValue = res.financialValue
@@ -2936,23 +3077,24 @@ app.config(function ($mdThemingProvider) {
 
                         //calculate great value
 
-                        console.log("value", marketValue, managementValue, financialValue)
+                        //console.log("value", marketValue, managementValue, financialValue)
                         var total_great_value = {}
                         Object.keys(marketValue).forEach(function (teamName) {
                             total_great_value[teamName] = {}
                             Object.keys(marketValue[teamName]).forEach(function (period) {
-                                if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
-                                    //console.log(financialValue[teamName][period - 1])
-                                    if (financialValue[teamName][period - 1].NOCG <= 0) {
-                                        financialValue[teamName][period - 1].NOCG = 1
-                                    }
-                                    total_great_value[teamName][period] = marketValue[teamName][period] * 0.3 * managementValue[teamName][period] * 0.3 * financialValue[teamName][period - 1].NOCG * 0.4
-                                }
+                                console.log(period)
+                                // if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
+                                //     //console.log(financialValue[teamName][period - 1])
+                                //     if (financialValue[teamName][period - 1].NOCG <= 0) {
+                                //         financialValue[teamName][period - 1].NOCG = 1
+                                //     }
+                                //     total_great_value[teamName][period] = marketValue[teamName][period] * 0.3 * managementValue[teamName][period] * 0.3 * financialValue[teamName][period - 1].NOCG * 0.4
+                                // }
                             })
 
 
                         })
-                        // console.log(total_great_value)
+                        console.log(total_great_value)
                         var max_total_great_value = {}
                         //var currentPeriod = $rootScope.userAtCompany.currentPeriod
                         Object.keys(total_great_value).forEach(function (teamName) {
@@ -3015,12 +3157,12 @@ app.config(function ($mdThemingProvider) {
                         var great_value = total_great_value[$rootScope.user_info.teamInfo.teamName]
 
 
-                        $scope.great_value = {}
+                        // $scope.great_value = {}
 
-                        var previusCompanyValue = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
-                            great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].companyValue.toFixed(0) : 0
-                        var previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
-                            great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
+                        // var previusCompanyValue = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
+                        //     great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].companyValue.toFixed(0) : 0
+                        // var previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
+                        //     great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
                         // $scope.great_value.companyValue = {
                         //     "key": "Company Value",
                         //     "Previus": format(previusCompanyValue),
@@ -3033,14 +3175,16 @@ app.config(function ($mdThemingProvider) {
                         // }
 
                         // console.log($scope.great_value)
-                        //
-                        // $scope.query = {order: 'niche', page: 1};
-                        // $scope.limit_great_value = {limit: $scope.great_value.length};
-
                         $scope.offer = {
+                            cash: 0,
+
                             current_share_price: parseInt(format(great_value[$rootScope.user_info.companyInfo.currentPeriod].sharePrice.toFixed(0))),
                             treasury_shares: 100000
                         }
+
+
+                        // $scope.query = {order: 'niche', page: 1};
+                        // $scope.limit_great_value = {limit: $scope.great_value.length};
                     })
 
                 // $scope.$watch('offer',function (nVal,oVal) {
@@ -3126,6 +3270,7 @@ app.config(function ($mdThemingProvider) {
 
             function forecastingCtrl ($scope,$rootScope,$mdDialog,$http,$timeout,func,timer,Upload) {
                 $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.LegacyCo = task.companyName == 'LegacyCo'
                 $scope.notpemission = function () {
                     $rootScope.notificationToast("You are not permited.")
                 }
