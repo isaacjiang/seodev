@@ -74,12 +74,12 @@
                                  md-svg-icon="{{ url_for('static', filename='icon/ic_skip_next_white_48px.svg') }}"></md-icon>
                     </md-button>
                 </div>
-                {#                <div>#}
-                {#                    <md-button ng-click="accountBudget()" class="md-icon-button" layout-align="center end">#}
-                {#                        <md-icon aria-label="Help"#}
-                {#                                 md-svg-icon="{{ url_for('static', filename='icon/ic_business_center_white_48px.svg') }}"></md-icon>#}
-                {#                    </md-button>#}
-                {#                </div>#}
+                <div>
+                    <md-button ng-click="accountBudget()" class="md-icon-button" layout-align="center end">
+                        <md-icon aria-label="Help"
+                                 md-svg-icon="{{ url_for('static', filename='icon/ic_business_center_white_48px.svg') }}"></md-icon>
+                    </md-button>
+                </div>
                 <div>
                     <md-button ng-click="info('info')" class="md-icon-button" layout-align="center end">
                         <md-icon aria-label="Help"
@@ -168,7 +168,7 @@
             <md-toolbar class="md-theme-light">
                 <h1 class="md-toolbar-tools">Instruction</h1>
             </md-toolbar>
-            <md-tabs md-dynamic-height md-border-bottom>
+            <md-tabs md-dynamic-height md-border-bottom md-selected="selectedTabs">
                 <md-tab label='PDFs'>
 
                     <md-content layout-padding layout-margin="10px" flex style="min-height: 400px">
@@ -192,6 +192,31 @@
 
 
                 </md-tab>
+
+                <md-tab label='Materials'>
+
+                    <md-content layout-padding layout-margin="10px" flex style="min-height: 400px">
+
+                        <md-list>
+                            <md-list-item ng-repeat="material in instructionMeterial[1]" layout>
+                                <div class="md-list-item-text" ng-click="infoClick(material)" flex="70">
+                                    <span>{% raw %}{{material.filename }}{% endraw %} </span>
+                                </div>
+                                <md-button ng-if="superuser" class="md-accent md-mini"
+                                           ng-click="deleteContent(material)">
+                                    <md-icon aria-label="Menu"
+                                             md-svg-icon="{{ url_for('static', filename='icon/ic_delete_black_48px.svg') }}"></md-icon>
+                                </md-button>
+                                <md-divider></md-divider>
+                        </md-list>
+
+                        </md-list-item>
+
+                    </md-content>
+
+
+                </md-tab>
+
             </md-tabs>
             <md-button ng-if="superuser" class="md-accent md-fab md-mini md-fab-bottom-right"
                        ngf-select="addContent($files)"

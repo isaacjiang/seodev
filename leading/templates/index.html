@@ -6,6 +6,8 @@
 
 
 {% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nv.d3.min.css') }}">
+    <script src="{{ url_for('static', filename='lib/nv.d3.min.js') }}"></script>
     <script src="{{ url_for('static', filename='script/index.js') }}"></script>
 
     <div ng-controller="contentCtrl" layout="row" ng-cloak layout-wrap>
@@ -236,203 +238,225 @@
 
         <div flex layout="col" layout-wrap ng-style="setTableHeight(1)"
              ng-if="selectedFunc.taskKey=='analysis' && stopvideo">
-            <div flex="33">
+            <div flex="50">
                 <md-card ng-style="setTableHeight(2)" class="md-padding">
                     <md-card-title>
-                        <md-card-title-text><span class="md-head">Analysis</span></md-card-title-text>
+                        <md-card-title-text><span class="md-head">Forecasting</span></md-card-title-text>
                     </md-card-title>
-                    <md-data-table-container>
-                        <table md-table>
-                            <thead md-head md-order="myOrder">
-                            <tr md-row>
-                                <th md-column md-order-by="query.order"><span>Name</span></th>
-                                <th md-column><span>Title</span></th>
-                                <th md-column><span>Salary($)</span></th>
-                            </tr>
-                            </thead>
-                            <tbody md-body>
 
-                            <tr md-row
-                                ng-repeat="emp in hiredEmployees | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-                                <td md-cell>{% raw %}{{emp.employeeName}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{emp.title}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{emp.HiredBy.salaryOffer}}{% endraw %}</td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </md-data-table-container>
-                    <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{hiredEmployees.length}}{% endraw %}"
-                                         md-page-select="false"
-                                         md-boundary-links="false"></md-table-pagination>
-
+                    <div id="forecast">
+                        <svg></svg>
+            </div>
                 </md-card>
             </div>
-
-            <div flex="33">
+            <div flex="50">
                 <md-card ng-style="setTableHeight(2)" class="md-padding">
                     <md-card-title>
-                        <md-card-title-text><span class="md-head">Workforce</span></md-card-title-text>
+                        <md-card-title-text><span class="md-head">Example 1</span></md-card-title-text>
                     </md-card-title>
-                    <md-data-table-container>
-                        <table md-table>
-                            <thead md-head md-order="myOrder">
-                            <tr md-row>
-                                <th md-column md-order-by="query.order"><span>Functions</span></th>
-                                <th md-column><span>Total</span></th>
-                                <th md-column><span>Core</span></th>
-                                <th md-column><span>Contract</span></th>
-                            </tr>
-                            </thead>
-                            <tbody md-body>
 
-                            <tr md-row
-                                ng-repeat="wf in workforce | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-                                <td md-cell>{% raw %}{{wf.functions}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{wf.adjustedworkforce_total}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{wf.adjustedworkforce_core}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{wf.adjustedworkforce_contract}}{% endraw %}</td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </md-data-table-container>
-                    <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{workforce.length}}{% endraw %}" md-page-select="false"
-                                         md-boundary-links="false"></md-table-pagination>
+                    <div id="forecast">
+                        <svg></svg>
+                    </div>
                 </md-card>
             </div>
-            <div flex="33">
+            <div flex="50">
                 <md-card ng-style="setTableHeight(2)" class="md-padding">
                     <md-card-title>
-                        <md-card-title-text><span class="md-head">Forecast</span></md-card-title-text>
+                        <md-card-title-text><span class="md-head">Example 2</span></md-card-title-text>
                     </md-card-title>
-                    <md-data-table-container>
-                        <table md-table>
-                            <thead md-head md-order="myOrder">
-                            <tr md-row>
-                                <th md-column md-order-by="query.order"><span>Period</span></th>
-                                <th md-column><span>B2B</span></th>
-                                <th md-column><span>B2C</span></th>
-                                <th md-column><span>New offering</span></th>
-                            </tr>
-                            </thead>
-                            <tbody md-body>
 
-                            <tr md-row
-                                ng-repeat="fs in forecast | orderBy: query.order | limitTo:  query.limit : (query.page -1) * query.limit">
-                                <td md-cell>{% raw %}{{fs.period}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{fs.forecast.b2b}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{fs.forecast.b2c}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{fs.forecast.newoffering}}{% endraw %}</td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </md-data-table-container>
-                    <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{forecast.length}}{% endraw %}" md-page-select="false"
-                                         md-boundary-links="false"></md-table-pagination>
+                    <div id="forecast">
+                        <svg></svg>
+                    </div>
                 </md-card>
             </div>
-            <div flex="33">
+            <div flex="50">
                 <md-card ng-style="setTableHeight(2)" class="md-padding">
                     <md-card-title>
-                        <md-card-title-text><span class="md-head">Actions</span></md-card-title-text>
+                        <md-card-title-text><span class="md-head">Example 3</span></md-card-title-text>
                     </md-card-title>
-                    <md-data-table-container>
-                        <table md-table>
-                            <thead md-head md-order="myOrder">
-                            <tr md-row>
-                                <th md-column md-order-by="query.order"><span>Name</span></th>
-                                <th md-column><span>Adaptability</span></th>
-                                <th md-column><span>Competence</span></th>
-                            </tr>
-                            </thead>
-                            <tbody md-body>
 
-                            <tr md-row
-                                ng-repeat="action in actions | orderBy: actionID | limitTo: query.limit : (query.page -1) * query.limit">
-                                <td md-cell>{% raw %}{{action.action.actionID}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{action.action.adaptabilityIndex}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{action.action.competenceIndex}}{% endraw %}</td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </md-data-table-container>
-                    <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{actions.length}}{% endraw %}" md-page-select="false"
-                                         md-boundary-links="true"></md-table-pagination>
+                    <div id="forecast">
+                        <svg></svg>
+                    </div>
                 </md-card>
             </div>
-            <div flex="33">
-                <md-card ng-style="setTableHeight(2)" class="md-padding">
-                    <md-card-title>
-                        <md-card-title-text><span class="md-head">Discretionary Expenditure</span></md-card-title-text>
-                    </md-card-title>
-                    <md-data-table-container>
-                        <table md-table>
-                            <thead md-head md-order="myOrder">
-                            <tr md-row>
-                                <th md-column md-order-by="query.order"><span></span></th>
-                                <th md-column><span>Advertising</span></th>
-                                <th md-column><span>Salesforce</span></th>
-                                <th md-column><span>Social Media</span></th>
-                            </tr>
-                            </thead>
-                            <tbody md-body>
-
-                            <tr md-row
-                                ng-repeat="bg in budget | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-                                <td md-cell>{% raw %}{{bg.name}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{bg.aa}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{bg.dm}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{bg.pd}}{% endraw %}</td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </md-data-table-container>
-                    <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{ budget.length}}{% endraw %}" md-page-select="false"
-                                         md-boundary-links="false"></md-table-pagination>
-                </md-card>
-            </div>
-            <div flex="33">
-                <md-card ng-style="setTableHeight(2)" class="md-padding">
-                    <md-card-title>
-                        <md-card-title-text><span class="md-head">Resources</span></md-card-title-text>
-                    </md-card-title>
-                    <md-data-table-container>
-                        <table md-table>
-                            <thead md-head md-order="myOrder">
-                            <tr md-row>
-                                <th md-column md-order-by="query.order"><span>Type</span></th>
-                                <th md-column><span>Name</span></th>
-                                <th md-column><span>Legitimacy</span></th>
-                                <th md-column><span>Cost</span></th>
-                            </tr>
-                            </thead>
-                            <tbody md-body>
-
-                            <tr md-row
-                                ng-repeat="rs in resources | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-                                <td md-cell>{% raw %}{{rs.resource.resourceType}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{rs.resource.resourceName}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{rs.resource.legitimacy}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{rs.resource.cost}}{% endraw %}</td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </md-data-table-container>
-                    <md-table-pagination md-limit="query.limit" md-page="query.page"
-                                         md-total="{% raw %}{{resources.length}}{% endraw %}" md-page-select="false"
-                                         md-boundary-links="false"></md-table-pagination>
-                </md-card>
-            </div>
+            {#            <div flex="33">#}
+            {#                <md-card ng-style="setTableHeight(2)" class="md-padding">#}
+            {#                    <md-card-title>#}
+            {#                        <md-card-title-text><span class="md-head">Analysis</span></md-card-title-text>#}
+            {#                    </md-card-title>#}
+            {#                    <div id="forecast" flex>#}
+            {#                        <svg></svg>#}
+            {#                    </div>#}
+            {##}
+            {#                </md-card>#}
+            {#            </div>#}
+            {##}
+            {#            <div flex="33">#}
+            {#                <md-card ng-style="setTableHeight(2)" class="md-padding">#}
+            {#                    <md-card-title>#}
+            {#                        <md-card-title-text><span class="md-head">Workforce</span></md-card-title-text>#}
+            {#                    </md-card-title>#}
+            {#                    <md-data-table-container>#}
+            {#                        <table md-table>#}
+            {#                            <thead md-head md-order="myOrder">#}
+            {#                            <tr md-row>#}
+            {#                                <th md-column md-order-by="query.order"><span>Functions</span></th>#}
+            {#                                <th md-column><span>Total</span></th>#}
+            {#                                <th md-column><span>Core</span></th>#}
+            {#                                <th md-column><span>Contract</span></th>#}
+            {#                            </tr>#}
+            {#                            </thead>#}
+            {#                            <tbody md-body>#}
+            {##}
+            {#                            <tr md-row#}
+            {#                                ng-repeat="wf in workforce | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">#}
+            {#                                <td md-cell>{% raw %}{{wf.functions}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{wf.adjustedworkforce_total}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{wf.adjustedworkforce_core}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{wf.adjustedworkforce_contract}}{% endraw %}</td>#}
+            {#                            </tr>#}
+            {##}
+            {#                            </tbody>#}
+            {#                        </table>#}
+            {#                    </md-data-table-container>#}
+            {#                    <md-table-pagination md-limit="query.limit" md-page="query.page"#}
+            {#                                         md-total="{% raw %}{{workforce.length}}{% endraw %}" md-page-select="false"#}
+            {#                                         md-boundary-links="false"></md-table-pagination>#}
+            {#                </md-card>#}
+            {#            </div>#}
+            {#            <div flex="33">#}
+            {#                <md-card ng-style="setTableHeight(2)" class="md-padding">#}
+            {#                    <md-card-title>#}
+            {#                        <md-card-title-text><span class="md-head">Forecast</span></md-card-title-text>#}
+            {#                    </md-card-title>#}
+            {#                    <md-data-table-container>#}
+            {#                        <table md-table>#}
+            {#                            <thead md-head md-order="myOrder">#}
+            {#                            <tr md-row>#}
+            {#                                <th md-column md-order-by="query.order"><span>Period</span></th>#}
+            {#                                <th md-column><span>B2B</span></th>#}
+            {#                                <th md-column><span>B2C</span></th>#}
+            {#                                <th md-column><span>New offering</span></th>#}
+            {#                            </tr>#}
+            {#                            </thead>#}
+            {#                            <tbody md-body>#}
+            {##}
+            {#                            <tr md-row#}
+            {#                                ng-repeat="fs in forecast | orderBy: query.order | limitTo:  query.limit : (query.page -1) * query.limit">#}
+            {#                                <td md-cell>{% raw %}{{fs.period}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{fs.forecast.b2b}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{fs.forecast.b2c}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{fs.forecast.newoffering}}{% endraw %}</td>#}
+            {#                            </tr>#}
+            {##}
+            {#                            </tbody>#}
+            {#                        </table>#}
+            {#                    </md-data-table-container>#}
+            {#                    <md-table-pagination md-limit="query.limit" md-page="query.page"#}
+            {#                                         md-total="{% raw %}{{forecast.length}}{% endraw %}" md-page-select="false"#}
+            {#                                         md-boundary-links="false"></md-table-pagination>#}
+            {#                </md-card>#}
+            {#            </div>#}
+            {#            <div flex="33">#}
+            {#                <md-card ng-style="setTableHeight(2)" class="md-padding">#}
+            {#                    <md-card-title>#}
+            {#                        <md-card-title-text><span class="md-head">Actions</span></md-card-title-text>#}
+            {#                    </md-card-title>#}
+            {#                    <md-data-table-container>#}
+            {#                        <table md-table>#}
+            {#                            <thead md-head md-order="myOrder">#}
+            {#                            <tr md-row>#}
+            {#                                <th md-column md-order-by="query.order"><span>Name</span></th>#}
+            {#                                <th md-column><span>Adaptability</span></th>#}
+            {#                                <th md-column><span>Competence</span></th>#}
+            {#                            </tr>#}
+            {#                            </thead>#}
+            {#                            <tbody md-body>#}
+            {##}
+            {#                            <tr md-row#}
+            {#                                ng-repeat="action in actions | orderBy: actionID | limitTo: query.limit : (query.page -1) * query.limit">#}
+            {#                                <td md-cell>{% raw %}{{action.action.actionID}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{action.action.adaptabilityIndex}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{action.action.competenceIndex}}{% endraw %}</td>#}
+            {#                            </tr>#}
+            {##}
+            {#                            </tbody>#}
+            {#                        </table>#}
+            {#                    </md-data-table-container>#}
+            {#                    <md-table-pagination md-limit="query.limit" md-page="query.page"#}
+            {#                                         md-total="{% raw %}{{actions.length}}{% endraw %}" md-page-select="false"#}
+            {#                                         md-boundary-links="true"></md-table-pagination>#}
+            {#                </md-card>#}
+            {#            </div>#}
+            {#            <div flex="33">#}
+            {#                <md-card ng-style="setTableHeight(2)" class="md-padding">#}
+            {#                    <md-card-title>#}
+            {#                        <md-card-title-text><span class="md-head">Discretionary Expenditure</span></md-card-title-text>#}
+            {#                    </md-card-title>#}
+            {#                    <md-data-table-container>#}
+            {#                        <table md-table>#}
+            {#                            <thead md-head md-order="myOrder">#}
+            {#                            <tr md-row>#}
+            {#                                <th md-column md-order-by="query.order"><span></span></th>#}
+            {#                                <th md-column><span>Advertising</span></th>#}
+            {#                                <th md-column><span>Salesforce</span></th>#}
+            {#                                <th md-column><span>Social Media</span></th>#}
+            {#                            </tr>#}
+            {#                            </thead>#}
+            {#                            <tbody md-body>#}
+            {##}
+            {#                            <tr md-row#}
+            {#                                ng-repeat="bg in budget | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">#}
+            {#                                <td md-cell>{% raw %}{{bg.name}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{bg.aa}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{bg.dm}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{bg.pd}}{% endraw %}</td>#}
+            {#                            </tr>#}
+            {##}
+            {#                            </tbody>#}
+            {#                        </table>#}
+            {#                    </md-data-table-container>#}
+            {#                    <md-table-pagination md-limit="query.limit" md-page="query.page"#}
+            {#                                         md-total="{% raw %}{{ budget.length}}{% endraw %}" md-page-select="false"#}
+            {#                                         md-boundary-links="false"></md-table-pagination>#}
+            {#                </md-card>#}
+            {#            </div>#}
+            {#            <div flex="33">#}
+            {#                <md-card ng-style="setTableHeight(2)" class="md-padding">#}
+            {#                    <md-card-title>#}
+            {#                        <md-card-title-text><span class="md-head">Resources</span></md-card-title-text>#}
+            {#                    </md-card-title>#}
+            {#                    <md-data-table-container>#}
+            {#                        <table md-table>#}
+            {#                            <thead md-head md-order="myOrder">#}
+            {#                            <tr md-row>#}
+            {#                                <th md-column md-order-by="query.order"><span>Type</span></th>#}
+            {#                                <th md-column><span>Name</span></th>#}
+            {#                                <th md-column><span>Legitimacy</span></th>#}
+            {#                                <th md-column><span>Cost</span></th>#}
+            {#                            </tr>#}
+            {#                            </thead>#}
+            {#                            <tbody md-body>#}
+            {##}
+            {#                            <tr md-row#}
+            {#                                ng-repeat="rs in resources | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">#}
+            {#                                <td md-cell>{% raw %}{{rs.resource.resourceType}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{rs.resource.resourceName}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{rs.resource.legitimacy}}{% endraw %}</td>#}
+            {#                                <td md-cell>{% raw %}{{rs.resource.cost}}{% endraw %}</td>#}
+            {#                            </tr>#}
+            {##}
+            {#                            </tbody>#}
+            {#                        </table>#}
+            {#                    </md-data-table-container>#}
+            {#                    <md-table-pagination md-limit="query.limit" md-page="query.page"#}
+            {#                                         md-total="{% raw %}{{resources.length}}{% endraw %}" md-page-select="false"#}
+            {#                                         md-boundary-links="false"></md-table-pagination>#}
+            {#                </md-card>#}
+            {#            </div>#}
         </div>
     </div>
 

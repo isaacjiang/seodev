@@ -68,40 +68,60 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
                         }
                     })
                 })
+
             $http.get('/api/general/querykpidata', {
                 params: {username: $rootScope.current_user.username}
             })
                 .success(function (res) {
 
                     if (Object.keys(res).length > 0) {
-                    $scope.hiredEmployees = res.hiredEmployees
-                    $scope.workforce = res.workforce
-                    $scope.actions = res.actions
-                    $scope.resources = res.resources
+                        $scope.hiredEmployees = res.hiredEmployees
+                        $scope.workforce = res.workforce
+                        $scope.actions = res.actions
+                        $scope.resources = res.resources
 
-                    if (res.forecast) {
-                        res.forecast.forEach(function (fs) {
-                            fs.forecast.b2b = format(fs.forecast.b2b)
-                            fs.forecast.b2c = format(fs.forecast.b2c)
-                            fs.forecast.newoffering = format(fs.forecast.newoffering)
-                        })
-                    }
-                    $scope.forecast = res.forecast
+
+                        forecastGraph_b2b = []
+                        forecastGraph_b2c = []
+
+                        if (res.forecast) {
+                            res.forecast.forEach(function (fs) {
+                                console.log(fs)
+                                forecastGraph_b2b.push({x: fs.period, y: fs.forecast.b2b / 1000000})
+                                forecastGraph_b2c.push({x: fs.period, y: fs.forecast.b2c / 1000000})
+
+                                fs.forecast.b2b = format(fs.forecast.b2b)
+                                fs.forecast.b2c = format(fs.forecast.b2c)
+                                fs.forecast.newoffering = format(fs.forecast.newoffering)
+                            })
+                        }
+                        $scope.forecast = res.forecast
                         if (res.budget[0]) {
-                    $scope.budget = [{
-                        name: "B2B",
-                        aa: format(res.budget[0].acc_budget.B2B_AA),
-                        dm: format(res.budget[0].acc_budget.B2B_DM),
-                        pd: format(res.budget[0].acc_budget.B2B_PD)
-                    }, {
-                        name: "B2C", aa: format(res.budget[0].acc_budget.B2C_AA),
-                        dm: format(res.budget[0].acc_budget.B2C_DM), pd: format(res.budget[0].acc_budget.B2C_PD)
-                    }]
+                            $scope.budget = [{
+                                name: "B2B",
+                                aa: format(res.budget[0].acc_budget.B2B_AA),
+                                dm: format(res.budget[0].acc_budget.B2B_DM),
+                                pd: format(res.budget[0].acc_budget.B2B_PD)
+                            }, {
+                                name: "B2C", aa: format(res.budget[0].acc_budget.B2C_AA),
+                                dm: format(res.budget[0].acc_budget.B2C_DM), pd: format(res.budget[0].acc_budget.B2C_PD)
+                            }]
                         }
                     }
 
-                })
 
+                    $scope.forecastGraph = [{
+                        values: forecastGraph_b2b,      //values - represents the array of {x,y} data points
+                        key: 'B2B', //key  - the name of the series.
+                        color: '#ff7f0e'  //color - optional: choose your own line color.
+                    }, {
+                        values: forecastGraph_b2c,      //values - represents the array of {x,y} data points
+                        key: 'B2C', //key  - the name of the series.
+                        color: 'green'  //color - optional: choose your own line color.
+                    }]
+
+
+                })
 
         })
         $scope.query = {
@@ -111,7 +131,41 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
         };
         $rootScope.toggleFunction = function (func) {
             $scope.selectedFunc = func
+            if (func.taskKey == 'analysis') {
+                console.log(func, d3.select('#forecast svg'))
 
+                nv.addGraph(function () {
+                    var chart = nv.models.lineChart()
+                            .clipEdge(true)
+                            .useInteractiveGuideline(true)
+                            .margin({left: 40, right: 40})
+                            // .width(200)
+                            .height(windowsize.height / 2 - 120)
+                        ;
+
+                    chart.xAxis
+                        .axisLabel('Period')
+                        .tickFormat(function (d) {
+                            return 'Period ' + d
+                        });
+
+                    chart.yAxis
+                        .axisLabel('Million $')
+                        .tickFormat(d3.format('.02f'))
+                    ;
+
+                    d3.select('#forecast svg')
+                        .datum($scope.forecastGraph)
+                        .transition().duration(500)
+                        .call(chart)
+                        .style({'width': '100%', 'height': windowsize.height / 2 - 60})
+                    ;
+
+                    nv.utils.windowResize(chart.update);
+
+                    return chart;
+                });
+            }
         }
 
 

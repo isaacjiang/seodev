@@ -469,26 +469,26 @@ app.config(function ($mdThemingProvider) {
         }
         // }
             $scope.info = function (menuid) {
-
+                $scope.selectedTabs = 0
                 $http.get('/api/general/instruction')
 
                     .success(function (list) {
-                        console.log(list)
-                        $scope.instructionMeterial = [[], []]
-                        if (list) {
-                            list.forEach(function (d) {
-                                d.companyName == $rootScope.user_info.companyInfo.companyName
-                                if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
-                                    $scope.instructionMeterial[0].push(d)
-                                }
-                                // else {
-                                //     $scope.instructionMeterial[1].push(d)
-                                // }
-                            })
-                        }
+                        // console.log(list)
+                    $scope.instructionMeterial = [[], []]
+                    if (list) {
+                        list.forEach(function (d) {
+                            // d.companyName == $rootScope.user_info.companyInfo.companyName
+                            if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
+                                $scope.instructionMeterial[d.selectedTabs].push(d)
+                            }
+                            // else {
+                            //     $scope.instructionMeterial[1].push(d)
+                            // }
+                        })
+                    }
 
 
-                    })
+                })
                 $mdDialog.cancel()
                 $mdSidenav(menuid).toggle();
             };
@@ -498,7 +498,7 @@ app.config(function ($mdThemingProvider) {
             }
 
             $scope.addContent = function (file) {
-                console.log('addContent')
+                //console.log('addContent',$scope.selectedTabs)
                 Upload.upload({
                     url: '/files/upload',
                     data: {files: file}
@@ -507,29 +507,30 @@ app.config(function ($mdThemingProvider) {
                     if (response.data && response.data[0] != undefined) {
                         response.data[0].companyName = $rootScope.user_info.companyInfo.companyName
                         response.data[0].period = parseInt($rootScope.user_info.companyInfo.currentPeriod)
-                        console.log(response.data[0])
+                        // console.log(response.data[0])
+                        response.data[0].selectedTabs = $scope.selectedTabs
                         $http({
                                 method: 'POST',
                                 url: "/api/general/instruction",
                                 data: {
                                     file: response.data[0]
-                            }
-                        }
-                        ).success(function (list) {
-                            console.log(list)
-                    $scope.instructionMeterial = [[], []]
-                    if (list) {
-                        list.forEach(function (d) {
-                            if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
-                                $scope.instructionMeterial[0].push(d)
-                            }
-                            // else {
-                            //     $scope.instructionMeterial[1].push(d)
-                            // }
-                        })
+                                }
                     }
+                        ).success(function (list) {
+                            // console.log(list)
+                            $scope.instructionMeterial = [[], []]
+                            if (list) {
+                                list.forEach(function (d) {
+                                    if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
+                                        $scope.instructionMeterial[d.selectedTabs].push(d)
+                                    }
+                                    // else {
+                                    //     $scope.instructionMeterial[1].push(d)
+                                    // }
+                                })
+                            }
                             $rootScope.notificationToast('Instruction material uploaded.')
-                    })
+                })
                     }
 
 
@@ -542,7 +543,7 @@ app.config(function ($mdThemingProvider) {
                         url: "/api/general/deleteinstruction",
                         data: {
                             file: file
-                    }
+                        }
                     }
                 ).success(function (list) {
                     //console.log(list)
@@ -555,7 +556,7 @@ app.config(function ($mdThemingProvider) {
                             // else {
                             //     $scope.instructionMeterial[1].push(d)
                             // }
-                })
+                        })
                     }
                     $rootScope.notificationToast('Instruction material deleted.')
                 })
@@ -571,23 +572,23 @@ app.config(function ($mdThemingProvider) {
                     .success(function (res) {
                         console.log(res)
                         $scope.current_budget = res
-                    })
+                })
                 $scope.current_index = -1
                 $scope.budget_input = function (index, budget) {
                     console.log(index, budget)
 
                     $scope.current_index = index
-            }
+                }
                 $scope.$watchCollection('current_index', function (newVal, oldVal) {
                     if (oldVal != undefined && newVal != oldVal) {
                         // console.log( oldVal)
                         if (oldVal != -1) {
                             $http.post('/api/account/accountbudget', $scope.current_budget[oldVal]).success(function (res) {
                                 //    console.log(res)
-                        })
-                    }
+                            })
+                        }
 
-                }
+            }
                 })
 
             }
@@ -3083,13 +3084,13 @@ app.config(function ($mdThemingProvider) {
                             total_great_value[teamName] = {}
                             Object.keys(marketValue[teamName]).forEach(function (period) {
                                 console.log(period)
-                                // if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
-                                //     //console.log(financialValue[teamName][period - 1])
-                                //     if (financialValue[teamName][period - 1].NOCG <= 0) {
-                                //         financialValue[teamName][period - 1].NOCG = 1
-                                //     }
-                                //     total_great_value[teamName][period] = marketValue[teamName][period] * 0.3 * managementValue[teamName][period] * 0.3 * financialValue[teamName][period - 1].NOCG * 0.4
-                                // }
+                                if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
+                                    //console.log(financialValue[teamName][period - 1])
+                                    if (financialValue[teamName][period - 1].NOCG <= 0) {
+                                        financialValue[teamName][period - 1].NOCG = 1
+                                    }
+                                    total_great_value[teamName][period] = marketValue[teamName][period] * 0.3 * managementValue[teamName][period] * 0.3 * financialValue[teamName][period - 1].NOCG * 0.4
+                                }
                             })
 
 
