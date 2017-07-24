@@ -474,12 +474,20 @@ app.config(function ($mdThemingProvider) {
 
                     .success(function (list) {
                         // console.log(list)
-                    $scope.instructionMeterial = [[], []]
+                        $scope.instructionpdfs = []
+                        $scope.instructionMaterial = []
                     if (list) {
                         list.forEach(function (d) {
                             // d.companyName == $rootScope.user_info.companyInfo.companyName
                             if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
-                                $scope.instructionMeterial[d.selectedTabs].push(d)
+
+                                if (d.selectedTabs == 0) {
+                                    $scope.instructionpdfs.push(d)
+                                }
+                                else {
+                                    $scope.instructionMaterial.push(d)
+                                }
+
                             }
                             // else {
                             //     $scope.instructionMeterial[1].push(d)
@@ -518,11 +526,18 @@ app.config(function ($mdThemingProvider) {
                     }
                         ).success(function (list) {
                             // console.log(list)
-                            $scope.instructionMeterial = [[], []]
+                            //$scope.instructionMeterial = [[], []]
+                            $scope.instructionpdfs = []
+                            $scope.instructionMaterial = []
                             if (list) {
                                 list.forEach(function (d) {
                                     if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
-                                        $scope.instructionMeterial[d.selectedTabs].push(d)
+                                        if (d.selectedTabs == 0) {
+                                            $scope.instructionpdfs.push(d)
+                                        }
+                                        else {
+                                            $scope.instructionMaterial.push(d)
+                                        }
                                     }
                                     // else {
                                     //     $scope.instructionMeterial[1].push(d)
@@ -547,11 +562,19 @@ app.config(function ($mdThemingProvider) {
                     }
                 ).success(function (list) {
                     //console.log(list)
-                    $scope.instructionMeterial = [[], []]
+                    // $scope.instructionMeterial = [[], []]
+                    $scope.instructionpdfs = []
+                    $scope.instructionMaterial = []
+
                     if (list) {
                         list.forEach(function (d) {
                             if (d.content_type == 'application/pdf' && d.companyName == $rootScope.user_info.companyInfo.companyName) {
-                                $scope.instructionMeterial[0].push(d)
+                                if (d.selectedTabs == 0) {
+                                    $scope.instructionpdfs.push(d)
+                                }
+                                else {
+                                    $scope.instructionMaterial.push(d)
+                                }
                             }
                             // else {
                             //     $scope.instructionMeterial[1].push(d)

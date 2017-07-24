@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block jacascript %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nv.d3.min.css') }}">
+    <script src="{{ url_for('static', filename='lib/nv.d3.min.js') }}"></script>
     <script src="{{ url_for('static', filename='script/dashboard.js') }}"></script>
 {% endblock %}
 
@@ -37,32 +39,35 @@
 
 
         <md-card flex ng-style="setTableHeight()" ng-if="selectedFunc.taskKey=='value'">
-            <md-data-table-container>
-                <table md-table>
-                    <thead md-head md-order="myOrder">
-                    <tr md-row>
-                        <th md-column md-order-by="query.order"><span>Item</span></th>
-                        <th md-column><span>Previous</span></th>
-                        <th md-column><span>Current</span></th>
-                    </tr>
-                    </thead>
-                    <tbody md-body>
-
-                    <tr md-row
-                        ng-repeat="pandl in great_value | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">
-                        <td md-cell>{% raw %}{{pandl.key}}{% endraw %}</td>
-                        <td md-cell>{% raw %}{{pandl.Previus}}{% endraw %}</td>
-                        <td md-cell>{% raw %}{{pandl.Current}}{% endraw %}</td>
-
-
-                    </tr>
-
-                    </tbody>
-                </table>
-            </md-data-table-container>
-                        <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"
-                                             md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"
-                                             md-boundary-links="true"></md-table-pagination>
+            {#           <md-data-table-container>#}
+            {#                <table md-table>#}
+            {#                    <thead md-head md-order="myOrder">#}
+            {#                    <tr md-row>#}
+            {#                        <th md-column md-order-by="query.order"><span>Item</span></th>#}
+            {#                        <th md-column><span>Previous</span></th>#}
+            {#                        <th md-column><span>Current</span></th>#}
+            {#                    </tr>#}
+            {#                    </thead>#}
+            {#                    <tbody md-body>#}
+            {##}
+            {#                    <tr md-row#}
+            {#                        ng-repeat="pandl in great_value | orderBy: query.order | limitTo: limit_great_value.limit : (query.page -1) * limit_great_value.limit">#}
+            {#                        <td md-cell>{% raw %}{{pandl.key}}{% endraw %}</td>#}
+            {#                        <td md-cell>{% raw %}{{pandl.Previus}}{% endraw %}</td>#}
+            {#                        <td md-cell>{% raw %}{{pandl.Current}}{% endraw %}</td>#}
+            {##}
+            {##}
+            {#                    </tr>#}
+            {##}
+            {#                    </tbody>#}
+            {#                </table>#}
+            {#            </md-data-table-container>#}
+            {#           <md-table-pagination md-limit="query.limit" md-page="query.page" md-limit-options="[5,10,15]"#}
+            {#                                             md-total="{% raw %}{{users.length}}{% endraw %}" md-page-select="false"#}
+            {#                                             md-boundary-links="true"></md-table-pagination>#}
+            <div id="valuegraph">
+                <svg></svg>
+            </div>
 
         </md-card>
 

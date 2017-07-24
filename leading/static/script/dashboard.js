@@ -36,10 +36,12 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                             t.icon = 'ic_flag_black_48px.svg'
                             // t.colspan = 5
                             // t.rowspan = 5
-                            $rootScope.toggleFunction(t)
+
+
                         }
                         else if (t.taskKey == "market") {
                             t.icon = 'ic_local_shipping_black_48px.svg'
+                            $rootScope.toggleFunction(t)
                         }
                         else if (t.taskKey == "financial") {
                             t.icon = 'ic_multiline_chart_black_48px.svg'
@@ -118,7 +120,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     $scope.limit_managementPerformance_value = {limit: $scope.managementPerformance_value.length};
 
 
-                    console.log(financialPerformance)
+                    // console.log(financialPerformance)
                     $scope.financialPerformance_value = {}
                     financialItem.forEach(function (fi, i) {
 
@@ -167,7 +169,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     //console.log($scope.financialPerformance_value)
                     $scope.query_mp = {order: 'Item', page: 1};
                     $scope.limit_financialPerformance_value = {limit: $scope.financialPerformance_value.length};
-                    console.log('222', $scope.financialPerformance_value)
+                    // console.log('222', $scope.financialPerformance_value)
 
                     //console.log('market', res)
                     var marketValue = res.marketValue
@@ -209,7 +211,11 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                         })
                     })
                     // console.log(max_total_great_value)
+                    $scope.total_great_value = []
                     Object.keys(total_great_value).forEach(function (teamName) {
+
+                        var companyValues = [], sharePrices = []
+
                         Object.keys(total_great_value[teamName]).forEach(function (currentPeriod) {
                             var value = total_great_value[teamName][currentPeriod]
                             total_great_value[teamName][currentPeriod] = {}
@@ -251,9 +257,32 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                             total_great_value[teamName][currentPeriod].EBITDA = financialValue[teamName][currentPeriod - 1].EBITDA
                             total_great_value[teamName][currentPeriod].companyValue = financialValue[teamName][currentPeriod - 1].EBITDA * total_great_value[teamName][currentPeriod].realPE / 100
                             total_great_value[teamName][currentPeriod].sharePrice = total_great_value[teamName][currentPeriod].companyValue / 100000
+
+                            companyValues.push({
+                                x: currentPeriod,
+                                y: total_great_value[teamName][currentPeriod].companyValue / 1000000
+                            })
+                            sharePrices.push({
+                                x: currentPeriod,
+                                y: total_great_value[teamName][currentPeriod].sharePrice
+                            })
+                        })
+
+
+                        $scope.total_great_value.push({
+                            values: companyValues,      //values - represents the array of {x,y} data points
+                            key: teamName + ' companyValues', //key  - the name of the series.
+                            color: '#' + Math.random().toString(16).substr(-6) //color - optional: choose your own line color.
+                        })
+                        $scope.total_great_value.push({
+                            values: sharePrices,      //values - represents the array of {x,y} data points
+                            key: teamName + ' sharePrices', //key  - the name of the series.
+                            color: '#' + Math.random().toString(16).substr(-6) //color - optional: choose your own line color.
                         })
                     })
-                    // console.log($rootScope.user_info.companyInfo)
+                    console.log(total_great_value)
+
+
                     var great_value = total_great_value[$rootScope.user_info.teamInfo.teamName]
 
 
@@ -285,7 +314,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                         "Current": format(great_value[$rootScope.user_info.companyInfo.currentPeriod].sharePrice.toFixed(0))
                     }
 
-                    console.log($scope.great_value)
+                    // console.log($scope.great_value)
 
                     $scope.query = {order: 'niche', page: 1};
                     $scope.limit_great_value = {limit: $scope.great_value.length};
@@ -299,7 +328,41 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
         $rootScope.toggleFunction = function (func) {
 
             $scope.selectedFunc = func
+            if (func.taskKey == "value") {
+                console.log($scope.total_great_value)
+                nv.addGraph(function () {
+                    var chart = nv.models.lineChart()
+                            .clipEdge(true)
+                            .useInteractiveGuideline(true)
+                            .margin({top: 100, left: 80, right: 40})
+                            // .width(200)
+                            .height(windowsize.height / 2)
+                        ;
 
+                    chart.xAxis
+                        .axisLabel('Period')
+                        .tickFormat(function (d) {
+                            return 'Period ' + d
+                        });
+
+                    chart.yAxis
+                        .axisLabel('Million $')
+                        .tickFormat(d3.format('.02f'))
+                    ;
+
+                    d3.select('#valuegraph svg')
+                        .datum($scope.total_great_value)
+                        .transition().duration(500)
+                        .call(chart)
+                        .style({'width': '100%', 'height': windowsize.height / 2})
+                    ;
+
+                    nv.utils.windowResize(chart.update);
+
+                    return chart;
+                });
+
+            }
         }
 
 

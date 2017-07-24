@@ -170,8 +170,9 @@ class PerformanceService():
             #      "companyName": currentPeriod['companyName'],
             #      "currentPeriod": {"$in": [currentPeriod['currentPeriod'] - 1, currentPeriod['currentPeriod']]}})
             niche_marketingshare = self.db.niches_cal.find({"company": currentPeriod['companyName'],
-                                                            "period": {"$in": [currentPeriod['currentPeriod'] - 1,
-                                                                               currentPeriod['currentPeriod']]}},
+                                                            # "period": {"$in": [currentPeriod['currentPeriod'] - 1,
+                                                            #                    currentPeriod['currentPeriod']]}
+                                                            },
                                                            {'_id': 0})
             marketPerformance = []
             managementPerformance = []
@@ -184,7 +185,7 @@ class PerformanceService():
                 else:
                     period = 'Previous'
 
-                if currentPeriod['teamName'] in niche_v['rankedCompany']:
+                if 'rankedCompany' in niche_v.keys() and currentPeriod['teamName'] in niche_v['rankedCompany']:
                     rankedCompanyValue = niche_v['rankedCompany'].index(currentPeriod['teamName']) + 1
                     marketPerformance.append(
                         {"teamName": currentPeriod['teamName'], "companyName": currentPeriod['companyName'],

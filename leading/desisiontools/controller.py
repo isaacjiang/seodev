@@ -491,19 +491,45 @@ class PeriodicTasksService():
                                                                      value=employee['HiredBy']['salaryOffer'],
                                                                      comments=employee['employeeID'])
 
-                Index(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
-                      period=employee['startAtPeriod']).bookkeeping(
+                if employee['competenceIndexEffect'] > 0: Index(teamName=employee['HiredBy']['teamName'],
+                                                                companyName=employee['HiredBy']['companyName'],
+                                                                period=employee['startAtPeriod']).bookkeeping(
                     objectID = employee["_id"],
                     accDescID=self.categoryToItem(employee['category']),
                     indexName="competenceIndex",
                     value=employee['competenceIndexEffect'],
                     comments=employee['employeeID'])
-                Index(teamName=employee['HiredBy']['teamName'], companyName=employee['HiredBy']['companyName'],
-                      period=employee['startAtPeriod']).bookkeeping(
+                if employee['legitimacy'] > 0: Index(teamName=employee['HiredBy']['teamName'],
+                                                     companyName=employee['HiredBy']['companyName'],
+                                                     period=employee['startAtPeriod']).bookkeeping(
                      objectID = employee["_id"],
                     accDescID=self.categoryToItem(employee['category']),
                     indexName="legitimacyIndex",
                     value=employee['legitimacy'],
+                    comments=employee['employeeID'])
+                if employee['stressIndexEffect'] > 0: Index(teamName=employee['HiredBy']['teamName'],
+                                                            companyName=employee['HiredBy']['companyName'],
+                                                            period=employee['startAtPeriod']).bookkeeping(
+                    objectID=employee["_id"],
+                    accDescID=self.categoryToItem(employee['category']),
+                    indexName="stressIndex",
+                    value=employee['stressIndexEffect'],
+                    comments=employee['employeeID'])
+                if employee['adaptabilityIndexEffect'] > 0: Index(teamName=employee['HiredBy']['teamName'],
+                                                                  companyName=employee['HiredBy']['companyName'],
+                                                                  period=employee['startAtPeriod']).bookkeeping(
+                    objectID=employee["_id"],
+                    accDescID=self.categoryToItem(employee['category']),
+                    indexName="adaptabilityIndex",
+                    value=employee['adaptabilityIndexEffect'],
+                    comments=employee['employeeID'])
+                if employee['platformIndexEffect'] > 0: Index(teamName=employee['HiredBy']['teamName'],
+                                                              companyName=employee['HiredBy']['companyName'],
+                                                              period=employee['startAtPeriod']).bookkeeping(
+                    objectID=employee["_id"],
+                    accDescID=self.categoryToItem(employee['category']),
+                    indexName="platformIndex",
+                    value=employee['platformIndexEffect'],
                     comments=employee['employeeID'])
 
     def workforceAccountBookkeeping(self):
@@ -569,6 +595,33 @@ class PeriodicTasksService():
                     .bookkeeping(objectID=action['_id'], indexName='competenceIndex',
                                  accDescID=accountDesc,
                                  value=a["competenceIndex"],
+                                 comments=a['actionID'])
+
+            if a["legitimacy"] > 0:
+                Index(teamName=action['teamName'], companyName=action['companyName'], period=a['periodStart']) \
+                    .bookkeeping(objectID=action['_id'], indexName='legitimacyIndex',
+                                 accDescID=accountDesc,
+                                 value=a["legitimacy"],
+                                 comments=a['actionID'])
+
+            if a["adaptabilityIndex"] > 0:
+                Index(teamName=action['teamName'], companyName=action['companyName'], period=a['periodStart']) \
+                    .bookkeeping(objectID=action['_id'], indexName='adaptabilityIndex',
+                                 accDescID=accountDesc,
+                                 value=a["adaptabilityIndex"],
+                                 comments=a['actionID'])
+            if a['stressIndex'] > 0:
+                Index(teamName=action['teamName'], companyName=action['companyName'], period=a['periodStart']) \
+                    .bookkeeping(objectID=action['_id'], indexName='stressIndex',
+                                 accDescID=accountDesc,
+                                 value=a["stressIndex"],
+                                 comments=a['actionID'])
+
+            if 'platformIndex' in a.keys() and a['platformIndex'] > 0:
+                Index(teamName=action['teamName'], companyName=action['companyName'], period=a['periodStart']) \
+                    .bookkeeping(objectID=action['_id'], indexName='platformIndex',
+                                 accDescID=accountDesc,
+                                 value=a["platformIndex"],
                                  comments=a['actionID'])
 
     def nichesCalculation(self):
@@ -637,6 +690,13 @@ class PeriodicTasksService():
                              accDescID=successCom[res]['accountDesc'],
                              value=successCom[res]['resource']["legitimacy"],
                              comments=successCom[res]['resource']['resourceName'])
+            if 'platform' in successCom[res]['resource'].keys():
+                Index(successCom[res]['teamName'], successCom[res]['companyName'],
+                      successCom[res]['currentPeriod']) \
+                    .bookkeeping(objectID=res, indexName='platformIndex',
+                                 accDescID=successCom[res]['accountDesc'],
+                                 value=successCom[res]['resource']["platform"],
+                                 comments=successCom[res]['resource']['resourceName'])
         return successCom
 
     def negotiation1AccountBookkeeping(self):

@@ -174,7 +174,7 @@
                     <md-content layout-padding layout-margin="10px" flex style="min-height: 400px">
 
                         <md-list>
-                            <md-list-item ng-repeat="material in instructionMeterial[0]" layout>
+                            <md-list-item ng-repeat="material in instructionpdfs" layout>
                                 <div class="md-list-item-text" ng-click="infoClick(material)" flex="70">
                                     <span>{% raw %}{{material.filename }}{% endraw %} </span>
                         </div>
@@ -198,7 +198,7 @@
                     <md-content layout-padding layout-margin="10px" flex style="min-height: 400px">
 
                         <md-list>
-                            <md-list-item ng-repeat="material in instructionMeterial[1]" layout>
+                            <md-list-item ng-repeat="material in instructionMaterial" layout>
                                 <div class="md-list-item-text" ng-click="infoClick(material)" flex="70">
                                     <span>{% raw %}{{material.filename }}{% endraw %} </span>
                                 </div>
