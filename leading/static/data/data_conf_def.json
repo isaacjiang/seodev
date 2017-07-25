@@ -59,7 +59,7 @@
   },
   {
     "item" : "projects",
-    "key" : "projectName",
+    "key": "projectID",
     "sheetname" : "projects_def",
     "filename": "Projects.xlsx",
     "status" : "Init"
