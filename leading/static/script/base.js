@@ -455,7 +455,9 @@ app.config(function ($mdThemingProvider) {
                 }
             }
             if (companyName=='LegacyCo'){
-                if (['01001','03001','04001'].indexOf(taskName)>=0){hiringfn(task);}
+                if (['01001', '03001', '04001', '05001'].indexOf(taskName) >= 0) {
+                    hiringfn(task);
+                }
                 if (['01003', '02003', '03003', '04003', '05003', '06003'].indexOf(taskName) >= 0) {
                     resourcesfn(task);
                 }

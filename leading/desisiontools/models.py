@@ -302,10 +302,12 @@ class ProjectsModel(TasksModel):
     def get_init(self):
         result = {}
         projects=[]
-        cursor = leadingbase.projects_def.find({}, {'_id': 0})
+        print(self.period, self.companyName)
+        cursor = leadingbase.projects_def.find({'company': self.companyName, 'startAtPeriod': self.period}, {'_id': 0})
         for item in cursor:
             # item["_id"] = str(item['_id'])
             projects.append(item)
+            print item
         result["keyword"] = "allprojects"
         result["data"]=projects
         return result
@@ -592,7 +594,8 @@ class VisionaryCompetitionModel(TasksModel):
 
 class CorporateAcquisitionsModel(TasksModel):
     def get_init(self):
-        conditions = {"company": self.companyName, "startAtPeriod": self.period}
+        print(self.companyName)
+        conditions = {"company": self.companyName}  # ,"startAtPeriod": self.period
         result = []
         corporate = leadingbase.corporate_acquisitions_def.find(conditions, {"_id": 0})
         if corporate is not None:
