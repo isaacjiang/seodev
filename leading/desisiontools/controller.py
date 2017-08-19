@@ -447,10 +447,13 @@ class PeriodicTasksService():
     def account_sum(self):
         companys = self.db.companies.find({"status": {"$in": ["Active", "Init"]}}, {"_id": 0})
         for com in companys:
-            Account(companyName=com['companyName'], teamName=com['teamName'], period=self.systemCurrentPeriod).sum()
             if com['currentPeriod'] == 1:
                 Account(companyName=com['companyName'], teamName=com['teamName'], period=-2).sum()
                 Account(companyName=com['companyName'], teamName=com['teamName'], period=-1).sum()
+            else:
+                Account(companyName=com['companyName'], teamName=com['teamName'],
+                        period=self.systemCurrentPeriod - 1).sum()
+            Account(companyName=com['companyName'], teamName=com['teamName'], period=self.systemCurrentPeriod).sum()
 
 
 
@@ -507,25 +510,28 @@ class PeriodicTasksService():
                     indexName="legitimacyIndex",
                     value=employee['legitimacy'],
                     comments=employee['employeeID'])
-                if employee['stressIndexEffect'] > 0: Index(teamName=employee['HiredBy']['teamName'],
-                                                            companyName=employee['HiredBy']['companyName'],
-                                                            period=employee['startAtPeriod']).bookkeeping(
+                if "stressIndexEffect" in employee.keys() and employee['stressIndexEffect'] > 0: Index(
+                    teamName=employee['HiredBy']['teamName'],
+                    companyName=employee['HiredBy']['companyName'],
+                    period=employee['startAtPeriod']).bookkeeping(
                     objectID=employee["_id"],
                     accDescID=self.categoryToItem(employee['category']),
                     indexName="stressIndex",
                     value=employee['stressIndexEffect'],
                     comments=employee['employeeID'])
-                if employee['adaptabilityIndexEffect'] > 0: Index(teamName=employee['HiredBy']['teamName'],
-                                                                  companyName=employee['HiredBy']['companyName'],
-                                                                  period=employee['startAtPeriod']).bookkeeping(
+                if "adaptabilityIndexEffect" in employee.keys() and employee['adaptabilityIndexEffect'] > 0: Index(
+                    teamName=employee['HiredBy']['teamName'],
+                    companyName=employee['HiredBy']['companyName'],
+                    period=employee['startAtPeriod']).bookkeeping(
                     objectID=employee["_id"],
                     accDescID=self.categoryToItem(employee['category']),
                     indexName="adaptabilityIndex",
                     value=employee['adaptabilityIndexEffect'],
                     comments=employee['employeeID'])
-                if employee['platformIndexEffect'] > 0: Index(teamName=employee['HiredBy']['teamName'],
-                                                              companyName=employee['HiredBy']['companyName'],
-                                                              period=employee['startAtPeriod']).bookkeeping(
+                if "platformIndexEffect" in employee.keys() and employee['platformIndexEffect'] > 0: Index(
+                    teamName=employee['HiredBy']['teamName'],
+                    companyName=employee['HiredBy']['companyName'],
+                    period=employee['startAtPeriod']).bookkeeping(
                     objectID=employee["_id"],
                     accDescID=self.categoryToItem(employee['category']),
                     indexName="platformIndex",
@@ -544,6 +550,7 @@ class PeriodicTasksService():
                 #                 value=value1, comments='Workforce adjustment' + workforce['functions'])
                 value2 = int(workforce['adjustedworkforce_total'].replace(',', '')) * (
                 workforce['avWage'] + workforce['avExpense'])
+                print(value1, value2)
                 acc.bookkeeping(objectID=workforce["_id"],
                                 accountDescID=self.categoryToItem(workforce['functions']),
                                 value=value1 + value2, comments='Workforce' + workforce['functions'])
@@ -572,7 +579,7 @@ class PeriodicTasksService():
                      + (b['acc_budget']['Niche1_PD'] if 'Niche1_PD' in b['acc_budget'].keys() else 0) \
                      + (b['acc_budget']['Niche2_PD'] if 'Niche2_PD' in b['acc_budget'].keys() else 0) \
                      + (b['acc_budget']['Niche3_PD'] if 'Niche3_PD' in b['acc_budget'].keys() else 0)
-            acc.bookkeeping(objectID=b['_id'], accountDescID='AB014', value=value3, comments='PD')
+            acc.bookkeeping(objectID=b['_id'], accountDescID='AB013', value=value3, comments='PD')
 
     def actionsAccountBookkeeping(self):
         actions = self.db.actions_com.find()
@@ -794,4 +801,4 @@ class PeriodicTasksService():
                                  comments='Transfer  from LegacyCo.')
 
 # PeriodicTasksService().calculte_account_performance()
-# PeriodicTasksService().account_sum()
+# PeriodicTasksService().workforceAccountBookkeeping()

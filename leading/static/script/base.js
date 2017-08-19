@@ -597,7 +597,10 @@ app.config(function ($mdThemingProvider) {
                     .success(function (res) {
                         console.log(res)
                         $scope.current_budget = res
-                })
+                        $scope.current_budget.forEach(function (d) {
+                            d['currentValue_text'] = formatNum(d['currentValue'])
+                        })
+                    })
                 $scope.current_index = -1
                 $scope.budget_input = function (index, budget) {
                     console.log(index, budget)
@@ -1471,48 +1474,51 @@ app.config(function ($mdThemingProvider) {
                     else {
                         list.push(item);
 
-                        $scope.technicalExperts = item.technicalExperts
-                        //console.log(list)
-
-                        $scope.calculatedValues={'marketingLoss':1,'developmentLoss':1,'marketingGain':1,"developmentGain":1}
-
-                        list.forEach(function(d) {
-                            $scope.calculatedValues.marketingLoss = $scope.calculatedValues.marketingLoss * d.marketingLoss
-                            $scope.calculatedValues.developmentLoss = $scope.calculatedValues.developmentLoss * d.developmentLoss
-                            $scope.calculatedValues.marketingGain = $scope.calculatedValues.marketingGain * d.marketingGain
-                            $scope.calculatedValues.developmentGain = $scope.calculatedValues.developmentLoss * d.developmentGain
-                        })
-                        $scope.calculatedValues.marketingLoss =($scope.calculatedValues.marketingLoss*100).toFixed(2)
-                        $scope.calculatedValues.developmentLoss =($scope.calculatedValues.developmentLoss*100).toFixed(2)
-                        $scope.calculatedValues.marketingGain =($scope.calculatedValues.marketingGain*100).toFixed(2)
-                        $scope.calculatedValues.developmentGain =($scope.calculatedValues.developmentGain*100).toFixed(2)
-
-                        var sumInfluence={'VRKidEd':0,"GovVR":0,"VRGames":0,"MilitaryVR":0,"AdEdVR":0,"VRCinema":0}
-                        list.forEach(function(d){
-
-                            if(d.category == "ProductDeveloper"){
-                                sumInfluence.VRKidEd += d.technicalExperts.sum* d.influenceBVs.VRKidEd
-                                sumInfluence.GovVR += d.technicalExperts.sum* d.influenceBVs.GovVR
-                                sumInfluence.VRGames += d.technicalExperts.sum* d.influenceBVs.VRGames
-                                sumInfluence.MilitaryVR += d.technicalExperts.sum* d.influenceBVs.MilitaryVR
-                                sumInfluence.AdEdVR += d.technicalExperts.sum* d.influenceBVs.AdEdVR
-                                sumInfluence.VRCinema += d.technicalExperts.sum* d.influenceBVs.VRCinema
-                            }
-
-                        })
-
-                        $scope.sumInfluenceSales={'VRKidEd':0,"GovVR":0,"VRGames":0,"MilitaryVR":0,"AdEdVR":0,"VRCinema":0}
-                        list.forEach(function(d){
-                            if(d.category == "Salespeople"){
-                                $scope.sumInfluenceSales.VRKidEd +=sumInfluence.VRKidEd * d.influenceBVs.VRKidEd
-                                $scope.sumInfluenceSales.GovVR += sumInfluence.GovVR * d.influenceBVs.GovVR
-                                $scope.sumInfluenceSales.VRGames += sumInfluence.VRGames * d.influenceBVs.VRGames
-                                $scope.sumInfluenceSales.MilitaryVR += sumInfluence.MilitaryVR * d.influenceBVs.MilitaryVR
-                                $scope.sumInfluenceSales.AdEdVR += sumInfluence.AdEdVR * d.influenceBVs.AdEdVR
-                                $scope.sumInfluenceSales.VRCinema += sumInfluence.VRCinema * d.influenceBVs.VRCinema
-                            }
-
-                        })
+                        // $scope.technicalExperts = item.technicalExperts
+                        // //console.log(list)
+                        //
+                        // $scope.calculatedValues={'marketingLoss':1,'developmentLoss':1,'marketingGain':1,"developmentGain":1}
+                        //
+                        // list.forEach(function(d) {
+                        //     $scope.calculatedValues.marketingLoss = $scope.calculatedValues.marketingLoss * d.marketingLoss
+                        //     $scope.calculatedValues.developmentLoss = $scope.calculatedValues.developmentLoss * d.developmentLoss
+                        //     $scope.calculatedValues.marketingGain = $scope.calculatedValues.marketingGain * d.marketingGain
+                        //     $scope.calculatedValues.developmentGain = $scope.calculatedValues.developmentLoss * d.developmentGain
+                        // })
+                        // $scope.calculatedValues.marketingLoss =($scope.calculatedValues.marketingLoss*100).toFixed(2)
+                        // $scope.calculatedValues.developmentLoss =($scope.calculatedValues.developmentLoss*100).toFixed(2)
+                        // $scope.calculatedValues.marketingGain =($scope.calculatedValues.marketingGain*100).toFixed(2)
+                        // $scope.calculatedValues.developmentGain =($scope.calculatedValues.developmentGain*100).toFixed(2)
+                        //
+                        // var sumInfluence={'VRKidEd':0,"GovVR":0,"VRGames":0,"MilitaryVR":0,"AdEdVR":0,"VRCinema":0}
+                        //
+                        // list.forEach(function(d){
+                        //
+                        //     if(d.category == "ProductDeveloper"){
+                        //         console.log('00',d.technicalExperts.sum, d.influenceBVs.VRKidEd)
+                        //
+                        //         sumInfluence.VRKidEd += d.technicalExperts.sum* d.influenceBVs.VRKidEd
+                        //         sumInfluence.GovVR += d.technicalExperts.sum* d.influenceBVs.GovVR
+                        //         sumInfluence.VRGames += d.technicalExperts.sum* d.influenceBVs.VRGames
+                        //         sumInfluence.MilitaryVR += d.technicalExperts.sum* d.influenceBVs.MilitaryVR
+                        //         sumInfluence.AdEdVR += d.technicalExperts.sum* d.influenceBVs.AdEdVR
+                        //         sumInfluence.VRCinema += d.technicalExperts.sum* d.influenceBVs.VRCinema
+                        //     }
+                        //
+                        // })
+                        // console.log('1',sumInfluence)
+                        // $scope.sumInfluenceSales={'VRKidEd':0,"GovVR":0,"VRGames":0,"MilitaryVR":0,"AdEdVR":0,"VRCinema":0}
+                        // list.forEach(function(d){
+                        //     if(d.category == "Salespeople"){
+                        //         $scope.sumInfluenceSales.VRKidEd +=sumInfluence.VRKidEd * d.influenceBVs.VRKidEd
+                        //         $scope.sumInfluenceSales.GovVR += sumInfluence.GovVR * d.influenceBVs.GovVR
+                        //         $scope.sumInfluenceSales.VRGames += sumInfluence.VRGames * d.influenceBVs.VRGames
+                        //         $scope.sumInfluenceSales.MilitaryVR += sumInfluence.MilitaryVR * d.influenceBVs.MilitaryVR
+                        //         $scope.sumInfluenceSales.AdEdVR += sumInfluence.AdEdVR * d.influenceBVs.AdEdVR
+                        //         $scope.sumInfluenceSales.VRCinema += sumInfluence.VRCinema * d.influenceBVs.VRCinema
+                        //     }
+                        //
+                        // })
                     }
 
 
@@ -1530,10 +1536,10 @@ app.config(function ($mdThemingProvider) {
                         $scope.calculatedValues.marketingLoss = $scope.calculatedValues.marketingLoss * d.marketingLoss
                         $scope.calculatedValues.developmentLoss = $scope.calculatedValues.developmentLoss * d.developmentLoss
                         $scope.calculatedValues.marketingGain = $scope.calculatedValues.marketingGain * d.marketingGain
-                        $scope.calculatedValues.developmentGain = $scope.calculatedValues.developmentLoss * d.developmentGain
+                        $scope.calculatedValues.developmentGain = $scope.calculatedValues.developmentGain * d.developmentGain
                     })
                     $scope.calculatedValues.marketingLoss = ($scope.calculatedValues.marketingLoss * 100).toFixed(2)
-                    $scope.calculatedValues.developmentLoss = ($scope.calculatedValues.developmentLoss * 100).toFixed(2)
+                    $scope.calculatedValues.developmentLoss = ($scope.calculatedValues.developmentLoss * 100 ).toFixed(2)
                     $scope.calculatedValues.marketingGain = ($scope.calculatedValues.marketingGain * 100).toFixed(2)
                     $scope.calculatedValues.developmentGain = ($scope.calculatedValues.developmentGain * 100).toFixed(2)
 
@@ -1547,7 +1553,9 @@ app.config(function ($mdThemingProvider) {
                     }
                     list.forEach(function (d) {
 
+
                         if (d.category == "ProductDeveloper") {
+                            // console.log(JSON.parse(d.technicalExperts.replace("u'","'")), JSON.parse(d.influenceBVs.replace("u'","'")))
                             sumInfluence.VRKidEd += d.technicalExperts.sum * d.influenceBVs.VRKidEd
                             sumInfluence.GovVR += d.technicalExperts.sum * d.influenceBVs.GovVR
                             sumInfluence.VRGames += d.technicalExperts.sum * d.influenceBVs.VRGames
@@ -1557,7 +1565,7 @@ app.config(function ($mdThemingProvider) {
                         }
 
                     })
-
+                    console.log('2', sumInfluence)
                     $scope.sumInfluenceSales = {
                         'VRKidEd': 0,
                         "GovVR": 0,
@@ -1577,7 +1585,7 @@ app.config(function ($mdThemingProvider) {
                         }
 
                     })
-
+                    console.log('3', $scope.sumInfluenceSales)
                 };
 
                 $scope.exists = function (item, list) {
@@ -1592,7 +1600,7 @@ app.config(function ($mdThemingProvider) {
 
                     return result;
                 };
-                $scope.funding={additionalProductDevelopment:0,desiredSalesBudget:0}
+                $scope.funding = {additinalProductDeveloperNumber: 0, additinalSalesNumber: 0}
 
                 $scope.submit = function (selectedEmployees,funding,sumInfluenceSales,calculatedValues,action) {
 
@@ -2190,27 +2198,36 @@ app.config(function ($mdThemingProvider) {
 
                 var vcStatus = {
                     companyName: $rootScope.user_info.companyInfo.companyName,
-                    teamName: $rootScope.user_info.companyInfo.teamName
+                    teamName: $rootScope.user_info.companyInfo.teamName,
+                    startTime: new Date()
                 }
                 $scope.progress = 0
                 $scope.bidtimecommitment = {value: 0}
-
+                console.log('registerTime', vcStatus)
                 $rootScope.ipc.emit('vcregister', vcStatus)
 
                 $rootScope.ipc.on('visionarycompetition', function (d) {
-                    console.log(d)
+                    //console.log(d) 2017-08-16T03:06:06.884Z
 
                     //calculate progree by time
-                    var dt = d.startTime.split(' ')[0].split('-')
-                    var tm = d.startTime.split(' ')[1].split(':')
-                    var now = new Date();
+                    var dt = d.startTime.split('T')[0].split('-')
+                    var tm = d.startTime.split('T')[1].split('.')[0].split(':')
 
-                    var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], now.getHours(), parseInt(tm[1]) + 1, tm[2])
+                    var dt_2 = d.currentTime.split(' ')[0].split('-')
+                    var tm_2 = d.currentTime.split(' ')[1].split(':')
+                    var now = new Date(dt_2[0], parseInt(dt_2[1]) - 1, dt_2[2], tm_2[0], parseInt(tm_2[1]), tm_2[2]);
+                    // var utc_now =new Date(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() ,
+                    //     now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+                    // console.log(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() ,
+                    //     now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds())
+                    // console.log(now,d)
 
-                    var time_left = parseInt(Math.abs(endtime_obj - now) / 1000)
+                    var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], tm[0], parseInt(tm[1]) + 1, tm[2])
+
+                    var time_left = parseInt(Math.abs(endtime_obj - now) / 1000 - 1)
                     console.log(time_left)
-                    $scope.progress = endtime_obj - now > 0 ? (1 - time_left / 60) * 100 : time_left / 60 * 100
-                    //console.log(endtime_obj-now,time_left, $scope.progress)
+                    $scope.progress = endtime_obj - now >= 0 ? (1 - (time_left % 60) / 60 ) * 100 : (1 - (time_left % 60) / 60 ) * 100
+                    //  console.log(endtime_obj,utc_now,time_left, $scope.progress)
 
 
                     updateTimer(time_left)
@@ -2238,7 +2255,10 @@ app.config(function ($mdThemingProvider) {
 
                     //$scope.progress += 0.333333333333333
                     if ($scope.progress >= 100) {
+                        console.log($scope.progress)
                         $scope.progress = 0
+                        // console.log($scope.progress)
+                        vcStatus.startTime = new Date()
                         var bidInfo = {
                             vsStatus: vcStatus,
                             visionary: $scope.visionary,
@@ -2261,10 +2281,13 @@ app.config(function ($mdThemingProvider) {
 
                 $rootScope.ipc.on('stopVisionarycompetition', function (d) {
                     console.log(d)
-                    $mdDialog.cancel();
                     $rootScope.notificationToast("Visionary Competition Completed.")
-                    $rootScope.ipc.off('visionarycompetition')
-                    $rootScope.ipc.off('stopVisionarycompetition')
+                    $timeout(function () {
+                        $mdDialog.cancel();
+                        $rootScope.ipc.off('visionarycompetition')
+                        $rootScope.ipc.off('stopVisionarycompetition')
+                    }, 10000)
+
                 })
 
                 $scope.bid = function () {
@@ -2501,7 +2524,7 @@ app.config(function ($mdThemingProvider) {
 
                 $scope.$watch('Costs', function (nVal, oVal) {
                     if (nVal != undefined && $scope.workforce_def != undefined) {
-                        //console.log( $scope.workforce_def)
+                        console.log($scope.workforce_def)
                         $scope.Costs.forEach(function (c) {
                             c.total_wage = 0
                             c.hiring_costs = 0
@@ -2560,11 +2583,11 @@ app.config(function ($mdThemingProvider) {
                             c.total_cost_text = formatNum(c.total_cost)
                         })
                         // console.log('$scope.Costs',$scope.Costs)
-                        $scope.grand_total[0] = $scope.Costs[0].total_cost +
-                            $scope.expenditure[0].total -
+                        $scope.grand_total[0] = -$scope.Costs[0].total_cost -
+                            $scope.expenditure[0].total +
                             $scope.estimatedIncome[0].gross_margin
-                        $scope.grand_total[1] = $scope.Costs[1].total_cost +
-                            $scope.expenditure[1].total -
+                        $scope.grand_total[1] = -$scope.Costs[1].total_cost -
+                            $scope.expenditure[1].total +
                             $scope.estimatedIncome[1].gross_margin
                         $scope.grand_total_text = [formatNum($scope.grand_total[0]), formatNum($scope.grand_total[1])]
                     }
@@ -2604,11 +2627,11 @@ app.config(function ($mdThemingProvider) {
                             income.gross_margin_text = formatNum(income.gross_margin)
                         })
                         // console.log('$scope.Costs',$scope.Costs)
-                        $scope.grand_total[0] = $scope.Costs[0].total_cost +
-                            $scope.expenditure[0].total -
+                        $scope.grand_total[0] = -$scope.Costs[0].total_cost -
+                            $scope.expenditure[0].total +
                             $scope.estimatedIncome[0].gross_margin
-                        $scope.grand_total[1] = $scope.Costs[1].total_cost +
-                            $scope.expenditure[1].total -
+                        $scope.grand_total[1] = -$scope.Costs[1].total_cost -
+                            $scope.expenditure[1].total +
                             $scope.estimatedIncome[1].gross_margin
                         $scope.grand_total_text = [formatNum($scope.grand_total[0]), formatNum($scope.grand_total[1])]
                     }
@@ -2631,11 +2654,11 @@ app.config(function ($mdThemingProvider) {
                         })
 
                         // console.log('$scope.Costs',$scope.Costs)
-                        $scope.grand_total[0] = $scope.Costs[0].total_cost +
-                            $scope.expenditure[0].total -
+                        $scope.grand_total[0] = -$scope.Costs[0].total_cost -
+                            $scope.expenditure[0].total +
                             $scope.estimatedIncome[0].gross_margin
-                        $scope.grand_total[1] = $scope.Costs[1].total_cost +
-                            $scope.expenditure[1].total -
+                        $scope.grand_total[1] = -$scope.Costs[1].total_cost -
+                            $scope.expenditure[1].total +
                             $scope.estimatedIncome[1].gross_margin
                         $scope.grand_total_text = [formatNum($scope.grand_total[0]), formatNum($scope.grand_total[1])]
                     }

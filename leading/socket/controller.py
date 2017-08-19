@@ -39,8 +39,9 @@ def handle_messaging(data):
 @socketio.on('vcregister', namespace='/ipc')
 def handle_vcregister(data):
     print "register time:" + str(data)
-    VisionaryCompetitionModel().register(data['teamName'], data['companyName'])
+    VisionaryCompetitionModel().register(data['teamName'], data['companyName'], data['startTime'])
     status = VisionaryCompetitionModel().get_status()
+    status['currentTime'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     emit('visionarycompetition', status)
 
 
@@ -49,18 +50,20 @@ def handle_visionarycompetition(data):
     # print "visionarycompetition" + str(data)
     status = VisionaryCompetitionModel().get_status()
     if status:
+        status['currentTime'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         emit('visionarycompetition', status)
     else:
         print('emit stop.')
+
         emit('stopVisionarycompetition')
 
 @socketio.on('vcbid', namespace='/ipc')
 def handle_vcbid(data):
     # print "bid" + str(data)
-    VisionaryCompetitionModel().bid(data)
+    VisionaryCompetitionModel().bid(data, timeout=False)
 
 
 @socketio.on('vcbidtimeout', namespace='/ipc')
 def handle_vcbidtimeout(data):
     # print "bidtimeout" + str(data)
-    VisionaryCompetitionModel().bid(data)
+    VisionaryCompetitionModel().bid(data, timeout=True)

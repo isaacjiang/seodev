@@ -101,7 +101,7 @@ class Account():
         self.subset_minus("AA200", "AA201", "AA202", 1)
         self.subset_plus(["AA202", "AA210"], "AA211", 1)
         self.subset_plus(["AA021", "AA041"], "AB017", 0.05)
-        self.subset_plus(["AB011", "AB012", "AB013", "AB014", "AB015", "AB016", "AB017"], "AB021", 1)
+        self.subset_plus(["AB010", "AB011", "AB012", "AB013", "AB014", "AB015", "AB016", "AB017"], "AB021", 1)
         self.subset_minus("AA211", "AB021", "AB031", 1)
 
         # 15-36
@@ -298,18 +298,30 @@ class AccountBudget():
                 r['currentValue'] = Account(self.teamName, self.companyName, self.period).get_item_sum(
                     r['accountDescID'])
             if r['budgetDescID'] in ['BG200', 'BG300']:
-                forecastingvalue = self.db.forecasting_com.find_one(
+                forecastingvalue = self.db.forecast_com.find_one(
                     {'teamName': self.teamName, 'companyName': self.companyName,
-                     'currentPeriod': self.period}, {"forecasting": 1, "_id": 0})
+                     'period': self.period}, {"forecast": 1, "_id": 0})
+                r['currentValue'] = 0
                 if forecastingvalue != None:
                     if r['budgetDescID'] == 'BG200':
-                        r['currentValue'] = forecastingvalue['forecasting']['b2b'] + forecastingvalue['forecasting'][
-                            'b2c'] + forecastingvalue['forecasting']['newoffering']
+                        if 'b2b' in forecastingvalue['forecast'].keys():
+                            r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2b']
+                        elif 'b2c' in forecastingvalue['forecast'].keys():
+                            r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2c']
+                        elif 'newoffering' in forecastingvalue['forecast'].keys():
+                            r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['newoffering']
+
+                            # r['currentValue'] = forecastingvalue['forecast']['b2b'] + forecastingvalue['forecast'][
+                            #     'b2c'] + forecastingvalue['forecast']['newoffering']
                     if r['budgetDescID'] == 'BG300':
-                        r['currentValue'] = (forecastingvalue['forecasting']['b2b'] + forecastingvalue['forecasting'][
-                            'b2c'] + forecastingvalue['forecasting']['newoffering']) * 0.75
-                else:
-                    r['currentValue'] = 0
+
+                        if 'b2b' in forecastingvalue['forecast'].keys():
+                            r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2b']
+                        elif 'b2c' in forecastingvalue['forecast'].keys():
+                            r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2c']
+                        elif 'newoffering' in forecastingvalue['forecast'].keys():
+                            r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['newoffering']
+                        r['currentValue'] = r['currentValue'] * 0.5
             result.append(r)
         result = sorted(result, key=lambda k: k['budgetDescID'])
         return result

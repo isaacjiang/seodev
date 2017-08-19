@@ -74,7 +74,7 @@ class TasksModel():
             {"currentPeriod": systemCurrentPeriod, "status": {"$in": ["Active", "Init"]}})
         if checkperiod.count() == 0:
             SystemSetting().upgrade_system_current_period()
-            DatabaseBackup().backup(username='admin')
+            # DatabaseBackup().backup(username='admin')
 
     def task_complete(self):
         # t = sdb.teamtasks.find_one({"teamName":team,"companyName":companyName,"taskID":taskID})
@@ -397,9 +397,10 @@ class Negotiate2Model(TasksModel):
 
             if self.companyName == 'NewCo' and valueatstart2.count() == 0:
                 res = self.db.negotiation1_com.find_one({'teamName': self.teamName, "status": "approved"}, {"_id": 0})
-                result["Product Development"] = {
-                    "adjustedworkforce_total": res['negotiation']['funding']['additinalProductDeveloperNumber']}
-                result["Sales"] = {"adjustedworkforce_total": res['negotiation']['funding']['additinalSalesNumber']}
+                if res != None:
+                    result["Product Development"] = {
+                        "adjustedworkforce_total": res['negotiation']['funding']['additinalProductDeveloperNumber']}
+                    result["Sales"] = {"adjustedworkforce_total": res['negotiation']['funding']['additinalSalesNumber']}
         return result
 
     def get_saved_data(self):
@@ -461,7 +462,7 @@ class VisionaryCompetitionModel(TasksModel):
                 result = {}
         return result
 
-    def register(self, teamName, companyName):
+    def register(self, teamName, companyName, registerTime):
         # first time
         existedcompanies = self.db.visionarycompetition_companies.find({})
         if len(list(existedcompanies)) == 0:
@@ -474,7 +475,8 @@ class VisionaryCompetitionModel(TasksModel):
             randomVisionary = self.getRadomVisionaries()
             self.db.visionarycompetition_status.update_one({'currentRound': 1}, {
                 "$set": {'status': 'Biding', 'currentVisionary': randomVisionary,
-                         "startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}}, upsert=True)
+                         "startTime": registerTime  # datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                         }}, upsert=True)
 
         # check if company exist
         unregister = self.db.visionarycompetition_companies.find_one(
@@ -495,8 +497,10 @@ class VisionaryCompetitionModel(TasksModel):
                                                                     'infuluenceUnit': infuluenceUnit,
                                                                     'uncommittedTime': uncommittedTime,
                                                                     'uncommittedSales': uncommittedSales,
-                                                                    "registerTime": datetime.now().strftime(
-                                                                        '%Y-%m-%d %H:%M:%S')}}, upsert=True)
+                                                                    "registerTime": registerTime
+                                                                    # datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                                                                    }
+                                                           }, upsert=True)
 
         currentCompanies = list(self.db.visionarycompetition_companies.find({}, {'_id': 0}).sort('teamName'))
         self.db.visionarycompetition_status.update_one({'status': 'Biding'}, {"$set": {"companies": currentCompanies}})
@@ -506,8 +510,10 @@ class VisionaryCompetitionModel(TasksModel):
         result = self.db.visionarycompetition_status.find_one({'status': 'Biding'}, {"_id": 0})
         return result
 
-    def bid(self, bidInfo):
+    def bid(self, bidInfo, timeout=False):
         if 'vsStatus' in bidInfo.keys():
+            print(bidInfo['vsStatus']['startTime'])
+            startTime = bidInfo['vsStatus']['startTime']
             self.db.visionarycompetition_bid.update_one({"teamName": bidInfo['vsStatus']['teamName'],
                                                          "companyName": "NewCo",
                                                          'currentRound': bidInfo['currentRound']},
@@ -530,15 +536,15 @@ class VisionaryCompetitionModel(TasksModel):
             self.db.visionarycompetition_status.update_one({'currentRound': bidInfo['currentRound']},
                                                            {"$set": {"companies": currentCompanies}})
 
-            if self.checkBids(bidInfo['currentRound']) == False:
-                self.upgradeRound(bidInfo['currentRound'])
+            if self.checkBids(bidInfo['currentRound']) == True or timeout:
+                self.upgradeRound(bidInfo['currentRound'],startTime)
 
     def checkBids(self, currentRound):
         currentCompanies = list(self.db.visionarycompetition_companies.find({}, {'_id': 0}))
         result = list(self.db.visionarycompetition_bid.find({'currentRound': currentRound}, {'_id': 0}))
         return len(result) == len(currentCompanies)
 
-    def upgradeRound(self, currentRound):
+    def upgradeRound(self, currentRound,startTime):
         bids = self.db.visionarycompetition_bid.find({'currentRound': currentRound}, {'_id': 0}).limit(1).sort(
             'bidtimecommitment', -1)
         winbids = list(bids)
@@ -578,9 +584,14 @@ class VisionaryCompetitionModel(TasksModel):
                 self.db.visionarycompetition_status.update_one({'currentRound': currentRound + 1}, {
                     "$set": {'status': 'Biding', 'currentVisionary': randomVisionary, "companies": currentCompanies,
                              'lastRoundResult': bidResults,
-                             "startTime": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}}, upsert=True)
+                             "startTime": startTime  #datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                             }}, upsert=True)
             else:
-                self.task_complete()  # todo
+                # self.task_complete()  # todo
+                leadingdb.tasks_team.update_many({"companyName": 'NewCo', "taskID": '02005'},
+                                                 {"$set": {"status": 'Completed'}})
+
+
 
 
     def save(self, data):
