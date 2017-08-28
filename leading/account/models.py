@@ -306,9 +306,9 @@ class AccountBudget():
                     if r['budgetDescID'] == 'BG200':
                         if 'b2b' in forecastingvalue['forecast'].keys():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2b']
-                        elif 'b2c' in forecastingvalue['forecast'].keys():
+                        if 'b2c' in forecastingvalue['forecast'].keys():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2c']
-                        elif 'newoffering' in forecastingvalue['forecast'].keys():
+                        if 'newoffering' in forecastingvalue['forecast'].keys():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['newoffering']
 
                             # r['currentValue'] = forecastingvalue['forecast']['b2b'] + forecastingvalue['forecast'][
@@ -317,9 +317,9 @@ class AccountBudget():
 
                         if 'b2b' in forecastingvalue['forecast'].keys():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2b']
-                        elif 'b2c' in forecastingvalue['forecast'].keys():
+                        if 'b2c' in forecastingvalue['forecast'].keys():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2c']
-                        elif 'newoffering' in forecastingvalue['forecast'].keys():
+                        if 'newoffering' in forecastingvalue['forecast'].keys():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['newoffering']
                         r['currentValue'] = r['currentValue'] * 0.5
             result.append(r)

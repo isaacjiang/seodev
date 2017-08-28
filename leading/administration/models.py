@@ -1,7 +1,7 @@
 __author__ = 'isaac'
 import os
 import pymongo
-from leading.config import leadingbase, APPLICATION_DATA, TESTING
+from leading.config import leadingbase, leadingdb, client, APPLICATION_DATA, TESTING
 from flask import json
 from datetime import datetime
 from bson.son import SON
@@ -22,6 +22,18 @@ class DatabaseInit():
                         self.db.get_collection(filename).insert_one(item)
 
                 print "Input Data from : " + filename + " Completed."
+
+    def delete_visionary_competition_data(self):
+        leadingdb.drop_collection('visionarycompetition_companies')
+        leadingdb.drop_collection('visionarycompetition_visionaries')
+        leadingdb.drop_collection('visionarycompetition_status')
+        leadingdb.drop_collection('visionarycompetition_bid')
+        leadingdb.drop_collection('visionarycompetition_result')
+
+    def drop_database(self):
+        client.drop_database('leadingdb')
+
+
 
 
 dataFileList = ['systeminfo', 'user', 'workflow', 'task_list', 'teams', 'periods_def','data_conf_def',

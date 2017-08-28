@@ -598,7 +598,7 @@ app.config(function ($mdThemingProvider) {
                         console.log(res)
                         $scope.current_budget = res
                         $scope.current_budget.forEach(function (d) {
-                            d['currentValue_text'] = formatNum(d['currentValue'])
+                            d['currentValue_text'] = formatNum(d['currentValue'].toFixed())
                         })
                     })
                 $scope.current_index = -1
@@ -1239,13 +1239,13 @@ app.config(function ($mdThemingProvider) {
                              wf.adjustmentcost_total = formatNum((wf.avWage + wf.avExpense) * wf.adjustment_total
                                  * (wf.adjustment_total > 0 ? wf.costOfHire : (wf.costOfFire * (-1))))
 
-                             wf.adjustwages_core = formatNum(wf.avWage * wf.adjustment_core)
-                             wf.adjustwages_contract = formatNum(wf.avWage * wf.adjustment_contract)
-                             wf.adjustwages_total = formatNum(wf.avWage * wf.adjustment_total)
+                             wf.adjustwages_core = formatNum(wf.avWage * (wf.valueatstart_core + wf.adjustment_core))
+                             wf.adjustwages_contract = formatNum(wf.avWage * (wf.valueatstart_contract + wf.adjustment_contract))
+                             wf.adjustwages_total = formatNum(wf.avWage * (wf.valueatstart_total + wf.adjustment_total))
 
-                             wf.adjustexpenses_core = formatNum(wf.avExpense * wf.adjustment_core)
-                             wf.adjustexpenses_contract = formatNum(wf.avExpense * wf.adjustment_contract)
-                             wf.adjustexpenses_total = formatNum(wf.avExpense * wf.adjustment_total)
+                             wf.adjustexpenses_core = formatNum(wf.avExpense * (wf.valueatstart_core + wf.adjustment_core))
+                             wf.adjustexpenses_contract = formatNum(wf.avExpense * (wf.valueatstart_contract + wf.adjustment_contract))
+                             wf.adjustexpenses_total = formatNum(wf.avExpense * (wf.valueatstart_total + wf.adjustment_total))
 
                          }
                      })

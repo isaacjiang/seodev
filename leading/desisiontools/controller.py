@@ -550,7 +550,7 @@ class PeriodicTasksService():
                 #                 value=value1, comments='Workforce adjustment' + workforce['functions'])
                 value2 = int(workforce['adjustedworkforce_total'].replace(',', '')) * (
                 workforce['avWage'] + workforce['avExpense'])
-                print(value1, value2)
+                # print(value1, value2)
                 acc.bookkeeping(objectID=workforce["_id"],
                                 accountDescID=self.categoryToItem(workforce['functions']),
                                 value=value1 + value2, comments='Workforce' + workforce['functions'])

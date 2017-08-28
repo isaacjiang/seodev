@@ -44,6 +44,28 @@
     "endFlag": true
   },
   {
+    "processName": "settings",
+    "taskID": 5,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "resetvc",
+    "description": "Reset Visionary Competition.",
+    "taskName": "Reset Visionary Competition",
+    "startFlag": true,
+    "endFlag": true
+  },
+  {
+    "processName": "settings",
+    "taskID": 6,
+    "proviousTasks": [],
+    "status": "normal",
+    "taskKey": "resetsystem",
+    "description": "Reset Game.",
+    "taskName": "Reset Game",
+    "startFlag": true,
+    "endFlag": true
+  },
+  {
     "processName": "account",
     "taskID": 1,
     "proviousTasks": [],

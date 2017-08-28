@@ -439,6 +439,29 @@ app.controller("settingsCtrl", ["$scope", "$http", "windowsize", "current_user",
                     }
                 }
             }
+            else if (func.taskKey == 'resetvc') {
+                $http({
+                        method: 'GET',
+                        url: "/app/system/vcinit"
+                    }
+                ).success(function (d) {
+                    console.log(d)
+                    $mdDialog.cancel();
+                    $rootScope.notificationToast('Visionary Competition reset !');
+                })
+            }
+            else if (func.taskKey == 'resetsystem') {
+                $http({
+                        method: 'GET',
+                        url: "/app/system/systeminit"
+
+                    }
+                ).success(function (d) {
+                    console.log(d)
+                    $mdDialog.cancel();
+                    $rootScope.notificationToast('System reset to Period 1 !');
+                })
+            }
             else {
                 // $scope.selectedFunc={}
             $scope.data = []
