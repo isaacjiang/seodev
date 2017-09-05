@@ -393,6 +393,30 @@ class TasksService():
             result = tModel.task_complete()
             return json.dumps(result)
 
+    def visionarycompetition_backup(self):
+        if request.method == 'GET':
+            taskID = request.args["taskID"]
+            companyName = request.args["companyName"] if 'companyName' in request.args.keys() else None
+            teamName = request.args["teamName"] if 'teamName' in request.args.keys() else None
+            period = request.args["period"] if 'period' in request.args.keys() else 0
+            result = models.VisionaryCompetitionModel(taskID=taskID, companyName=companyName, teamName=teamName,
+                                                      period=period).get_init()
+            return json.dumps(result)
+
+        if request.method == 'POST':
+            data = json.loads(request.data)
+            taskID = data["taskID"]
+            companyName = data["companyName"] if 'companyName' in data.keys() else None
+            teamName = data["teamName"] if 'teamName' in data.keys() else None
+            period = data["period"] if 'period' in data.keys() else 0
+
+            tModel = models.VisionaryCompetitionModel(taskID=taskID, companyName=companyName, teamName=teamName,
+                                                      period=period)
+            tModel.task_data_save(data)
+            tModel.save(data)
+            result = tModel.task_complete()
+            return json.dumps(result)
+
     def corporateacquisitions(self):
         if request.method =='GET':
             taskID = request.args["taskID"]
@@ -800,5 +824,27 @@ class PeriodicTasksService():
                     .bookkeeping(objectID=negotiation2['_id'], accountDescID='BB042', value=total_amount,
                                  comments='Transfer  from LegacyCo.')
 
-# PeriodicTasksService().calculte_account_performance()
+    def visionarycompetitionComplete(self):
+
+        companies = self.db.visionarycompetition.find({"currentPeriod": self.systemCurrentPeriod}, {"_id": 0})
+        successCom = {}
+        for company in companies:
+            for visionary in company['visionaries']:
+                if visionary['visionary'] not in successCom.keys():
+                    successCom[visionary['visionary']] = {}
+                if 'bid' in visionary.keys():
+                    if successCom[visionary['visionary']] == {} or visionary['bid'] > \
+                            successCom[visionary['visionary']]['bid']:
+                        successCom[visionary['visionary']] = {"companyName": company['companyName'],
+                                                              "currentPeriod": company['currentPeriod'],
+                                                              "teamName": company['teamName'],
+                                                              "bid": visionary['bid'],
+                                                              "influence": visionary['influence'],
+                                                              "pitchCost": visionary['pitchCost']}
+        for res in successCom.keys():
+            if successCom[res]:
+                self.db.visionarycompetition_result.update_one({"visionary": res}, {"$set": successCom[res]},
+                                                               upsert=True)
+
+# PeriodicTasksService().visionarycompetitionComplete()
 # PeriodicTasksService().workforceAccountBookkeeping()

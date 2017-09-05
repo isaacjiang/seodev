@@ -79,8 +79,9 @@ app.controller('contentCtrl', ["$scope", "$http", "windowsize", "current_user", 
                         $scope.workforce = res.workforce
                         $scope.actions = res.actions
                         $scope.resources = res.resources
+                        $scope.visionarycompetition = res.visionarycompetition
 
-
+                        // console.log(res)
                         forecastGraph_b2b = []
                         forecastGraph_b2c = []
 

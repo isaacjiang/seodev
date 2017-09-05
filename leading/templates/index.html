@@ -106,26 +106,26 @@
             <div flex="33">
                 <md-card ng-style="setTableHeight(2)" class="md-padding">
                     <md-card-title>
-                        <md-card-title-text><span class="md-head">Forecast</span></md-card-title-text>
+                        <md-card-title-text><span class="md-head">Visionary Competition</span></md-card-title-text>
                     </md-card-title>
                     <md-data-table-container>
                         <table md-table>
                             <thead md-head md-order="myOrder">
                             <tr md-row>
-                                <th md-column md-order-by="query.order"><span>Period</span></th>
-                                <th md-column><span>B2B</span></th>
-                                <th md-column><span>B2C</span></th>
-                                <th md-column><span>New offering</span></th>
+                                <th md-column md-order-by="query.order"><span>Visionary</span></th>
+                                <th md-column><span>Winner</span></th>
+                                {#                                <th md-column><span>Winner Company</span></th>#}
+                                <th md-column><span>Bid Value</span></th>
                             </tr>
                             </thead>
                             <tbody md-body>
 
                             <tr md-row
-                                ng-repeat="fs in forecast | orderBy: query.order | limitTo:  query.limit : (query.page -1) * query.limit">
-                                <td md-cell>{% raw %}{{fs.period}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{fs.forecast.b2b}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{fs.forecast.b2c}}{% endraw %}</td>
-                                <td md-cell>{% raw %}{{fs.forecast.newoffering}}{% endraw %}</td>
+                                ng-repeat="vc in visionarycompetition | orderBy: query.order | limitTo:  query.limit : (query.page -1) * query.limit">
+                                <td md-cell>{% raw %}{{vc.visionary}}{% endraw %}</td>
+                                <td md-cell>{% raw %}{{vc.teamName}}{% endraw %}</td>
+                                {#                                <td md-cell>{% raw %}{{vc.companyName}}{% endraw %}</td>#}
+                                <td md-cell>{% raw %}{{vc.bid}}{% endraw %}</td>
                             </tr>
 
                             </tbody>

@@ -16,261 +16,55 @@
                     </div>
                 </md-button>
 
-                {#                <md-button class="md-icon-button" type="button" ng-click="close()">#}
-                {#                    <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_clear_white_48px.svg') }}"#}
-                {#                             aria-label="Close dialog"></md-icon>#}
-                {#                </md-button>#}
+                <md-button class="md-icon-button" type="button" ng-click="close()">
+                    <md-icon md-svg-src="{{ url_for('static', filename='icon/ic_clear_white_48px.svg') }}"
+                             aria-label="Close dialog"></md-icon>
+                </md-button>
             </div>
         </md-toolbar>
+    <div layout style="margin-left: 80px">
+        <div flex="45" layout layout-align="center center">
+            <h3>Uncommitted Time : {% raw %}{{uncommittedTime}}{% endraw %}</h3>
+        </div>
+        <div flex="45" layout layout-align="center center">
+            <h3>Uncommitted $ :{% raw %}{{uncommittedSales}}{% endraw %}</h3>
+        </div>
 
-
-    <div layout-align="center center" class="clock">
-        <svg class="clocksvg" width="375" height="96" viewBox="0 0 375 96" >
-            <g transform="translate(17,0)">
-                <g class="digit" transform="skewX(-12)">
-                    <path d="M10,8L14,4L42,4L46,8L42,12L14,12L10,8z"/>
-                    <path d="M8,10L12,14L12,42L8,46L4,42L4,14L8,10z"/>
-                    <path d="M48,10L52,14L52,42L48,46L44,42L44,14L48,10z"/>
-                    <path d="M10,48L14,44L42,44L46,48L42,52L14,52L10,48z"/>
-                    <path d="M8,50L12,54L12,82L8,86L4,82L4,54L8,50z"/>
-                    <path d="M48,50L52,54L52,82L48,86L44,82L44,54L48,50z"/>
-                    <path d="M10,88L14,84L42,84L46,88L42,92L14,92L10,88z"/>
-                </g>
-                <g class="digit" transform="skewX(-12)">
-                    <path d="M66,8L70,4L98,4L102,8L98,12L70,12L66,8z"/>
-                    <path d="M64,10L68,14L68,42L64,46L60,42L60,14L64,10z"/>
-                    <path d="M104,10L108,14L108,42L104,46L100,42L100,14L104,10z"/>
-                    <path d="M66,48L70,44L98,44L102,48L98,52L70,52L66,48z"/>
-                    <path d="M64,50L68,54L68,82L64,86L60,82L60,54L64,50z"/>
-                    <path d="M104,50L108,54L108,82L104,86L100,82L100,54L104,50z"/>
-                    <path d="M66,88L70,84L98,84L102,88L98,92L70,92L66,88z"/>
-                </g>
-                <g class="separator">
-                    <circle r="4" cx="112" cy="28"/>
-                    <circle r="4" cx="103.5" cy="68"/>
-                </g>
-                <g class="digit" transform="skewX(-12)">
-                    <path d="M134,8L138,4L166,4L170,8L166,12L138,12L134,8z"/>
-                    <path d="M132,10L136,14L136,42L132,46L128,42L128,14L132,10z"/>
-                    <path d="M172,10L176,14L176,42L172,46L168,42L168,14L172,10z"/>
-                    <path d="M134,48L138,44L166,44L170,48L166,52L138,52L134,48z"/>
-                    <path d="M132,50L136,54L136,82L132,86L128,82L128,54L132,50z"/>
-                    <path d="M172,50L176,54L176,82L172,86L168,82L168,54L172,50z"/>
-                    <path d="M134,88L138,84L166,84L170,88L166,92L138,92L134,88z"/>
-                </g>
-                <g class="digit" transform="skewX(-12)">
-                    <path d="M190,8L194,4L222,4L226,8L222,12L194,12L190,8z"/>
-                    <path d="M188,10L192,14L192,42L188,46L184,42L184,14L188,10z"/>
-                    <path d="M228,10L232,14L232,42L228,46L224,42L224,14L228,10z"/>
-                    <path d="M190,48L194,44L222,44L226,48L222,52L194,52L190,48z"/>
-                    <path d="M188,50L192,54L192,82L188,86L184,82L184,54L188,50z"/>
-                    <path d="M228,50L232,54L232,82L228,86L224,82L224,54L228,50z"/>
-                    <path d="M190,88L194,84L222,84L226,88L222,92L194,92L190,88z"/>
-                </g>
-                <g class="separator">
-                    <circle r="4" cx="236" cy="28"/>
-                    <circle r="4" cx="227.5" cy="68"/>
-                </g>
-                <g class="digit" transform="skewX(-12)">
-                    <path d="M258,8L262,4L290,4L294,8L290,12L262,12L258,8z"/>
-                    <path d="M256,10L260,14L260,42L256,46L252,42L252,14L256,10z"/>
-                    <path d="M296,10L300,14L300,42L296,46L292,42L292,14L296,10z"/>
-                    <path d="M258,48L262,44L290,44L294,48L290,52L262,52L258,48z"/>
-                    <path d="M256,50L260,54L260,82L256,86L252,82L252,54L256,50z"/>
-                    <path d="M296,50L300,54L300,82L296,86L292,82L292,54L296,50z"/>
-                    <path d="M258,88L262,84L290,84L294,88L290,92L262,92L258,88z"/>
-                </g>
-                <g class="digit" transform="skewX(-12)">
-                    <path d="M314,8L318,4L346,4L350,8L346,12L318,12L314,8z"/>
-                    <path d="M312,10L316,14L316,42L312,46L308,42L308,14L312,10z"/>
-                    <path d="M352,10L356,14L356,42L352,46L348,42L348,14L352,10z"/>
-                    <path d="M314,48L318,44L346,44L350,48L346,52L318,52L314,48z"/>
-                    <path d="M312,50L316,54L316,82L312,86L308,82L308,54L312,50z"/>
-                    <path d="M352,50L356,54L356,82L352,86L348,82L348,54L352,50z"/>
-                    <path d="M314,88L318,84L346,84L350,88L346,92L318,92L314,88z"/>
-                </g>
-            </g>
-        </svg>
     </div>
-    {#    <div  layout-align="end end">#}
-    {#           </div>#}
 
-    <md-grid-list
-            md-cols-xs="3" md-cols-sm="3" md-cols-md="3" md-cols-gt-md="3"
-            md-row-height-gt-md="2:1" md-row-height="2:1"
-            md-gutter="12px" md-gutter-gt-sm="8px">
+    <md-divider inset></md-divider>
+    <div layout ng-repeat="visionary in visionaries" style="margin-left: 80px">
+        <div flex="45" layout layout-align="center center">
+            <md-list-item class="md-3-line">
 
-        <md-grid-tile md-rowspan="3" md-colspan="1">
-            <div style="height: 100%;width: 100%;margin-top: 90px;">
-                <md-grid-tile-header>
-                    <h3 style="font-size: 1.5em">Current Round: {% raw %}{{ currentRound }}{% endraw %}</h3>
-                </md-grid-tile-header>
-                <md-list-item class="md-2-line" ng-repeat="com in companiesStatus">
-                    <img aria-label="Task" class="md-avatar"
-                         ng-src="{{ url_for('static', filename='icon/ic_check_green_48px.svg') }}"
-                         ng-if="com.status =='registered' || com.status =='biding'"/>
-                    <img aria-label="Task" class="md-avatar"
-                         ng-src="{{ url_for('static', filename='icon/ic_add_white_48px.svg') }}"
-                         ng-if="com.status =='unregister'"/>
-                    <img aria-label="Task" class="md-avatar"
-                         ng-src="{{ url_for('static', filename='icon/ic_flag_red_48px.svg') }}"
-                         ng-if="com.status =='win'"/>
-                    <div class="md-list-item-text">
-                        <h3> {% raw %}{{com.teamName }}{% endraw %}</h3>
-                    </div>
 
-                    <img aria-label="Task" class="md-avatar"
-                         ng-src="{{ url_for('static', filename='icon/ic_star_red_48px.svg') }}"
-                         ng-if="com.status =='biding' || com.status =='win'" ng-repeat="round in com.biddedRound"/>
-                    <md-divider></md-divider>
-                </md-list-item>
-            </div>
-
-        </md-grid-tile>
-
-        <md-grid-tile md-rowspan="1" md-colspan="2">
-            <md-grid-tile-header>
-                <h3>Current Visionary</h3>
-            </md-grid-tile-header>
-            <div style="height: 100%;width: 100%;margin-top: 90px;">
-                <div layout="row">
-                    <md-progress-linear md-mode="determinate" class="md-warn" style="height: 4px;"
-                                        value="{% raw %}{{ progress }}{% endraw %}"></md-progress-linear>
-                </div>
-                <div layout="row" style="margin-top: 5%;margin-bottom: 5%">
-                    <div flex="35">
-                        <span class="md-body-1" style="font-size: 3em"> Visionary: </span>
-                    </div>
-                    <div flex>
-                        <span class="md-body-1"
-                              style="font-size: 3em">{% raw %}{{ visionary.visionary }}{% endraw %}</span>
-                    </div>
-                    <div flex>
-                        <div layout style="margin-bottom: 1%">
-                            <div flex>
-                                <span class="md-body-1" style="font-size: 1.2em">Infuence Units: </span>
-
-                            </div>
-                            <div flex>
-                                <span class="md-body-1"
-                                      style="font-size: 1.2em">{% raw %}{{ infuenceUnits }}{% endraw %}</span>
-                            </div>
-                        </div>
-                        <div layout style="margin-top: 1%;">
-                            <div flex>
-                                <span class="md-body-1" style="font-size: 1.2em">Pitch Cost: </span>
-                            </div>
-                            <div flex>
-                                <span class="md-body-1"
-                                      style="font-size: 1.2em">{% raw %}{{ visionary.pitchCost }}{% endraw %}</span>
-                            </div>
-                        </div>
-
-                    </div>
+                <div flex class="md-list-item-text" layout="column">
+                    <h3 ng-bind="visionary.visionary"></h3>
+                    {#                    <p ng-bind="visionary.pitchCost"></p>#}
+                    <p>Influence : {% raw %}{{visionary.influence}}{% endraw %} </p>
+                    <p>PitchCost : {% raw %}{{visionary.pitchCost}}{% endraw %} </p>
                 </div>
 
-            </div>
-        </md-grid-tile>
-
-        <md-grid-tile class="yellow" md-rowspan="2" md-colspan="1">
-            <md-grid-tile-header>
-                <h3>Bid </h3>
-            </md-grid-tile-header>
-            <div layout="column" style="height: 100%;width: 100%;margin-top: 90px;">
-                <div layout style="height: 10%;margin-top: 5%;">
-                    <div flex>
-                        <span class="md-body-1" style="font-size: 1.2em">Uncommitted Time: </span>
-                    </div>
-                    <div flex>
-                                <span class="md-body-1"
-                                      style="font-size: 1.2em"
-                                      ng-bind="uncommittedTime">{% raw %}{{ uncommittedTime }}{% endraw %}</span>
-                    </div>
-
-                </div>
-                <div layout style="height: 10%;margin-top: 5%;">
-                    <div flex>
-                        <span class="md-body-1" style="font-size: 1.2em">uncommitted Sales: </span>
-                    </div>
-                    <div flex>
-                                <span class="md-body-1"
-                                      style="font-size: 1.2em">{% raw %}{{ uncommittedSales }}{% endraw %}</span>
-                    </div>
-
-                </div>
-                <div style="height: 10%;margin-top: 5%;">
-                    <span class="md-body-1" style="font-size: 1.2em">Please Enter Time Commitment: </span>
-                </div>
-                <div style="height: 20%;margin-top: 5%;">
-                    <md-input-container class="md-block" flex>
-                        <input ng-model="bidtimecommitment.value" type="number" step="1"
-                               max="{% raw %}{{ uncommittedTime }}{% endraw %}" style="width: 90%"
-                               name="bidtimecommitment" aria-label="time">
-                    </md-input-container>
-
-                </div>
-            </div>
+            </md-list-item>
+        </div>
+        {#        <md-slider flex="25" ng-model="visionary.bid" min="0" max="5000" step="1"#}
+        {#                   aria-label="minimumSalary" id="minimumSalary-slider" style="margin-top: 20px"#}
+        {#                   class="md-accent">#}
+        {#        </md-slider>#}
+        <div flex="40" layout layout-align="center center">
+            <input flex type="number" ng-model="visionary.bid" aria-label="minimumSalary"
+                   aria-controls="minimumSalary-slider">
+        </div>
 
 
-        </md-grid-tile>
-
-        <md-grid-tile class="blue"
-                      md-rowspan="2" md-colspan="1">
-            <div style="height: 100%;width: 100%;margin-top: 90px;">
-                <md-grid-tile-header>
-                    <h3 style="font-size: 1.5em">Results</h3>
-                </md-grid-tile-header>
-                <md-list-item class="md-2-line" ng-repeat="result in lastRoundResult">
-                    <div class="md-list-item-text">
-                        <h3> {% raw %}{{result.round }}{% endraw %}</h3>
-                    </div>
-                    <div class="md-list-item-text">
-                        <h3> {% raw %}{{result.teamName }}{% endraw %} - {% raw %}{{result.companyName
-                            }}{% endraw %}</h3>
-                    </div>
-                    <div class="md-list-item-text">
-                        <h3> {% raw %}{{result.winVisonary.visionary }}{% endraw %}</h3>
-                    </div>
-
-                    <md-divider></md-divider>
-                </md-list-item>
-            </div>
-        </md-grid-tile>
-
-
-    </md-grid-list>
-
-
-
-    {##}
-    {##}
-    {#            <md-divider ></md-divider>#}
-    {##}
-    {#     <div layout style="margin-right:100px;margin-left:100px" layout-align="space-between center" >#}
-    {#<div flex="25" layout layout-align="start center">#}
-    {#                    <span class="md-body-1"> Uncommited Time:</span>#}
-    {#                </div>#}
-    {#    <div flex="25" layout layout-align="start center">#}
-    {#                    <span class="md-body-1" ng-bind="uncommittedTime"></span>#}
-    {#                </div>#}
-    {##}
-    {#         </div>#}
-    {##}
-    {#     <div layout style="margin-right:100px;margin-left:100px" layout-align="space-between center" >#}
-    {##}
-    {#    <div flex="25" layout layout-align="start center">#}
-    {#                    <span class="md-body-1"> Uncommited Sales($):</span>#}
-    {#                </div>#}
-    {#    <div flex="25" layout layout-align="start center">#}
-    {#                    <span class="md-body-1" ng-bind="uncommittedSales"></span>#}
-    {#                </div>#}
-    {#         </div>#}
+    </div>
+    <md-divider inset></md-divider>
 
         <div class="md-actions" layout="row" layout-align="end end">
             <div layout-align="center center"><span ng-bind="message"></span></div>
             <span flex></span>
             <div>
-                <md-button type="button" id="submit" value="Submit" ng-click="bid()" ng-if="permitbidstatus"
+                <md-button type="button" id="submit" value="Submit" ng-click="submit()"
                            style="margin-right:200px;">
                     Bid
                 </md-button>

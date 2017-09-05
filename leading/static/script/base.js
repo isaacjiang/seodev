@@ -2092,6 +2092,411 @@ app.config(function ($mdThemingProvider) {
                 bindToController: true,
                 controller: visionarycompetitionCtrl,
                 controllerAs: 'dialog',
+                templateUrl: '/api/dtools/getpage?pagename=visionarycompetition',
+                locals: {func: instructionFn, timer: timerFn}
+            });
+
+            function visionarycompetitionCtrl($scope, $rootScope, $mdDialog, $http, $timeout, func, timer, Upload) {
+                $scope.superuser = $rootScope.current_user.permission == '0'
+                $scope.notpemission = function () {
+                    $rootScope.notificationToast("You are not permited.")
+                }
+                $scope.instruction = function () {
+
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/gettaskfile",
+                            params: {
+                                task_id: task._id
+                            }
+                        }
+                    ).success(function (d) {
+                        func(d, visionarycompetitionfn, task)
+                    })
+
+                }
+                $scope.close = function () {
+                    $mdDialog.cancel();
+                    //$rootScope.ipc.off('visionarycompetition')
+                };
+
+                $scope.selectedNiches = [];
+                $scope.toggle = function (item, list) {
+                    var idx = list.indexOf(item);
+                    if (idx > -1) list.splice(idx, 1);
+                    else list.push(item);
+                };
+
+                $scope.exists = function (item, list) {
+                    return list.indexOf(item) > -1;
+                };
+
+                // $http({
+                //         method: 'GET',
+                //         url: "/api/dtools/visionarycompetition",
+                //         params: {
+                //             username: $rootScope.current_user.username,
+                //             taskID: task.taskID,
+                //             companyName: task.companyName,
+                //             teamName: task.teamName,
+                //             period: task.period
+                //         }
+                //     }
+                // )
+                //     .success(function (data) {
+                //     console.log(data)
+                //         if (data) {
+                //             $scope.visionaries = [{
+                //                 name: 'VRKidEd',
+                //                 infuenceUnits: data.negotiation.sumInfluenceSales.VRKidEd,
+                //                 pitchCost: 40000
+                //             },
+                //                 {
+                //                     name: 'GovVR',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.GovVR,
+                //                     pitchCost: 30000
+                //                 },
+                //                 {
+                //                     name: 'VRGames',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.VRGames,
+                //                     pitchCost: 50000
+                //                 },
+                //                 {
+                //                     name: 'MilitaryVR',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.MilitaryVR,
+                //                     pitchCost: 40000
+                //                 },
+                //                 {
+                //                     name: 'AdEdVR',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.AdEdVR,
+                //                     pitchCost: 35000
+                //                 },
+                //                 {
+                //                     name: 'VRCinema',
+                //                     infuenceUnits: data.negotiation.sumInfluenceSales.VRCinema,
+                //                     pitchCost: 25000
+                //                 }
+                //             ].sort(function () {
+                //                 return Math.random() * 3 - 1
+                //             })
+                //             $scope.uncommittedTime = data.negotiation.funding.additinalProductDeveloperNumber * 120
+                //             $scope.uncommittedSales = data.negotiation.funding.additinalSalesNumber * 40000
+                //
+                //             $scope.visionary = $scope.visionaries[0]
+                //             $scope.progress = 0
+                //             // setInterval(function () {
+                //             //     //console.log($scope.progress)
+                //             //     $scope.progress += 1
+                //             //     if ($scope.progress >= 100) {
+                //             //         $scope.progress = 0
+                //             //         $scope.visionary = visionaries[Math.floor((Math.random() * 6))]
+                //             //         $rootScope.notificationToast('Visionary changed to ' + $scope.visionary.name + '. Please wait two minutes.')
+                //             //     }
+                //             // }, 1000)
+                //         }
+                // })
+
+                var vcStatus = {
+                    companyName: $rootScope.user_info.companyInfo.companyName,
+                    teamName: $rootScope.user_info.companyInfo.teamName,
+                    startTime: new Date()
+                }
+                $scope.progress = 0
+                $scope.bidtimecommitment = {value: 0}
+
+                // $rootScope.ipc.emit('vcregister', vcStatus)
+
+                // $rootScope.ipc.on('visionarycompetition', function (d) {
+                //     //console.log(d) 2017-08-16T03:06:06.884Z
+                //
+                //     //calculate progree by time
+                //     var dt = d.startTime.split('T')[0].split('-')
+                //     var tm = d.startTime.split('T')[1].split('.')[0].split(':')
+                //
+                //     var dt_2 = d.currentTime.split(' ')[0].split('-')
+                //     var tm_2 = d.currentTime.split(' ')[1].split(':')
+                //     var now = new Date(dt_2[0], parseInt(dt_2[1]) - 1, dt_2[2], tm_2[0], parseInt(tm_2[1]), tm_2[2]);
+                //     // var utc_now =new Date(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() ,
+                //     //     now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+                //     // console.log(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() ,
+                //     //     now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds())
+                //     // console.log(now,d)
+                //
+                //     var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], tm[0], parseInt(tm[1]) + 1, tm[2])
+                //
+                //     var time_left = parseInt(Math.abs(endtime_obj - now) / 1000 - 1)
+                //     console.log(time_left)
+                //     $scope.progress = endtime_obj - now >= 0 ? (1 - (time_left % 60) / 60 ) * 100 : (1 - (time_left % 60) / 60 ) * 100
+                //     //  console.log(endtime_obj,utc_now,time_left, $scope.progress)
+                //
+                //
+                //     updateTimer(time_left)
+                //     $scope.companiesStatus = d.companies
+                //     // console.log(d.companies)
+                //     $scope.currentRound = d.currentRound
+                //     $scope.visionary = d.currentVisionary
+                //     $scope.lastRoundResult = d.lastRoundResult
+                //
+                //     var currentCompany = d.companies.filter(function (com) {
+                //         return com.teamName == $rootScope.user_info.companyInfo.teamName
+                //     })
+                //
+                //     if (currentCompany.length > 0) {
+                //         $scope.infuenceUnits = currentCompany[0].infuluenceUnit[d.currentVisionary.visionary]
+                //     }
+                //     if (currentCompany.length > 0 && Object.keys(currentCompany[0]).indexOf('uncommittedTime') >= 0) {
+                //         $scope.uncommittedTime = currentCompany[0].uncommittedTime
+                //         $scope.uncommittedSales = currentCompany[0].uncommittedSales
+                //     }
+                //
+                //     if (currentCompany.length > 0 && (currentCompany[0].status == 'biding' || currentCompany[0].status == 'registered')) {
+                //         $scope.permitbidstatus = true
+                //     }
+                //
+                //     //$scope.progress += 0.333333333333333
+                //     if ($scope.progress >= 100) {
+                //         console.log($scope.progress)
+                //         $scope.progress = 0
+                //         // console.log($scope.progress)
+                //         vcStatus.startTime = new Date()
+                //         var bidInfo = {
+                //             vsStatus: vcStatus,
+                //             visionary: $scope.visionary,
+                //             bidtimecommitment: $scope.bidtimecommitment.value,
+                //             currentRound: $scope.currentRound,
+                //             uncommittedTime: $scope.uncommittedTime,
+                //             uncommittedSales: $scope.uncommittedSales
+                //         }
+                //         $rootScope.ipc.emit('vcbidtimeout', bidInfo)
+                //         // $scope.visionary = $scope.visionaries[Math.floor((Math.random() * 6))]
+                //         $rootScope.notificationToast('Visionary ' + $scope.visionary.visionary + 'Completed. ')
+                //     }
+                //
+                //     $timeout(function () {
+                //         $rootScope.ipc.emit('visionarycompetition', vcStatus)
+                //     }, 1000)
+                //
+                // })
+                //
+
+                // $rootScope.ipc.on('stopVisionarycompetition', function (d) {
+                //     console.log(d)
+                //     $rootScope.notificationToast("Visionary Competition Completed.")
+                //     $timeout(function () {
+                //         $mdDialog.cancel();
+                //         $rootScope.ipc.off('visionarycompetition')
+                //         $rootScope.ipc.off('stopVisionarycompetition')
+                //     }, 10000)
+                //
+                // })
+
+                $scope.bid = function () {
+
+                    if ($scope.bidtimecommitment.value == undefined || $scope.bidtimecommitment.value == 0) {
+                        $rootScope.notificationToast('Please enter time Commitment Value. ')
+                    }
+                    else if ($scope.bidtimecommitment.value > $scope.uncommittedTime) {
+                        $rootScope.notificationToast('You do not have enough committed time. ')
+                    }
+                    else if ($scope.visionary.uncommittedSales > $scope.visionary.pitchCost) {
+                        $rootScope.notificationToast('You do not have enough funding. ')
+                    }
+                    else {
+                        var bidInfo = {
+                            vsStatus: vcStatus,
+                            visionary: $scope.visionary,
+                            bidtimecommitment: $scope.bidtimecommitment.value,
+                            currentRound: $scope.currentRound,
+                            uncommittedTime: $scope.uncommittedTime,
+                            uncommittedSales: $scope.uncommittedSales
+                        }
+                        $rootScope.ipc.emit('vcbid', bidInfo)
+                    }
+
+
+                }
+
+                $scope.submit = function (selectedNiches, event) {
+
+                    //console.log(selectedNiches)
+                    // $http.post('server/visionarycompetition',data={companyName:$rootScope.userAtCompany.companyName,teamName:$rootScope.userAtCompany.teamName,
+                    //     selectedNiches:selectedNiches})
+                    var bidTime = 0,
+                        bidValue = 0
+                    $scope.visionaries.forEach(function (vis) {
+                        if (vis.bid > 0) {
+                            bidTime += vis.bid
+                            bidValue += vis.pitchCost
+                        }
+                    })
+
+                    if (bidTime > $scope.uncommittedTime) {
+                        $rootScope.notificationToast('You do not have enough committed time. ')
+                    }
+                    else if (bidValue > $scope.uncommittedSales) {
+                        $rootScope.notificationToast('You do not have enough funding. ')
+                    }
+                    else {
+                        $http({
+                                method: 'POST',
+                                url: "/api/dtools/visionarycompetition",
+                                data: {
+                                    username: $rootScope.current_user.username,
+                                    taskID: task.taskID,
+                                    companyName: task.companyName,
+                                    teamName: task.teamName,
+                                    period: task.period,
+                                    visionaries: $scope.visionaries
+                                }
+                            }
+                        )
+                            .success(function (d) {
+                                // console.log(d)
+                                // $window.location.reload();
+                                $rootScope.user_info.companyInfo.currentPeriod = d.currentPeriod
+                            })
+
+
+                        $mdDialog.cancel();
+                        $mdSidenav('taskslist').close()
+                        $rootScope.notificationToast("Submitted application.")
+                    }
+
+
+                };
+                $timeout(function () {
+                    drawTimer()
+                }, 1000)
+
+                var getInitData = function () {
+                    $http({
+                            method: 'GET',
+                            url: "/api/dtools/visionarycompetition",
+                            params: {
+                                username: $rootScope.current_user.username,
+                                taskID: task.taskID,
+                                companyName: task.companyName,
+                                teamName: task.teamName,
+                                period: task.period
+                            }
+                        }
+                    )
+                        .success(function (d) {
+                            console.log(d)
+                            $scope.visionaries = d.visionaries
+                            $scope.uncommittedTime = d.negotiation.uncommittedTime
+                            $scope.uncommittedSales = d.negotiation.uncommittedSales
+                            if (Object.keys(d.negotiation).indexOf('infuluenceUnit') >= 0) {
+                                d.visionaries.forEach(function (vis) {
+                                    vis.influence = d.negotiation.infuluenceUnit[vis.visionary]
+                                })
+                            }
+
+
+                        })
+                }
+
+                getInitData()
+
+                function drawTimer() {
+                    var svgUnderlay = d3.select(".clock svg"),
+                        svgOverlay = d3.select(".clock").append(function () {
+                            return svgUnderlay.node().cloneNode(true);
+                        })
+                    svgUnderlay.attr("id", "underlay");
+                    svgOverlay.attr("id", "overlay");
+
+                }
+
+                function updateTimer(time_left) {
+                    svg = d3.selectAll(".clock svg");
+                    // var dt = endtime.split(' ')[0].split('-')
+                    // var tm = endtime.split(' ')[1].split(':')
+                    // var endtime_obj = new Date(dt[0], parseInt(dt[1]) - 1, dt[2], tm[0], parseInt(tm[1]) + 5, tm[2])
+                    var digit = svg.selectAll(".digit"),
+                        separator = svg.selectAll(".separator circle");
+                    var digitPattern = [
+                        [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
+                        [1, 0, 0, 0, 1, 1, 1, 0, 1, 1],
+                        [1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
+                        [0, 0, 1, 1, 1, 1, 1, 0, 1, 1],
+                        [1, 0, 1, 0, 0, 0, 1, 0, 1, 0],
+                        [1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
+                        [1, 0, 1, 1, 0, 1, 1, 0, 1, 1]
+                    ];
+
+                    // (function tick() {
+                    // var now = new Date();
+                    // var time_left = parseInt(Math.abs(endtime_obj - now) / 1000)
+                    var hours = parseInt(parseInt(time_left / 3600) % 24),
+                        minutes = parseInt(parseInt(time_left / 60) % 60),
+                        seconds = parseInt(time_left % 60);
+
+                    digit = digit.data([hours / 10 | 0, hours % 10, minutes / 10 | 0, minutes % 10, seconds / 10 | 0, seconds % 10]);
+                    digit.select("path:nth-child(1)").classed("lit", function (d) {
+                        return digitPattern[0][d];
+                    });
+                    digit.select("path:nth-child(2)").classed("lit", function (d) {
+                        return digitPattern[1][d];
+                    });
+                    digit.select("path:nth-child(3)").classed("lit", function (d) {
+                        return digitPattern[2][d];
+                    });
+                    digit.select("path:nth-child(4)").classed("lit", function (d) {
+                        return digitPattern[3][d];
+                    });
+                    digit.select("path:nth-child(5)").classed("lit", function (d) {
+                        return digitPattern[4][d];
+                    });
+                    digit.select("path:nth-child(6)").classed("lit", function (d) {
+                        return digitPattern[5][d];
+                    });
+                    digit.select("path:nth-child(7)").classed("lit", function (d) {
+                        return digitPattern[6][d];
+                    });
+                    separator.classed("lit", seconds & 1);
+
+                    // setTimeout(tick, 1000 - now % 1000);
+                    // })();
+                }
+
+                $scope.fileSelected = function (file) {
+                    // var fileID =  fileUpload(file)
+                    //   console.log(fileID)
+                    Upload.upload({
+                        url: '/files/upload',
+                        data: {files: file}
+                    }).then(function (response) {
+                        $http({
+                                method: 'POST',
+                                url: "/api/dtools/updatetaskfile",
+                                data: {
+                                    task_id: task._id,
+                                    infoFile: response.data[0]
+                                }
+                            }
+                        ).success(function () {
+                                $rootScope.tasklists.forEach(function (t) {
+                                    if (t._id == task._id) {
+                                        t.infoFile = response.data[0]
+                                    }
+                                })
+                                $rootScope.notificationToast('File uploaded.')
+                            }
+                        )
+
+                    });
+                }
+            }
+        }
+
+            function visionarycompetitionfn_backup(task) {
+            // Show the dialog
+            $mdDialog.show({
+                clickOutsideToClose: false,
+                bindToController: true,
+                controller: visionarycompetitionCtrl,
+                controllerAs: 'dialog',
                 templateUrl:  '/api/dtools/getpage?pagename=visionarycompetition',
                 locals:{func:instructionFn,timer:timerFn}
             });

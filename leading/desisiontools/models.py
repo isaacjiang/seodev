@@ -430,8 +430,24 @@ class VisionaryCompetitionModel(TasksModel):
         result = {}
         negotiation = self.db.negotiation1_com.find_one(conditions, {"_id": 0})
         if negotiation is not None:
-            result = negotiation
-        result["keyword"] = "newCoNegotiation"
+            infuluenceUnit = negotiation['negotiation']['sumInfluenceSales']
+            uncommittedTime = negotiation['negotiation']['funding']['additinalProductDeveloperNumber'] * 120
+            uncommittedSales = negotiation['negotiation']['funding']['additinalSalesNumber'] * 40000
+        else:
+            infuluenceUnit = 1
+            uncommittedTime = 120
+            uncommittedSales = 40000
+        result["negotiation"] = {'infuluenceUnit': infuluenceUnit, 'uncommittedTime': uncommittedTime,
+                                 'uncommittedSales': uncommittedSales}
+
+        visionaries = [{'visionary': 'VRKidEd', 'pitchCost': 40000},
+                       {'visionary': 'GovVR', 'pitchCost': 30000},
+                       {'visionary': 'VRGames', 'pitchCost': 50000},
+                       {'visionary': 'MilitaryVR', 'pitchCost': 40000},
+                       {'visionary': 'AdEdVR', 'pitchCost': 35000},
+                       {'visionary': 'VRCinema', 'pitchCost': 25000}
+                       ]
+        result["visionaries"] = visionaries
         # vcStatus = self.db.visionarycompetitionStatus.find_one({},{"_id":0})
         # if vcStatus == None:
         #     self.db.visionarycompetitionStatus.insert_one({'vsStatus':'Round 1',"startTime":datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
@@ -596,10 +612,11 @@ class VisionaryCompetitionModel(TasksModel):
 
     def save(self, data):
         # print selectniches
-        for niches in data['selectedNiches']:
-            self.db.visionarycompetition.update_one({"teamName": self.teamName, "companyName": self.companyName,
-                                                     "currentPeriod": self.period,}, {"$set": {"selectniches": niches}},
-                                                    upsert=True)
+        # for visionaries in data['visionaries']:
+        self.db.visionarycompetition.update_one({"teamName": self.teamName, "companyName": self.companyName,
+                                                 "currentPeriod": self.period,},
+                                                {"$set": {"visionaries": data['visionaries']}},
+                                                upsert=True)
         return data
 
 

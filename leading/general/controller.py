@@ -586,6 +586,8 @@ class PerformanceService():
                                                 , "companyName": userInfo['companyInfo']['companyName']
                                                 , "period": userInfo['companyInfo']['currentPeriod']},
                                             {"_id": 0}))
+                result["visionarycompetition"] = list(
+                    self.db.visionarycompetition_result.find({}, {"_id": 0}))
         return json.dumps(result)
 
 
