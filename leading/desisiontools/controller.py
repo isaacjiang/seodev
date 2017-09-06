@@ -833,8 +833,9 @@ class PeriodicTasksService():
                 if visionary['visionary'] not in successCom.keys():
                     successCom[visionary['visionary']] = {}
                 if 'bid' in visionary.keys():
-                    if successCom[visionary['visionary']] == {} or visionary['bid'] > \
-                            successCom[visionary['visionary']]['bid']:
+                    if successCom[visionary['visionary']] == {} or visionary['bid'] * visionary['influence'] > \
+                                    successCom[visionary['visionary']]['bid'] * successCom[visionary['visionary']][
+                                'influence']:
                         successCom[visionary['visionary']] = {"companyName": company['companyName'],
                                                               "currentPeriod": company['currentPeriod'],
                                                               "teamName": company['teamName'],

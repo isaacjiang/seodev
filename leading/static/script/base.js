@@ -2195,14 +2195,14 @@ app.config(function ($mdThemingProvider) {
                 //             // }, 1000)
                 //         }
                 // })
-
-                var vcStatus = {
-                    companyName: $rootScope.user_info.companyInfo.companyName,
-                    teamName: $rootScope.user_info.companyInfo.teamName,
-                    startTime: new Date()
-                }
-                $scope.progress = 0
-                $scope.bidtimecommitment = {value: 0}
+                //
+                // var vcStatus = {
+                //     companyName: $rootScope.user_info.companyInfo.companyName,
+                //     teamName: $rootScope.user_info.companyInfo.teamName,
+                //     startTime: new Date()
+                // }
+                // $scope.progress = 0
+                // $scope.bidtimecommitment = {value: 0}
 
                 // $rootScope.ipc.emit('vcregister', vcStatus)
 
@@ -2290,31 +2290,56 @@ app.config(function ($mdThemingProvider) {
                 //
                 // })
 
-                $scope.bid = function () {
+                // $scope.bid = function () {
+                //
+                //     if ($scope.bidtimecommitment.value == undefined || $scope.bidtimecommitment.value == 0) {
+                //         $rootScope.notificationToast('Please enter time Commitment Value. ')
+                //     }
+                //     else if ($scope.bidtimecommitment.value > $scope.uncommittedTime) {
+                //         $rootScope.notificationToast('You do not have enough committed time. ')
+                //     }
+                //     else if ($scope.visionary.uncommittedSales > $scope.visionary.pitchCost) {
+                //         $rootScope.notificationToast('You do not have enough funding. ')
+                //     }
+                //     else {
+                //         var bidInfo = {
+                //             vsStatus: vcStatus,
+                //             visionary: $scope.visionary,
+                //             bidtimecommitment: $scope.bidtimecommitment.value,
+                //             currentRound: $scope.currentRound,
+                //             uncommittedTime: $scope.uncommittedTime,
+                //             uncommittedSales: $scope.uncommittedSales
+                //         }
+                //         $rootScope.ipc.emit('vcbid', bidInfo)
+                //     }
+                //
+                //
+                // }
 
-                    if ($scope.bidtimecommitment.value == undefined || $scope.bidtimecommitment.value == 0) {
-                        $rootScope.notificationToast('Please enter time Commitment Value. ')
+                $scope.$watch('visionaries', function (nVal, oVal) {
+                    if (nVal != undefined) {
+                        $scope.uncommittedTime = $scope.uncommittedTime0
+                        $scope.uncommittedSales = $scope.uncommittedSales0
+                        console.log(nVal)
+                        var bidTime = 0,
+                            bidValue = 0
+                        nVal.forEach(function (vis) {
+                            if (vis.bid > 0) {
+                                bidTime += vis.bid
+                                bidValue += vis.pitchCost
+                            }
+                        })
+                        $scope.uncommittedTime = $scope.uncommittedTime0 - bidTime
+                        $scope.uncommittedSales = $scope.uncommittedSales0 - bidValue
                     }
-                    else if ($scope.bidtimecommitment.value > $scope.uncommittedTime) {
+                    if ($scope.uncommittedTime <= 0) {
                         $rootScope.notificationToast('You do not have enough committed time. ')
                     }
-                    else if ($scope.visionary.uncommittedSales > $scope.visionary.pitchCost) {
+                    else if ($scope.uncommittedSales <= 0) {
                         $rootScope.notificationToast('You do not have enough funding. ')
                     }
-                    else {
-                        var bidInfo = {
-                            vsStatus: vcStatus,
-                            visionary: $scope.visionary,
-                            bidtimecommitment: $scope.bidtimecommitment.value,
-                            currentRound: $scope.currentRound,
-                            uncommittedTime: $scope.uncommittedTime,
-                            uncommittedSales: $scope.uncommittedSales
-                        }
-                        $rootScope.ipc.emit('vcbid', bidInfo)
-                    }
 
-
-                }
+                }, true)
 
                 $scope.submit = function (selectedNiches, event) {
 
@@ -2329,6 +2354,7 @@ app.config(function ($mdThemingProvider) {
                             bidValue += vis.pitchCost
                         }
                     })
+
 
                     if (bidTime > $scope.uncommittedTime) {
                         $rootScope.notificationToast('You do not have enough committed time. ')
@@ -2384,8 +2410,8 @@ app.config(function ($mdThemingProvider) {
                         .success(function (d) {
                             console.log(d)
                             $scope.visionaries = d.visionaries
-                            $scope.uncommittedTime = d.negotiation.uncommittedTime
-                            $scope.uncommittedSales = d.negotiation.uncommittedSales
+                            $scope.uncommittedTime = $scope.uncommittedTime0 = d.negotiation.uncommittedTime
+                            $scope.uncommittedSales = $scope.uncommittedSales0 = d.negotiation.uncommittedSales
                             if (Object.keys(d.negotiation).indexOf('infuluenceUnit') >= 0) {
                                 d.visionaries.forEach(function (vis) {
                                     vis.influence = d.negotiation.infuluenceUnit[vis.visionary]
