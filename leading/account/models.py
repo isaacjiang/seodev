@@ -76,9 +76,8 @@ class Account():
                          comments='sum' + destItem)
 
     def trans_item(self, sourceItem, destItem, destPeriod, rate=None):
-        destPeriod = 1 if destPeriod == 0 else destPeriod
         value = Account(self.teamName, self.companyName, destPeriod - 1).get_item_sum(sourceItem)
-
+        destPeriod = 1 if destPeriod == 0 else destPeriod
         if rate is None:
             rate = 1
         Account(self.teamName, self.companyName, destPeriod).bookkeeping(accountDescID=destItem, value=value * rate,
@@ -291,12 +290,30 @@ class AccountBudget():
 
     def get_all(self):
         result = []
+        CASH_IN_HAND_AT_START = 0
+        TOTAL_REVENUE = 0
+        GROSS_MARGIN = 0
+        FUNCTION_EXPENCES = 0
+        TOTAL_EXPENCES = 0
+        NET_MARGIN = 0
+        CASH_IN_HAND_AT_END = 0
         req = self.db.account_budget_com.find({"teamName": self.teamName, "companyName": self.companyName})
         for r in req:
             r['_id'] = str(r['_id'])
             if r['accountDescID'] != '':
-                r['currentValue'] = Account(self.teamName, self.companyName, self.period).get_item_sum(
-                    r['accountDescID'])
+                if r['budgetDescID'] in ['BG100']:
+                    if self.period == 1:
+                        period = -1
+                    else:
+                        period = self.period - 1
+                    r['currentValue'] = Account(self.teamName, self.companyName, period).get_item_sum(
+                        r['accountDescID'])
+                else:
+                    r['currentValue'] = Account(self.teamName, self.companyName, self.period).get_item_sum(
+                        r['accountDescID'])
+                CASH_IN_HAND_AT_START = r['currentValue']
+
+
             if r['budgetDescID'] in ['BG200', 'BG300']:
                 forecastingvalue = self.db.forecast_com.find_one(
                     {'teamName': self.teamName, 'companyName': self.companyName,
@@ -310,7 +327,7 @@ class AccountBudget():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['b2c']
                         if 'newoffering' in forecastingvalue['forecast'].keys():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['newoffering']
-
+                        TOTAL_REVENUE = r['currentValue']
                             # r['currentValue'] = forecastingvalue['forecast']['b2b'] + forecastingvalue['forecast'][
                             #     'b2c'] + forecastingvalue['forecast']['newoffering']
                     if r['budgetDescID'] == 'BG300':
@@ -322,8 +339,15 @@ class AccountBudget():
                         if 'newoffering' in forecastingvalue['forecast'].keys():
                             r['currentValue'] = r['currentValue'] + forecastingvalue['forecast']['newoffering']
                         r['currentValue'] = r['currentValue'] * 0.5
+                        GROSS_MARGIN = r['currentValue']
+            if r['budgetDescID'] in ['BG400']: FUNCTION_EXPENCES = r['currentValue']
+            if r['budgetDescID'] in ['BG500']: TOTAL_EXPENCES = r['currentValue']
             result.append(r)
         result = sorted(result, key=lambda k: k['budgetDescID'])
+        NET_MARGIN = GROSS_MARGIN - TOTAL_EXPENCES
+        for r in result:
+            if r['budgetDescID'] in ['BG600']: r['currentValue'] = NET_MARGIN
+            if r['budgetDescID'] in ['BG800']: r['currentValue'] = CASH_IN_HAND_AT_START + NET_MARGIN
         return result
 
     def set(self, objectID, value):

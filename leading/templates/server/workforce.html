@@ -33,16 +33,16 @@
                     <span class="md-body-1"></span>
                 </div>
                 <div flex="20" layout layout-align="center center" ng-if="legacyco">
-                    <span class="md-body-1">Old</span>
+                    <span class="md-body-1">Core</span>
                 </div>
                 <div flex="20" layout layout-align="center center" ng-if="!legacyco">
                     <span class="md-body-1">Core</span>
                 </div>
                 <div flex="20" layout layout-align="center center" ng-if="legacyco">
-                    <span class="md-body-1">New</span>
+                    <span class="md-body-1">Contingency</span>
                 </div>
                 <div flex="20" layout layout-align="center center" ng-if="!legacyco">
-                    <span class="md-body-1">Contract</span>
+                    <span class="md-body-1">Contingency</span>
                 </div>
                 <div flex="20" layout layout-align="center center">
                     <span class="md-body-1">Total</span>
@@ -224,7 +224,7 @@
                 </div>
 
                         <div flex="40" layout layout-align="end center">
-                            $<span> {% raw %}{{ wf.adjustmentcost_total }}{% endraw %}</span>
+                            $<span> {% raw %}{{ wf.workforcecost_total }}{% endraw %}</span>
                 </div>
             </div>
        <md-divider md-inset="true"></md-divider>

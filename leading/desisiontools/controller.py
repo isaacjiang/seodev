@@ -460,9 +460,9 @@ class PeriodicTasksService():
         elif category in ['social media', 'support', 'su']:
             accountDescID = 'AB013'
         elif category in ['logistics & it', 'logisticsit', 'logistics', 'li']:
-            accountDescID = 'AB014'
-        elif category in ['product development', 'productdevelopment', 'pd', 'product devt']:
             accountDescID = 'AB015'
+        elif category in ['product development', 'productdevelopment', 'pd', 'product devt']:
+            accountDescID = 'AB014'
         else:
             accountDescID = 'AB010'
         return accountDescID
@@ -847,5 +847,5 @@ class PeriodicTasksService():
                 self.db.visionarycompetition_result.update_one({"visionary": res}, {"$set": successCom[res]},
                                                                upsert=True)
 
-# PeriodicTasksService().visionarycompetitionComplete()
+# PeriodicTasksService().account_sum()
 # PeriodicTasksService().workforceAccountBookkeeping()

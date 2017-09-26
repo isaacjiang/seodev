@@ -1247,6 +1247,8 @@ app.config(function ($mdThemingProvider) {
                              wf.adjustexpenses_contract = formatNum(wf.avExpense * (wf.valueatstart_contract + wf.adjustment_contract))
                              wf.adjustexpenses_total = formatNum(wf.avExpense * (wf.valueatstart_total + wf.adjustment_total))
 
+                             wf.workforcecost_total = formatNum((wf.avWage + wf.avExpense) * (wf.valueatstart_total + wf.adjustment_total)
+                                 + (wf.avWage + wf.avExpense) * wf.adjustment_total * (wf.adjustment_total > 0 ? wf.costOfHire : (wf.costOfFire * (-1))))
                          }
                      })
                  }
