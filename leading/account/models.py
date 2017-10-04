@@ -308,10 +308,11 @@ class AccountBudget():
                         period = self.period - 1
                     r['currentValue'] = Account(self.teamName, self.companyName, period).get_item_sum(
                         r['accountDescID'])
+                    CASH_IN_HAND_AT_START = r['currentValue']
+                    # print ('CASH_IN_HAND_AT_START',CASH_IN_HAND_AT_START)
                 else:
                     r['currentValue'] = Account(self.teamName, self.companyName, self.period).get_item_sum(
                         r['accountDescID'])
-                CASH_IN_HAND_AT_START = r['currentValue']
 
 
             if r['budgetDescID'] in ['BG200', 'BG300']:
@@ -345,9 +346,11 @@ class AccountBudget():
             result.append(r)
         result = sorted(result, key=lambda k: k['budgetDescID'])
         NET_MARGIN = GROSS_MARGIN - TOTAL_EXPENCES
+        # print(CASH_IN_HAND_AT_START,NET_MARGIN)
         for r in result:
             if r['budgetDescID'] in ['BG600']: r['currentValue'] = NET_MARGIN
             if r['budgetDescID'] in ['BG800']: r['currentValue'] = CASH_IN_HAND_AT_START + NET_MARGIN
+
         return result
 
     def set(self, objectID, value):

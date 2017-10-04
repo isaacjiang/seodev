@@ -454,9 +454,9 @@ class PeriodicTasksService():
     def categoryToItem(self, category):
         category = category.lower()
         if category in ['marketing & advertizing', 'marketing&advertizing', 'marketing', 'ma']:
-            accountDescID = 'AB012'
-        elif category in ['sales & distribution', 'sales&distribution', 'sales', 'sa', "sales & dist'n"]:
             accountDescID = 'AB011'
+        elif category in ['sales & distribution', 'sales&distribution', 'sales', 'sa', "sales & dist'n"]:
+            accountDescID = 'AB012'
         elif category in ['social media', 'support', 'su']:
             accountDescID = 'AB013'
         elif category in ['logistics & it', 'logisticsit', 'logistics', 'li']:
@@ -565,9 +565,9 @@ class PeriodicTasksService():
     def workforceAccountBookkeeping(self):
         workforces = self.db.workforce_com.find()
         for workforce in workforces:
-            if workforce['period'] <= self.systemCurrentPeriod:
+            if workforce['period'] == self.systemCurrentPeriod:
                 acc = Account(teamName=workforce['teamName'], companyName=workforce['companyName'],
-                              period=self.systemCurrentPeriod)
+                              period=workforce['period'])
                 value1 = int(workforce['adjustmentcost_total'].replace(',', ''))
                 # acc.bookkeeping(objectID=workforce["_id"],
                 #                 accountDescID=self.categoryToItem(workforce['functions']),

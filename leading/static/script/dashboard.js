@@ -58,10 +58,11 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                 params: {username: $rootScope.current_user.username}
             })
                 .success(function (res) {
-                    // console.log(res)
+                    //console.log(res)
                     var marketPerformance = res.marketPerformance
                     var managementPerformance = res.managementPerformance
                     var financialPerformance = res.financialPerformance
+                    console.log(financialPerformance)
 
                     var niches = ['B2B', 'B2C', 'Education', 'Government', 'Entertainment']
                     var periods = ['Previous', 'Current']
@@ -130,20 +131,22 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                         periods.forEach(function (p, j) {
                             if (financialPerformance != undefined && financialPerformance.length > 0) {
                                 financialPerformance.forEach(function (m) {
+                                    if (m.values) {
+                                        if (i == 0 && m.period == p) {
+                                            value_return_on_sales[p] = (m.values.ROS * 100).toFixed(0) + '%'
+                                            value_return_on_sales['rank' + p] = "#" + m.values.ROSrank
+                                        }
+                                        if (i == 1 && m.period == p) {
+                                            value_return_on_assest[p] = (m.values.ROA * 100).toFixed(0) + '%'
+                                            value_return_on_assest['rank' + p] = "#" + m.values.ROArank
+                                        }
+                                        if (i == 2 && m.period == p) {
 
-                                    if (i == 0 && m.period == p) {
-                                        value_return_on_sales[p] = (m.values.ROS * 100).toFixed(0) + '%'
-                                        value_return_on_sales['rank' + p] = "#" + m.values.ROSrank
+                                            value[p] = format(m.values.NOCG.toFixed(0))
+                                            value['rank' + p] = "#" + m.values.NOCGrank
+                                        }
                                     }
-                                    if (i == 1 && m.period == p) {
-                                        value_return_on_assest[p] = (m.values.ROA * 100).toFixed(0) + '%'
-                                        value_return_on_assest['rank' + p] = "#" + m.values.ROArank
-                                    }
-                                    if (i == 2 && m.period == p) {
 
-                                        value[p] = format(m.values.NOCG.toFixed(0))
-                                        value['rank' + p] = "#" + m.values.NOCGrank
-                                    }
                                 })
                             }
                         })
@@ -184,24 +187,32 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                     Object.keys(marketValue).forEach(function (teamName) {
                         total_great_value[teamName] = {}
                         Object.keys(marketValue[teamName]).forEach(function (period) {
-
-                            if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
+                            //console.log(period)
+                            if (period != 'teamName' && period > 1) {
                                 //console.log(financialValue[teamName][period - 1])
-                                if (financialValue[teamName][period - 1].NOCG <= 0) {
-                                    financialValue[teamName][period - 1].NOCG = 1
+                                if (financialValue[teamName][period - 1]) {
+                                    if (financialValue[teamName][period - 1].NOCG <= 0) {
+                                        financialValue[teamName][period - 1].NOCG = 1
+                                    }
                                 }
+                                else {
+                                    financialValue[teamName][period - 1] = {}
+                                    financialValue[teamName][period - 1].NOCG = 1
+                                    financialValue[teamName][period - 1].EBITDA = 1
+                                }
+
                                 total_great_value[teamName][period] = marketValue[teamName][period] * 0.3 * managementValue[teamName][period] * 0.3 * financialValue[teamName][period - 1].NOCG * 0.4
                             }
                         })
 
 
                     })
-                    // console.log(total_great_value)
+                    //console.log(total_great_value)
                     var max_total_great_value = {}
                     //var currentPeriod = $rootScope.userAtCompany.currentPeriod
                     Object.keys(total_great_value).forEach(function (teamName) {
                         Object.keys(total_great_value[teamName]).forEach(function (currentPeriod) {
-                            //console.log(total_great_value[teamName][currentPeriod])
+                            // console.log(total_great_value[teamName][currentPeriod])
                             if (Object.keys(max_total_great_value).indexOf(currentPeriod) < 0) {
                                 max_total_great_value[currentPeriod] = 0
                             }
@@ -222,6 +233,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                             total_great_value[teamName][currentPeriod].value = value
                             total_great_value[teamName][currentPeriod].percentage = value / max_total_great_value[currentPeriod]
                             var pe = 0
+
                             if ($rootScope.user_info.companyInfo.companyName == 'LegacyCo' && currentPeriod <= 4) {
                                 pe = 20
                             }
@@ -280,7 +292,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                             color: '#' + Math.random().toString(16).substr(-6) //color - optional: choose your own line color.
                         })
                     })
-                    console.log(total_great_value)
+                    //console.log(total_great_value)
 
 
                     var great_value = total_great_value[$rootScope.user_info.teamInfo.teamName]
@@ -301,7 +313,6 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
                         previusSharePrice = ($rootScope.user_info.companyInfo.currentPeriod - 1) > 1 ?
                             great_value[$rootScope.user_info.companyInfo.currentPeriod - 1].sharePrice.toFixed(0) : 0
                     }
-
 
                     $scope.great_value.companyValue = {
                         "key": "Company Value",
@@ -329,7 +340,7 @@ app.controller("dashboardCtrl", ["$scope", "$http", "windowsize", "current_user"
 
             $scope.selectedFunc = func
             if (func.taskKey == "value") {
-                console.log($scope.total_great_value)
+                //console.log($scope.total_great_value)
                 nv.addGraph(function () {
                     var chart = nv.models.lineChart()
                             .clipEdge(true)

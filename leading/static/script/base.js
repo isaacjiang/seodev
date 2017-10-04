@@ -3510,20 +3510,22 @@ app.config(function ($mdThemingProvider) {
 
                                 if (financialPerformance != undefined && financialPerformance.length > 0) {
                                     financialPerformance.forEach(function (m) {
+                                        if (m.values) {
+                                            if (i == 0 && m.period == p) {
+                                                value_return_on_sales[p] = (m.values.ROS * 100).toFixed(0) + '%'
+                                                value_return_on_sales['rank' + p] = "#" + m.values.ROSrank
+                                            }
+                                            if (i == 1 && m.period == p) {
+                                                value_return_on_assest[p] = (m.values.ROA * 100).toFixed(0) + '%'
+                                                value_return_on_assest['rank' + p] = "#" + m.values.ROArank
+                                            }
+                                            if (i == 2 && m.period == p) {
 
-                                        if (i == 0 && m.period == p) {
-                                            value_return_on_sales[p] = (m.values.ROS * 100).toFixed(0) + '%'
-                                            value_return_on_sales['rank' + p] = "#" + m.values.ROSrank
+                                                value[p] = format(m.values.NOCG.toFixed(0))
+                                                value['rank' + p] = "#" + m.values.NOCGrank
+                                            }
                                         }
-                                        if (i == 1 && m.period == p) {
-                                            value_return_on_assest[p] = (m.values.ROA * 100).toFixed(0) + '%'
-                                            value_return_on_assest['rank' + p] = "#" + m.values.ROArank
-                                        }
-                                        if (i == 2 && m.period == p) {
 
-                                            value[p] = format(m.values.NOCG.toFixed(0))
-                                            value['rank' + p] = "#" + m.values.NOCGrank
-                                        }
                                     })
                                 }
                             })
@@ -3565,18 +3567,26 @@ app.config(function ($mdThemingProvider) {
                             total_great_value[teamName] = {}
                             Object.keys(marketValue[teamName]).forEach(function (period) {
                                 console.log(period)
-                                if (period != 'teamName' && period > 1 && financialValue[teamName][period - 1] != undefined) {
+                                if (period != 'teamName' && period > 1) {
                                     //console.log(financialValue[teamName][period - 1])
-                                    if (financialValue[teamName][period - 1].NOCG <= 0) {
-                                        financialValue[teamName][period - 1].NOCG = 1
+                                    if (financialValue[teamName][period - 1]) {
+                                        if (financialValue[teamName][period - 1].NOCG <= 0) {
+                                            financialValue[teamName][period - 1].NOCG = 1
+                                        }
                                     }
+                                    else {
+                                        financialValue[teamName][period - 1] = {}
+                                        financialValue[teamName][period - 1].NOCG = 1
+                                        financialValue[teamName][period - 1].EBITDA = 1
+                                    }
+
                                     total_great_value[teamName][period] = marketValue[teamName][period] * 0.3 * managementValue[teamName][period] * 0.3 * financialValue[teamName][period - 1].NOCG * 0.4
                                 }
                             })
 
 
                         })
-                        console.log(total_great_value)
+                        //console.log(total_great_value)
                         var max_total_great_value = {}
                         //var currentPeriod = $rootScope.userAtCompany.currentPeriod
                         Object.keys(total_great_value).forEach(function (teamName) {
