@@ -2322,7 +2322,7 @@ app.config(function ($mdThemingProvider) {
                     if (nVal != undefined) {
                         $scope.uncommittedTime = $scope.uncommittedTime0
                         $scope.uncommittedSales = $scope.uncommittedSales0
-                        console.log(nVal)
+
                         var bidTime = 0,
                             bidValue = 0
                         nVal.forEach(function (vis) {
@@ -2333,11 +2333,12 @@ app.config(function ($mdThemingProvider) {
                         })
                         $scope.uncommittedTime = $scope.uncommittedTime0 - bidTime
                         $scope.uncommittedSales = $scope.uncommittedSales0 - bidValue
+                        console.log($scope.uncommittedSales)
                     }
-                    if ($scope.uncommittedTime <= 0) {
+                    if ($scope.uncommittedTime < 0) {
                         $rootScope.notificationToast('You do not have enough committed time. ')
                     }
-                    else if ($scope.uncommittedSales <= 0) {
+                    else if ($scope.uncommittedSales < 0) {
                         $rootScope.notificationToast('You do not have enough funding. ')
                     }
 
@@ -2348,20 +2349,19 @@ app.config(function ($mdThemingProvider) {
                     //console.log(selectedNiches)
                     // $http.post('server/visionarycompetition',data={companyName:$rootScope.userAtCompany.companyName,teamName:$rootScope.userAtCompany.teamName,
                     //     selectedNiches:selectedNiches})
-                    var bidTime = 0,
-                        bidValue = 0
-                    $scope.visionaries.forEach(function (vis) {
-                        if (vis.bid > 0) {
-                            bidTime += vis.bid
-                            bidValue += vis.pitchCost
-                        }
-                    })
+                    // var bidTime = 0,
+                    //     bidValue = 0
+                    // $scope.visionaries.forEach(function (vis) {
+                    //     if (vis.bid > 0) {
+                    //         bidTime += vis.bid
+                    //         bidValue += vis.pitchCost
+                    //     }
+                    // })
 
-
-                    if (bidTime > $scope.uncommittedTime) {
+                    if ($scope.uncommittedTime < 0) {
                         $rootScope.notificationToast('You do not have enough committed time. ')
                     }
-                    else if (bidValue > $scope.uncommittedSales) {
+                    else if ($scope.uncommittedSales < 0) {
                         $rootScope.notificationToast('You do not have enough funding. ')
                     }
                     else {

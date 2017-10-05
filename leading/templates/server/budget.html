@@ -33,11 +33,11 @@
                     <div flex=30><h4>Advertising</h4></div>
                     <div flex =50 layout="row" >
                     <md-input-container class="md-block" flex>
-                        <label>B2B</label>
+                        <label> Rev. A </label>
                         <input ng-model="acc_budget.B2B_AA" type="number" step="1000000" style="width: 90%">
                     </md-input-container>
                     <md-input-container class="md-block" flex>
-                        <label>B2C</label>
+                        <label> Rev. B </label>
                         <input ng-model="acc_budget.B2C_AA" type="number" step="1000000" style="width: 90%">
                     </md-input-container>
                     </div>
@@ -49,11 +49,11 @@
                     <div flex=30><h4>Salesforce</h4></div>
                     <div flex =50 layout="row" >
                     <md-input-container class="md-block" flex>
-                        <label>B2B</label>
+                        <label> Rev. A </label>
                         <input ng-model="acc_budget.B2B_DM" type="number" step="1000000" style="width: 90%">
                     </md-input-container>
                     <md-input-container class="md-block" flex>
-                        <label>B2C</label>
+                        <label> Rev. B </label>
                         <input ng-model="acc_budget.B2C_DM" type="number" step="1000000" style="width: 90%">
                     </md-input-container>
                     </div>
@@ -65,11 +65,11 @@
                     <div flex=30><h4>Social Media</h4></div>
                     <div flex =50 layout="row" >
                     <md-input-container class="md-block" flex>
-                        <label>B2B</label>
+                        <label> Rev. A </label>
                         <input ng-model="acc_budget.B2B_PD" type="number" step="1000000" style="width: 90%">
                     </md-input-container>
                     <md-input-container class="md-block" flex>
-                        <label>B2C</label>
+                        <label> Rev. B </label>
                         <input ng-model="acc_budget.B2C_PD" type="number" step="1000000" style="width: 90%">
                     </md-input-container>
                     </div>
@@ -80,8 +80,10 @@
               <div layout="row" flex >
                     <div flex=30><h4> Totals :</h4></div>
                     <div flex =50 layout="row" >
-                   <div flex><h4> B2B : {% raw %}{{ acc_budget.B2B_AA+ acc_budget.B2B_DM+ acc_budget.B2B_PD}}{% endraw %}</h4></div>
-                   <div flex><h4> B2C : {% raw %}{{ acc_budget.B2C_AA+ acc_budget.B2C_DM+ acc_budget.B2C_PD}}{% endraw %}</h4></div>
+                        <div flex><h4> Rev. A : {% raw %}{{ acc_budget.B2B_AA+ acc_budget.B2B_DM+
+                            acc_budget.B2B_PD}}{% endraw %}</h4></div>
+                        <div flex><h4> Rev. B : {% raw %}{{ acc_budget.B2C_AA+ acc_budget.B2C_DM+
+                            acc_budget.B2C_PD}}{% endraw %}</h4></div>
                     </div>
                   <div flex>
                     <h4> Totals : {% raw %}{{ acc_budget.B2B_AA+ acc_budget.B2B_DM+ acc_budget.B2B_PD +acc_budget.B2C_AA+ acc_budget.B2C_DM+ acc_budget.B2C_PD}}{% endraw %}</h4>
